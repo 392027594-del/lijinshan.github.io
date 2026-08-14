@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>作品集 · Portfolio</title>
+  <style>
+    /* ===== Reset & Base ===== */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #0f0f13;
+      --bg-elevated: #1a1a22;
+      --bg-card: #16161e;
+      --text: #e8e8ef;
+      --text-muted: #8b8b9a;
+      --accent: #7c5cfc;
+      --accent-light: #a78bfa;
+      --accent-glow: rgba(124, 92, 252, 0.3);
+      --border: rgba(255, 255, 255, 0.08);
+      --radius: 14px;
+      --max-width: 1080px;
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Noto Sans SC", "Helvetica Neue", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-elevated); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+    ::selection { background: var(--accent); color: #fff; }
+
+    /* ===== Demo Banner ===== */
+    .demo-banner {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(124, 92, 252, 0.15);
+      border: 1px solid rgba(124, 92, 252, 0.3);
+      backdrop-filter: blur(12px);
+      color: var(--accent-light);
+      padding: 10px 20px;
+      border-radius: 100px;
+      font-size: 0.82rem;
+      z-index: 9999;
+      white-space: nowrap;
+    }
+
+    /* ===== Loading ===== */
+    .loader {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+    .loader.hidden { opacity: 0; pointer-events: none; }
+    .loader-spinner {
+      width: 40px; height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ===== Navbar ===== */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; width: 100%;
+      z-index: 1000;
+      padding: 18px 0;
+      transition: var(--transition);
+    }
+    .navbar.scrolled {
+      background: rgba(15, 15, 19, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 0;
+    }
+    .nav-container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, var(--accent-light), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      transition: var(--transition);
+      position: relative;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 2px;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: var(--transition);
+    }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 6px;
+    }
+    .nav-toggle span {
+      width: 22px; height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: var(--transition);
+    }
+
+    /* ===== Hero ===== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      padding: 100px 32px 60px;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+    .hero-bg::before, .hero-bg::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.35;
+    }
+    .hero-bg::before {
+      width: 500px; height: 500px;
+      background: var(--accent);
+      top: -150px; right: -100px;
+      animation: float1 12s ease-in-out infinite;
+    }
+    .hero-bg::after {
+      width: 400px; height: 400px;
+      background: #5b8def;
+      bottom: -100px; left: -100px;
+      animation: float2 14s ease-in-out infinite;
+    }
+    @keyframes float1 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-40px,60px); } }
+    @keyframes float2 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(50px,-40px); } }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: var(--max-width);
+      width: 100%;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(124, 92, 252, 0.1);
+      border: 1px solid rgba(124, 92, 252, 0.25);
+      border-radius: 100px;
+      font-size: 0.82rem;
+      color: var(--accent-light);
+      margin-bottom: 28px;
+      animation: fadeInUp 0.8s ease forwards;
+    }
+    .hero-badge .dot {
+      width: 7px; height: 7px;
+      background: #4ade80;
+      border-radius: 50%;
+      animation: pulse 2s ease infinite;
+    }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .hero h1 {
+      font-size: clamp(2.4rem, 7vw, 4.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      margin-bottom: 24px;
+      animation: fadeInUp 0.8s ease 0.1s forwards;
+      opacity: 0;
+    }
+    .hero h1 .gradient {
+      background: linear-gradient(135deg, var(--accent-light) 0%, #7c5cfc 50%, #5b8def 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p.subtitle {
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      color: var(--text-muted);
+      max-width: 560px;
+      margin: 0 auto 40px;
+      animation: fadeInUp 0.8s ease 0.2s forwards;
+      opacity: 0;
+    }
+    .hero-cta {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeInUp 0.8s ease 0.3s forwards;
+      opacity: 0;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: var(--transition);
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+    .btn-primary:hover {
+      background: var(--accent-light);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 28px var(--accent-glow);
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover {
+      border-color: var(--accent);
+      color: var(--accent-light);
+      transform: translateY(-2px);
+    }
+    .scroll-hint {
+      position: absolute;
+      bottom: 32px; left: 50%;
+      transform: translateX(-50%);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      animation: fadeInUp 0.8s ease 0.5s forwards;
+      opacity: 0;
+    }
+    .scroll-hint .mouse {
+      width: 24px; height: 40px;
+      border: 2px solid var(--text-muted);
+      border-radius: 12px;
+      position: relative;
+    }
+    .scroll-hint .mouse::before {
+      content: '';
+      position: absolute;
+      top: 6px; left: 50%;
+      transform: translateX(-50%);
+      width: 4px; height: 8px;
+      background: var(--text-muted);
+      border-radius: 2px;
+      animation: scrollDown 1.8s ease infinite;
+    }
+    @keyframes scrollDown {
+      0% { opacity: 1; top: 6px; }
+      80% { opacity: 0; top: 20px; }
+      100% { opacity: 0; top: 6px; }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== Section Base ===== */
+    section {
+      padding: 100px 32px;
+      max-width: var(--max-width);
+      margin: 0 auto;
+    }
+    .section-header { margin-bottom: 56px; }
+    .section-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    /* ===== About ===== */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .about-text p {
+      color: var(--text-muted);
+      margin-bottom: 18px;
+      font-size: 1.05rem;
+    }
+    .about-text p strong { color: var(--text); }
+    .about-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px;
+      text-align: center;
+    }
+    .about-avatar {
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #5b8def);
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .about-card h3 { font-size: 1.2rem; margin-bottom: 6px; }
+    .about-card .role {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+    .about-stats {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+    }
+    .stat-item .num {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--accent-light);
+    }
+    .stat-item .label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== Projects ===== */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+    .project-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    .project-card:hover {
+      border-color: rgba(124, 92, 252, 0.3);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    }
+    .project-thumb {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .project-thumb::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent, rgba(0,0,0,0.3));
+    }
+    .project-thumb span {
+      position: relative;
+      z-index: 1;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+    }
+    .project-info { padding: 24px; }
+    .project-info h3 {
+      font-size: 1.15rem;
+      margin-bottom: 8px;
+      transition: var(--transition);
+    }
+    .project-card:hover .project-info h3 { color: var(--accent-light); }
+    .project-info p {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      margin-bottom: 14px;
+    }
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .tag {
+      font-size: 0.76rem;
+      padding: 4px 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      color: var(--text-muted);
+    }
+
+    /* ===== Skills ===== */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .skill-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      transition: var(--transition);
+    }
+    .skill-card:hover { border-color: rgba(124, 92, 252, 0.25); }
+    .skill-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 16px;
+      background: rgba(124, 92, 252, 0.1);
+    }
+    .skill-card h3 { font-size: 1rem; margin-bottom: 8px; }
+    .skill-card p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+    .skill-bar {
+      margin-top: 14px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .skill-bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-light));
+      width: 0;
+      transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ===== Contact ===== */
+    .contact {
+      text-align: center;
+      padding-bottom: 80px;
+    }
+    .contact-content {
+      max-width: 540px;
+      margin: 0 auto;
+    }
+    .contact h2 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+    .contact p {
+      color: var(--text-muted);
+      margin-bottom: 32px;
+      font-size: 1.05rem;
+    }
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .contact-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 0.92rem;
+      transition: var(--transition);
+    }
+    .contact-link:hover {
+      border-color: var(--accent);
+      color: var(--accent-light);
+      transform: translateY(-2px);
+    }
+
+    /* ===== Footer ===== */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    /* ===== Reveal Animation ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%; left: 0; right: 0;
+        background: rgba(15, 15, 19, 0.97);
+        backdrop-filter: blur(16px);
+        flex-direction: column;
+        padding: 20px 32px;
+        gap: 20px;
+        border-bottom: 1px solid var(--border);
+      }
+      .nav-links.open { display: flex; }
+      .nav-toggle { display: flex; }
+      .about-grid { grid-template-columns: 1fr; gap: 36px; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .skills-grid { grid-template-columns: 1fr; }
+      section { padding: 64px 24px; }
+      .hero { padding: 80px 24px 40px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading -->
+  <div class="loader" id="loader">
+    <div class="loader-spinner"></div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#" class="nav-logo" id="navLogo">Portfolio.</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#about">关于</a></li>
+        <li><a href="#projects">作品</a></li>
+        <li><a href="#skills">技能</a></li>
+        <li><a href="#contact">联系</a></li>
+      </ul>
+      <div class="nav-toggle" id="navToggle">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        <span id="heroBadge">正在寻找新的合作机会</span>
+      </div>
+      <h1 id="heroTitle">加载中...</h1>
+      <p class="subtitle" id="heroSubtitle"></p>
+      <div class="hero-cta">
+        <a href="#projects" class="btn btn-primary">查看作品 →</a>
+        <a href="#contact" class="btn btn-ghost">联系我</a>
+      </div>
+    </div>
+    <div class="scroll-hint">
+      <div class="mouse"></div>
+      <span>向下滚动</span>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="reveal">
+    <div class="section-header">
+      <div class="section-label">关于我</div>
+      <h2 class="section-title" id="aboutTitle">一点点自我介绍</h2>
+    </div>
+    <div class="about-grid">
+      <div class="about-text" id="aboutText"></div>
+      <div class="about-card">
+        <div class="about-avatar" id="aboutAvatar">Y</div>
+        <h3 id="aboutName">你的名字</h3>
+        <div class="role" id="aboutRole">产品设计师</div>
+        <div class="about-stats" id="aboutStats"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section id="projects" class="reveal">
+    <div class="section-header">
+      <div class="section-label">精选作品</div>
+      <h2 class="section-title">最近做的一些事</h2>
+    </div>
+    <div class="projects-grid" id="projectsGrid"></div>
+  </section>
+
+  <!-- Skills -->
+  <section id="skills" class="reveal">
+    <div class="section-header">
+      <div class="section-label">技能栈</div>
+      <h2 class="section-title">我擅长的工具和领域</h2>
+    </div>
+    <div class="skills-grid" id="skillsGrid"></div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="contact reveal">
+    <div class="contact-content">
+      <h2 id="contactTitle">有项目想聊聊？</h2>
+      <p id="contactDesc">无论是合作、咨询还是随便交流，欢迎随时联系。我通常会在 24 小时内回复。</p>
+      <div class="contact-links" id="contactLinks"></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p id="footerText">© 2026 · 用心设计，持续迭代</p>
+  </footer>
+
+  <!-- ===== Sanity Config & Data Layer ===== -->
+  <script type="module">
+    // ============================================================
+    //  Sanity 配置 — 把下面的 YOUR_PROJECT_ID 换成你的真实 Project ID
+    //  获取方式：sanity.io 后台 → 项目 → Settings → Project ID
+    // ============================================================
+    const SANITY_PROJECT_ID = '4i3qoqt0';
+    const SANITY_DATASET = 'production';
+    const SANITY_API_VERSION = '2024-01-01';
+
+    // ===== Demo 数据（Sanity 未配置时使用） =====
+    const DEMO_DATA = {
+      settings: {
+        heroName: '你的名字',
+        heroRole: '设计师',
+        heroTagline: '专注于打造兼具美感与功能性的数字产品，用设计连接用户与体验。',
+        statusBadge: '正在寻找新的合作机会',
+        avatarLetter: 'Y',
+        aboutTitle: '一点点自我介绍',
+        aboutParagraphs: [
+          '我是一名拥有 **5 年经验** 的产品设计师，擅长从概念到落地的全流程设计，关注用户体验与视觉表达的平衡。',
+          '过去几年里，我参与了多个从 0 到 1 的项目，涵盖 Web 端、移动端和数据可视化等领域。我相信好的设计不只是好看，更是解决问题。',
+          '工作之外，我喜欢研究新的设计趋势、写技术博客，偶尔也做做摄影。如果你有好玩的项目想聊聊，随时找我。'
+        ],
+        stats: [
+          { num: '50+', label: '项目交付' },
+          { num: '5年', label: '从业经验' },
+          { num: '∞', label: '热情' }
+        ],
+        footerText: '© 2026 你的名字 · 用心设计，持续迭代',
+        contactTitle: '有项目想聊聊？',
+        contactDesc: '无论是合作、咨询还是随便交流，欢迎随时联系。我通常会在 24 小时内回复。',
+        contactLinks: [
+          { icon: '📧', label: 'Email', url: 'mailto:hello@example.com' },
+          { icon: '💬', label: '微信', url: '#' },
+          { icon: '🐙', label: 'GitHub', url: '#' },
+          { icon: '📝', label: '博客', url: '#' }
+        ]
+      },
+      projects: [
+        { title: '品牌视觉升级', description: '为一家科技公司完成全链路品牌视觉体系升级，包括 Logo、色彩规范和组件库。', icon: '🎨', gradient: 'linear-gradient(135deg, #667eea, #764ba2)', tags: ['品牌设计', 'Design System'] },
+        { title: '移动端 App 重设计', description: '主导一款百万级用户 App 的体验重构，核心流程转化率提升 32%。', icon: '📱', gradient: 'linear-gradient(135deg, #f093fb, #f5576c)', tags: ['UX 设计', '移动端'] },
+        { title: '数据可视化平台', description: '设计了一套面向企业用户的数据分析看板，支持自定义图表和实时监控。', icon: '📊', gradient: 'linear-gradient(135deg, #4facfe, #00f2fe)', tags: ['数据可视化', 'B 端'] },
+        { title: '官网落地页设计', description: '为初创团队打造高转化落地页，上线首周注册用户突破 10,000。', icon: '🚀', gradient: 'linear-gradient(135deg, #43e97b, #38f9d7)', tags: ['Landing Page', '增长设计'] }
+      ],
+      skills: [
+        { title: 'UI / UX 设计', description: '用户研究、交互设计、视觉设计、原型制作', icon: '🎨', level: 95 },
+        { title: '设计系统', description: '组件库搭建、设计规范、跨平台一致性', icon: '📐', level: 88 },
+        { title: '前端开发', description: 'HTML / CSS / JavaScript，React，动效实现', icon: '💻', level: 80 },
+        { title: '数据可视化', description: '图表设计、仪表盘、信息架构', icon: '📊', level: 85 },
+        { title: '团队协作', description: '跨部门沟通、设计评审、项目管理', icon: '🤝', level: 90 },
+        { title: '品牌设计', description: 'Logo 设计、VI 规范、品牌策略', icon: '✏️', level: 75 }
+      ]
+    };
+
+    // ===== 工具函数 =====
+    function renderBold(text) {
+      return text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    // ===== 渲染函数 =====
+    function renderContent(data) {
+      const s = data.settings;
+
+      // Nav logo
+      document.getElementById('navLogo').textContent = (s.heroName || 'Portfolio') + '.';
+
+      // Hero
+      document.getElementById('heroBadge').textContent = s.statusBadge || '正在寻找新的合作机会';
+      document.getElementById('heroTitle').innerHTML =
+        `你好，我是<span class="gradient">${escapeHtml(s.heroName || '')}</span><br>我是一名${escapeHtml(s.heroRole || '')}`;
+      document.getElementById('heroSubtitle').textContent = s.heroTagline || '';
+
+      // About
+      document.getElementById('aboutTitle').textContent = s.aboutTitle || '一点点自我介绍';
+      const aboutTextEl = document.getElementById('aboutText');
+      aboutTextEl.innerHTML = '';
+      (s.aboutParagraphs || []).forEach(p => {
+        const pEl = document.createElement('p');
+        pEl.innerHTML = renderBold(escapeHtml(p));
+        aboutTextEl.appendChild(pEl);
+      });
+      document.getElementById('aboutAvatar').textContent = s.avatarLetter || 'Y';
+      document.getElementById('aboutName').textContent = s.heroName || '你的名字';
+      document.getElementById('aboutRole').textContent = s.heroRole || '产品设计师';
+
+      // Stats
+      const statsEl = document.getElementById('aboutStats');
+      statsEl.innerHTML = '';
+      (s.stats || []).forEach(stat => {
+        statsEl.innerHTML += `
+          <div class="stat-item">
+            <div class="num">${escapeHtml(stat.num)}</div>
+            <div class="label">${escapeHtml(stat.label)}</div>
+          </div>`;
+      });
+
+      // Projects
+      const projectsEl = document.getElementById('projectsGrid');
+      projectsEl.innerHTML = '';
+      (data.projects || []).forEach(project => {
+        const tagsHtml = (project.tags || []).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('');
+        projectsEl.innerHTML += `
+          <div class="project-card">
+            <div class="project-thumb" style="background: ${project.gradient || 'linear-gradient(135deg, #667eea, #764ba2)'};">
+              <span>${escapeHtml(project.icon || '🎨')}</span>
+            </div>
+            <div class="project-info">
+              <h3>${escapeHtml(project.title)}</h3>
+              <p>${escapeHtml(project.description)}</p>
+              <div class="project-tags">${tagsHtml}</div>
+            </div>
+          </div>`;
+      });
+
+      // Skills
+      const skillsEl = document.getElementById('skillsGrid');
+      skillsEl.innerHTML = '';
+      (data.skills || []).forEach(skill => {
+        skillsEl.innerHTML += `
+          <div class="skill-card">
+            <div class="skill-icon">${escapeHtml(skill.icon || '🎨')}</div>
+            <h3>${escapeHtml(skill.title)}</h3>
+            <p>${escapeHtml(skill.description || '')}</p>
+            <div class="skill-bar"><div class="skill-bar-fill" data-width="${skill.level || 80}%"></div></div>
+          </div>`;
+      });
+
+      // Contact
+      document.getElementById('contactTitle').textContent = s.contactTitle || '有项目想聊聊？';
+      document.getElementById('contactDesc').textContent = s.contactDesc || '';
+      const contactEl = document.getElementById('contactLinks');
+      contactEl.innerHTML = '';
+      (s.contactLinks || []).forEach(link => {
+        contactEl.innerHTML += `
+          <a href="${escapeHtml(link.url || '#')}" class="contact-link">${escapeHtml(link.icon || '')} ${escapeHtml(link.label || '')}</a>`;
+      });
+
+      // Footer
+      document.getElementById('footerText').textContent = s.footerText || '© 2026 · 用心设计，持续迭代';
+
+      // Re-init animations
+      initAnimations();
+    }
+
+    function initAnimations() {
+      // Navbar scroll
+      const navbar = document.getElementById('navbar');
+      window.addEventListener('scroll', () => {
+        navbar.classList.toggle('scrolled', window.scrollY > 40);
+      }, { passive: true });
+
+      // Mobile menu
+      const navToggle = document.getElementById('navToggle');
+      const navLinks = document.getElementById('navLinks');
+      navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+      navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => navLinks.classList.remove('open'));
+      });
+
+      // Reveal on scroll
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            entry.target.querySelectorAll('.skill-bar-fill').forEach(bar => {
+              bar.style.width = bar.dataset.width;
+            });
+          }
+        });
+      }, { threshold: 0.12 });
+      document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+    }
+
+    function hideLoader() {
+      const loader = document.getElementById('loader');
+      loader.classList.add('hidden');
+      setTimeout(() => loader.remove(), 500);
+    }
+
+    // ===== 主逻辑：尝试从 Sanity 获取数据 =====
+    async function init() {
+      if (SANITY_PROJECT_ID === 'YOUR_PROJECT_ID') {
+        // 未配置 Sanity，使用 Demo 数据
+        renderContent(DEMO_DATA);
+        hideLoader();
+
+        // 显示提示横幅
+        const banner = document.createElement('div');
+        banner.className = 'demo-banner';
+        banner.innerHTML = '⚠️ 当前为演示数据 · 在 index.html 中配置 Sanity Project ID 后生效';
+        document.body.appendChild(banner);
+        return;
+      }
+
+      try {
+        // 动态导入 Sanity Client
+        const { createClient } = await import('https://esm.sh/@sanity/client@6.22.2');
+
+        const client = createClient({
+          projectId: SANITY_PROJECT_ID,
+          dataset: SANITY_DATASET,
+          apiVersion: SANITY_API_VERSION,
+          useCdn: true,
+        });
+
+        // 并行获取所有数据
+        const [settings, projects, skills] = await Promise.all([
+          client.fetch('*[_type == "siteSettings"][0]'),
+          client.fetch('*[_type == "project"] | order(order asc) { title, description, icon, gradient, tags, order }'),
+          client.fetch('*[_type == "skill"] | order(order asc) { title, description, icon, level, order }'),
+        ]);
+
+        // 组装数据，未设置的部分用 Demo 数据兜底
+        const data = {
+          settings: { ...DEMO_DATA.settings, ...settings },
+          projects: (projects && projects.length > 0) ? projects : DEMO_DATA.projects,
+          skills: (skills && skills.length > 0) ? skills : DEMO_DATA.skills,
+        };
+
+        renderContent(data);
+      } catch (err) {
+        console.warn('Sanity 连接失败，使用演示数据:', err.message);
+        renderContent(DEMO_DATA);
+
+        const banner = document.createElement('div');
+        banner.className = 'demo-banner';
+        banner.innerHTML = '⚠️ Sanity 连接失败，当前为演示数据 · 请检查 Project ID 和 CORS 配置';
+        document.body.appendChild(banner);
+      } finally {
+        hideLoader();
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
