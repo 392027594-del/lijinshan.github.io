@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>作品详情 · Portfolio</title>
+  <style>
+    :root {
+      --bg: #f5f5f3;
+      --bg-alt: #efefea;
+      --surface: #ffffff;
+      --text: #0a0a0a;
+      --text-soft: #5a5a55;
+      --text-faint: #9a9a92;
+      --line: #e2e2dc;
+      --accent: #ff6a6a;
+      --accent-soft: #b76341;
+      --accent-2: #5bbad5;
+      --max-width: 1240px;
+      --pad: clamp(20px, 5vw, 56px);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: "Helvetica Neue", "Inter", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased; line-height: 1.6; overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    .scroll-progress { position: fixed; top: 0; left: 0; height: 3px; width: 0; background: var(--accent); z-index: 200; }
+
+    /* 导航 */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px var(--pad);
+      transition: background .35s ease, border-color .35s ease, padding .35s ease;
+      border-bottom: 1px solid transparent;
+    }
+    .navbar.scrolled { background: rgba(255,255,255,.86); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); padding: 14px var(--pad); }
+    .nav-logo { font-weight: 800; font-size: 20px; letter-spacing: -0.02em; }
+    .nav-links { list-style: none; display: flex; gap: clamp(20px, 3vw, 40px); align-items: center; }
+    .nav-links a { font-size: 13px; text-transform: uppercase; letter-spacing: .14em; color: var(--text-soft); font-weight: 600; position: relative; padding: 4px 0; transition: color .25s ease; }
+    .nav-links a::after { content: ""; position: absolute; left: 0; bottom: 0; height: 1.5px; width: 0; background: var(--accent); transition: width .3s ease; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; }
+    .nav-toggle span { width: 26px; height: 2px; background: var(--text); transition: .3s; }
+
+    .wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--pad); }
+    .eyebrow { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; }
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity .8s ease, transform .8s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* 返回链接 */
+    .back-link {
+      display: inline-flex; align-items: center; gap: 8px; margin-top: clamp(110px, 16vh, 170px);
+      font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--text-soft);
+      transition: color .25s ease, gap .25s ease;
+    }
+    .back-link:hover { color: var(--accent); gap: 12px; }
+
+    /* 案例 HERO */
+    .case-hero { padding: clamp(28px, 4vw, 56px) 0 clamp(40px, 6vw, 72px); }
+    .case-hero h1 {
+      font-size: clamp(40px, 7vw, 104px); font-weight: 800; letter-spacing: -0.035em; line-height: 0.98;
+      margin-bottom: 24px; max-width: 14ch;
+    }
+    .case-hero .lede { font-size: clamp(17px, 1.8vw, 23px); color: var(--text-soft); max-width: 640px; line-height: 1.6; }
+
+    /* metas 信息行 */
+    .metas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; margin: clamp(36px, 5vw, 60px) 0; }
+    .meta { background: var(--bg); padding: 18px 20px; }
+    .meta-k { display: block; font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 8px; }
+    .meta-v { font-size: 16px; font-weight: 700; letter-spacing: -0.01em; }
+
+    /* 满幅封面 */
+    .case-cover {
+      aspect-ratio: 16 / 9; border-radius: 6px; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      font-size: clamp(70px, 12vw, 160px); color: rgba(255,255,255,.92);
+      margin-bottom: clamp(60px, 9vw, 120px);
+    }
+
+    /* Overview 两栏 */
+    .case-overview { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(36px, 6vw, 96px); padding-bottom: clamp(60px, 9vw, 120px); }
+    .case-overview .label { font-size: 12px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); }
+    .case-overview .body p { font-size: clamp(18px, 1.9vw, 24px); line-height: 1.7; margin-bottom: 22px; }
+    .case-overview .body strong { font-weight: 700; }
+
+    /* 满幅图组 */
+    .case-figures { display: flex; flex-direction: column; gap: clamp(28px, 4vw, 56px); padding-bottom: clamp(60px, 9vw, 120px); }
+    .case-figure { border-radius: 6px; overflow: hidden; }
+    .case-figure .img { aspect-ratio: 16 / 10; display: flex; align-items: center; justify-content: center; font-size: clamp(50px, 8vw, 110px); color: rgba(255,255,255,.92); }
+    .case-figure .cap { font-size: 13px; color: var(--text-faint); letter-spacing: .04em; padding: 14px 2px 0; }
+    .case-figure.tall .img { aspect-ratio: 4 / 5; max-width: 760px; margin: 0 auto; }
+
+    /* 下一个项目 */
+    .case-next { border-top: 1px solid var(--line); padding: clamp(48px, 7vw, 90px) 0; }
+    .case-next a { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+    .case-next .k { font-size: 12px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--text-faint); }
+    .case-next .t { font-size: clamp(28px, 5vw, 64px); font-weight: 800; letter-spacing: -0.03em; transition: color .25s ease; }
+    .case-next a:hover .t { color: var(--accent); }
+
+    /* 页脚 */
+    footer { border-top: 1px solid var(--line); padding: clamp(48px, 7vw, 90px) 0; }
+    footer .wrap { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+    .footer-mark { font-size: clamp(28px, 5vw, 56px); font-weight: 800; letter-spacing: -0.03em; }
+    .footer-mark .accent { color: var(--accent); }
+    #footerText { font-size: 13px; color: var(--text-faint); letter-spacing: .02em; }
+
+    .loader { position: fixed; inset: 0; background: var(--bg); z-index: 300; display: flex; align-items: center; justify-content: center; transition: opacity .5s ease; }
+    .loader.hidden { opacity: 0; pointer-events: none; }
+    .loader .spinner { width: 38px; height: 38px; border: 3px solid var(--line); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .demo-banner { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #fff; font-size: 13px; font-weight: 600; padding: 11px 20px; border-radius: 100px; z-index: 250; box-shadow: 0 12px 30px -12px rgba(255,106,106,.6); max-width: 92vw; text-align: center; }
+
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 100px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+    ::selection { background: var(--accent); color: #fff; }
+
+    @media (max-width: 900px) {
+      .metas { grid-template-columns: repeat(2, 1fr); }
+      .case-overview { grid-template-columns: 1fr; gap: 24px; }
+    }
+    @media (max-width: 640px) {
+      .nav-links { position: absolute; top: 100%; right: var(--pad); left: var(--pad); flex-direction: column; align-items: flex-start; gap: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 22px; transform: translateY(-10px); opacity: 0; pointer-events: none; transition: .3s; }
+      .nav-links.open { transform: none; opacity: 1; pointer-events: auto; }
+      .nav-toggle { display: flex; }
+      .metas { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="scroll-progress" id="scrollProgress"></div>
+  <div class="loader" id="loader"><div class="spinner"></div></div>
+
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="nav-logo" id="navLogo">Portfolio.</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#work">作品</a></li>
+      <li><a href="index.html#about">关于</a></li>
+      <li><a href="index.html#skills">技能</a></li>
+      <li><a href="index.html#contact">联系</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="菜单"><span></span><span></span><span></span></button>
+  </nav>
+
+  <main class="wrap">
+    <a href="index.html#projects" class="back-link" id="backLink">← 返回作品</a>
+
+    <!-- 案例 HERO -->
+    <header class="case-hero">
+      <span class="eyebrow" id="caseEyebrow">Case Study</span>
+      <h1 id="caseTitle">加载中...</h1>
+      <p class="lede" id="caseLede"></p>
+    </header>
+
+    <!-- metas 信息行 -->
+    <div class="metas" id="caseMetas"></div>
+
+    <!-- 满幅封面 -->
+    <div class="case-cover" id="caseCover"></div>
+
+    <!-- Overview 两栏 -->
+    <section class="case-overview reveal">
+      <div class="label">Overview · 项目概述</div>
+      <div class="body" id="caseOverview"></div>
+    </section>
+
+    <!-- 满幅图组 -->
+    <section class="case-figures reveal" id="caseFigures"></section>
+
+    <!-- 下一个项目 -->
+    <section class="case-next reveal">
+      <a href="#" id="caseNext">
+        <span class="k">下一个项目 →</span>
+        <span class="t" id="caseNextTitle"></span>
+      </a>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="footer-mark">Portfolio<span class="accent">.</span></div>
+      <p id="footerText">© 2026 · 用心设计，持续迭代</p>
+    </div>
+  </footer>
+
+  <script type="module">
+    const SANITY_PROJECT_ID = '4i3qoqt0';
+    const SANITY_DATASET = 'production';
+    const SANITY_API_VERSION = '2024-01-01';
+
+    const DEMO_DATA = {
+      settings: {
+        heroName: '你的名字',
+        footerText: '© 2026 你的名字 · 用心设计，持续迭代',
+        contactTitle: '有项目想聊聊？'
+      },
+      projects: [
+        { title: '品牌视觉升级', description: '为一家科技公司完成全链路品牌视觉体系升级，包括 Logo、色彩规范和组件库。从调研到落地，建立可延展的视觉语言，支撑后续多端产品一致呈现。', icon: '🎨', tags: ['品牌设计', 'Design System'] },
+        { title: '移动端 App 重设计', description: '主导一款百万级用户 App 的体验重构，梳理核心流程、重构信息架构，核心流程转化率提升 32%，用户留存明显改善。', icon: '📱', tags: ['UX 设计', '移动端'] },
+        { title: '数据可视化平台', description: '设计了一套面向企业用户的数据分析看板，支持自定义图表与实时监控，把复杂数据转化为可决策的洞察。', icon: '📊', tags: ['数据可视化', 'B 端'] },
+        { title: '官网落地页设计', description: '为初创团队打造高转化落地页，围绕用户动机设计叙事节奏，上线首周注册用户突破 10,000。', icon: '🚀', tags: ['Landing Page', '增长设计'] }
+      ]
+    };
+
+    const WARM_THUMBS = [
+      'linear-gradient(140deg, #ff6a6a, #b76341)',
+      'linear-gradient(140deg, #5bbad5, #6a83a6)',
+      'linear-gradient(140deg, #c3c5bc, #40451b)',
+      'linear-gradient(140deg, #b3845d, #ff6a6a)',
+      'linear-gradient(140deg, #5bbad5, #c3c5bc)',
+      'linear-gradient(140deg, #b76341, #40451b)'
+    ];
+
+    function escapeHtml(str){ if(!str) return ''; const d=document.createElement('div'); d.textContent=str; return d.innerHTML; }
+    function renderBold(t){ return t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>'); }
+
+    function initAnimations(){
+      const progress = document.getElementById('scrollProgress');
+      const navbar = document.getElementById('navbar');
+      function onScroll(){
+        const h = document.documentElement.scrollHeight - window.innerHeight;
+        progress.style.width = (h>0 ? (window.scrollY/h)*100 : 0) + '%';
+        navbar.classList.toggle('scrolled', window.scrollY > 30);
+      }
+      window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+      const t = document.getElementById('navToggle'); const l = document.getElementById('navLinks');
+      t.addEventListener('click', () => l.classList.toggle('open'));
+      l.querySelectorAll('a').forEach(a => a.addEventListener('click', () => l.classList.remove('open')));
+      const io = new IntersectionObserver((es) => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.12 });
+      document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+    }
+    function hideLoader(){ const l=document.getElementById('loader'); l.classList.add('hidden'); setTimeout(()=>l.remove(),500); }
+
+    function renderCase(data){
+      const params = new URLSearchParams(location.search);
+      let idx = parseInt(params.get('i') || '0', 10);
+      if (isNaN(idx) || idx < 0) idx = 0;
+      const projects = normArray(data.projects) || DEMO_DATA.projects;
+      if (idx >= projects.length) idx = 0;
+      const p = projects[idx];
+      const s = data.settings || {};
+
+      document.getElementById('navLogo').textContent = (s.heroName || 'Portfolio') + '.';
+      document.getElementById('footerText').textContent = s.footerText || '© 2026 · 用心设计，持续迭代';
+
+      document.getElementById('caseEyebrow').textContent = (p.tags && p.tags[0]) ? p.tags[0] : 'Case Study';
+      document.getElementById('caseTitle').textContent = p.title || '未命名项目';
+      document.getElementById('caseLede').textContent = p.description || '';
+
+      const tags = normArray(p.tags);
+      const metas = [
+        { k: '服务', v: tags ? tags.join(' · ') : '—' },
+        { k: '年份', v: '2026' },
+        { k: '分类', v: (tags && tags[0]) ? tags[0] : '设计' },
+        { k: '状态', v: '已上线' }
+      ];
+      document.getElementById('caseMetas').innerHTML = metas.map(m =>
+        `<div class="meta"><span class="meta-k">${m.k}</span><span class="meta-v">${escapeHtml(m.v)}</span></div>`).join('');
+
+      const coverBg = WARM_THUMBS[idx % WARM_THUMBS.length];
+      const cover = document.getElementById('caseCover');
+      cover.style.background = coverBg;
+      cover.textContent = p.icon || '🎨';
+
+      const overview = document.getElementById('caseOverview');
+      overview.innerHTML = '';
+      const paras = (p.description || '').split('\n').filter(Boolean);
+      const blocks = (normArray(p.body) || paras.length ? paras : [p.description || '']);
+      blocks.forEach(t => { const el = document.createElement('p'); el.innerHTML = renderBold(escapeHtml(t)); overview.appendChild(el); });
+      if (!blocks.length) overview.innerHTML = '<p>暂无详细描述。</p>';
+
+      // 满幅图组：用同色系不同明度模拟多张图
+      const figs = document.getElementById('caseFigures');
+      figs.innerHTML = '';
+      const figCount = 3;
+      for (let f = 0; f < figCount; f++) {
+        const bg = WARM_THUMBS[(idx + f + 1) % WARM_THUMBS.length];
+        const tall = f === 1;
+        figs.innerHTML += `
+          <figure class="case-figure ${tall ? 'tall' : ''}">
+            <div class="img" style="background: ${bg};">${escapeHtml(p.icon || '🎨')}</div>
+            <figcaption class="cap">图 ${String(f+1).padStart(2,'0')} — ${escapeHtml(p.title || '')}</figcaption>
+          </figure>`;
+      }
+
+      // 下一个项目
+      const nextIdx = (idx + 1) % projects.length;
+      const next = projects[nextIdx];
+      document.getElementById('caseNext').setAttribute('href', `project.html?i=${nextIdx}`);
+      document.getElementById('caseNextTitle').textContent = next.title || '下一个项目';
+
+      initAnimations();
+    }
+
+    function normArray(a){ return Array.isArray(a) && a.length ? a : null; }
+
+    async function init(){
+      if (SANITY_PROJECT_ID === 'YOUR_PROJECT_ID') { renderCase(DEMO_DATA); hideLoader(); return; }
+      try {
+        const { createClient } = await import('https://esm.sh/@sanity/client@6.22.2');
+        const client = createClient({ projectId: SANITY_PROJECT_ID, dataset: SANITY_DATASET, apiVersion: SANITY_API_VERSION, useCdn: true });
+        const [settings, projects] = await Promise.all([
+          client.fetch('*[_type == "siteSettings"][0]'),
+          client.fetch('*[_type == "project"] | order(order asc) { title, description, icon, gradient, tags, order }')
+        ]);
+        const data = { settings: { ...DEMO_DATA.settings, ...settings }, projects: projects };
+        renderCase(data);
+      } catch (err) {
+        console.warn('Sanity 连接失败，使用演示数据:', err.message);
+        renderCase(DEMO_DATA);
+      } finally { hideLoader(); }
+    }
+    init();
+  </script>
+</body>
+</html>

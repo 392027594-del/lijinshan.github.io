@@ -187,7 +187,7 @@
     .projects-grid {
       display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(28px, 4vw, 56px);
     }
-    .project-card { cursor: default; }
+    .project-card { cursor: pointer; color: inherit; text-decoration: none; display: block; }
     .project-thumb {
       position: relative; aspect-ratio: 16 / 11; border-radius: 6px; overflow: hidden;
       display: flex; align-items: center; justify-content: center;
@@ -524,7 +524,7 @@
         const bg = WARM_THUMBS[i % WARM_THUMBS.length];
         const tagsHtml = (project.tags || []).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('');
         projectsEl.innerHTML += `
-          <div class="project-card">
+          <a class="project-card" href="project.html?i=${i}">
             <div class="project-thumb" style="background: ${bg};">
               <div class="project-index">${idx}</div>
               <span>${escapeHtml(project.icon || '🎨')}</span>
@@ -534,7 +534,7 @@
               <p>${escapeHtml(project.description)}</p>
               <div class="project-tags">${tagsHtml}</div>
             </div>
-          </div>`;
+          </a>`;
       });
 
       // Skills
