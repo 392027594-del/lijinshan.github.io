@@ -522,12 +522,15 @@
       (data.projects || []).forEach((project, i) => {
         const idx = String(i + 1).padStart(2, '0');
         const bg = WARM_THUMBS[i % WARM_THUMBS.length];
+        const imgUrl = (project.image && project.image.asset && project.image.asset.url)
+          ? project.image.asset.url + '?w=900&q=80&auto=format' : '';
+        const thumbBg = imgUrl ? `url('${imgUrl}') center/cover, ${bg}` : bg;
         const tagsHtml = (project.tags || []).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('');
         projectsEl.innerHTML += `
           <a class="project-card" href="project.html?i=${i}">
-            <div class="project-thumb" style="background: ${bg};">
+            <div class="project-thumb" style="background: ${thumbBg};">
               <div class="project-index">${idx}</div>
-              <span>${escapeHtml(project.icon || '🎨')}</span>
+              ${imgUrl ? '' : `<span>${escapeHtml(project.icon || '🎨')}</span>`}
             </div>
             <div class="project-body">
               <h3>${escapeHtml(project.title)}</h3>
@@ -635,7 +638,7 @@
         });
         const [settings, projects, skills] = await Promise.all([
           client.fetch('*[_type == "siteSettings"][0]'),
-          client.fetch('*[_type == "project"] | order(order asc) { title, description, icon, gradient, tags, order }'),
+          client.fetch('*[_type == "project"] | order(order asc) { title, description, icon, gradient, tags, order, image{asset->{url, metadata{dimensions}}} }'),
           client.fetch('*[_type == "skill"] | order(order asc) { title, description, icon, level, order }'),
         ]);
         const data = {

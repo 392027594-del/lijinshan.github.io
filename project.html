@@ -265,10 +265,17 @@
       document.getElementById('caseMetas').innerHTML = metas.map(m =>
         `<div class="meta"><span class="meta-k">${m.k}</span><span class="meta-v">${escapeHtml(m.v)}</span></div>`).join('');
 
+      const imgUrl = (p.image && p.image.asset && p.image.asset.url)
+        ? p.image.asset.url + '?w=1400&q=80&auto=format' : '';
       const coverBg = WARM_THUMBS[idx % WARM_THUMBS.length];
       const cover = document.getElementById('caseCover');
-      cover.style.background = coverBg;
-      cover.textContent = p.icon || '🎨';
+      if (imgUrl) {
+        cover.style.background = `url('${imgUrl}') center/cover`;
+        cover.textContent = '';
+      } else {
+        cover.style.background = coverBg;
+        cover.textContent = p.icon || '🎨';
+      }
 
       const overview = document.getElementById('caseOverview');
       overview.innerHTML = '';
@@ -282,11 +289,12 @@
       figs.innerHTML = '';
       const figCount = 3;
       for (let f = 0; f < figCount; f++) {
-        const bg = WARM_THUMBS[(idx + f + 1) % WARM_THUMBS.length];
+        const useImg = (f === 0 && imgUrl);
+        const bg = useImg ? `url('${imgUrl}') center/cover` : WARM_THUMBS[(idx + f + 1) % WARM_THUMBS.length];
         const tall = f === 1;
         figs.innerHTML += `
           <figure class="case-figure ${tall ? 'tall' : ''}">
-            <div class="img" style="background: ${bg};">${escapeHtml(p.icon || '🎨')}</div>
+            <div class="img" style="background: ${bg};">${useImg ? '' : escapeHtml(p.icon || '🎨')}</div>
             <figcaption class="cap">图 ${String(f+1).padStart(2,'0')} — ${escapeHtml(p.title || '')}</figcaption>
           </figure>`;
       }
@@ -309,7 +317,7 @@
         const client = createClient({ projectId: SANITY_PROJECT_ID, dataset: SANITY_DATASET, apiVersion: SANITY_API_VERSION, useCdn: true });
         const [settings, projects] = await Promise.all([
           client.fetch('*[_type == "siteSettings"][0]'),
-          client.fetch('*[_type == "project"] | order(order asc) { title, description, icon, gradient, tags, order }')
+          client.fetch('*[_type == "project"] | order(order asc) { title, description, icon, gradient, tags, order, image{asset->{url, metadata{dimensions}}} }')
         ]);
         const data = { settings: { ...DEMO_DATA.settings, ...settings }, projects: projects };
         renderCase(data);
