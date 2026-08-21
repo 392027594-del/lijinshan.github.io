@@ -344,7 +344,7 @@
             <div class="meta"><span class="meta-k">姓名</span><span class="meta-v" id="aboutName">—</span></div>
             <div class="meta"><span class="meta-k">角色</span><span class="meta-v" id="heroRoleName">—</span></div>
             <div class="meta"><span class="meta-k">专长</span><span class="meta-v" id="aboutRole">—</span></div>
-            <div class="meta"><span class="meta-k">状态</span><span class="meta-v">开放合作</span></div>
+            <div class="meta"><span class="meta-k">状态</span><span class="meta-v" id="heroMetaStatus">开放合作</span></div>
           </div>
         </div>
         <div class="hero-visual">
@@ -376,8 +376,8 @@
   <section id="projects" class="section reveal">
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">精选作品 · Selected Work</span>
-        <h2 class="section-title">近期的一些项目</h2>
+        <span class="eyebrow" id="workEyebrow">精选作品 · Selected Work</span>
+        <h2 class="section-title" id="workTitle">近期的一些项目</h2>
       </div>
       <div class="projects-grid" id="projectsGrid"></div>
     </div>
@@ -387,8 +387,8 @@
   <section id="skills" class="section reveal">
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">技能 · Skills</span>
-        <h2 class="section-title">我擅长的工具和领域</h2>
+        <span class="eyebrow" id="skillsEyebrow">技能 · Skills</span>
+        <h2 class="section-title" id="skillsTitle">我擅长的工具和领域</h2>
       </div>
       <div class="skills-grid" id="skillsGrid"></div>
     </div>
@@ -632,7 +632,7 @@
       });
 
       // Contact
-      document.getElementById('contactTitle').textContent = s.contactTitle || '有项目想聊聊？';
+      document.getElementById('contactTitle').innerHTML = escapeHtml(s.contactTitle || '有项目想聊聊？').replace(/\*\*(.+?)\*\*/g, '<span class="accent">$1</span>');
       document.getElementById('contactDesc').textContent = s.contactDesc || '';
       const contactEl = document.getElementById('contactLinks');
       contactEl.innerHTML = '';
@@ -642,6 +642,14 @@
       });
 
       document.getElementById('footerText').textContent = s.footerText || '© 2026 · 用心设计，持续迭代';
+
+      // 板块标题（后台可改，无值则保留 HTML 默认）
+      if (s.workEyebrow) document.getElementById('workEyebrow').textContent = s.workEyebrow;
+      if (s.workTitle) document.getElementById('workTitle').textContent = s.workTitle;
+      if (s.skillsEyebrow) document.getElementById('skillsEyebrow').textContent = s.skillsEyebrow;
+      if (s.skillsTitle) document.getElementById('skillsTitle').textContent = s.skillsTitle;
+      if (s.heroMetaStatus) document.getElementById('heroMetaStatus').textContent = s.heroMetaStatus;
+      if (s.footerLogo) document.getElementById('navLogoFooter').innerHTML = escapeHtml(s.footerLogo) + '<span class="accent">.</span>';
 
       initAnimations();
     }
