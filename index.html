@@ -22,6 +22,9 @@
       --accent-2: #5bbad5;     /* 天蓝 */
       --max-width: 1240px;
       --pad: clamp(20px, 5vw, 56px);
+      --card-ratio: 1 / 1;
+      --hero-size: clamp(40px, 7vw, 90px);
+      --font-site: "Helvetica Neue", "Inter", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -29,7 +32,7 @@
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: "Helvetica Neue", "Inter", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      font-family: var(--font-site);
       -webkit-font-smoothing: antialiased;
       line-height: 1.6;
       overflow-x: hidden;
@@ -115,7 +118,7 @@
       border: 1px solid var(--accent); border-radius: 100px; padding: 7px 16px; margin-bottom: 28px;
     }
     #heroTitle {
-      font-size: clamp(40px, 7vw, 90px); font-weight: 800;
+      font-size: var(--hero-size); font-weight: 800;
       letter-spacing: -0.035em; line-height: 0.98; margin-bottom: 26px;
     }
     #heroTitle .accent { color: var(--accent); }
@@ -140,7 +143,8 @@
     .hero-visual { position: relative; }
     .hero-photo {
       aspect-ratio: 4 / 5; border-radius: 6px; overflow: hidden;
-      background: linear-gradient(150deg, #ff6a6a, #b76341 55%, #b3845d);
+      background: var(--accent);
+      background: linear-gradient(150deg, var(--accent), color-mix(in srgb, var(--accent) 55%, #000) 55%, color-mix(in srgb, var(--accent) 35%, #000));
       display: flex; align-items: center; justify-content: center;
       font-size: clamp(90px, 14vw, 180px); font-weight: 800; color: rgba(255,255,255,.92);
       box-shadow: 0 30px 70px -30px rgba(183,99,65,.6);
@@ -189,7 +193,7 @@
     }
     .project-card { cursor: pointer; color: inherit; text-decoration: none; display: block; }
     .project-thumb {
-      position: relative; aspect-ratio: 1 / 1; border-radius: 6px; overflow: hidden;
+      position: relative; aspect-ratio: var(--card-ratio); border-radius: 6px; overflow: hidden;
       display: flex; align-items: center; justify-content: center;
       font-size: clamp(50px, 7vw, 88px); color: rgba(255,255,255,.92);
       transition: transform .5s cubic-bezier(.2,.7,.2,1);
@@ -490,9 +494,47 @@
       return div.innerHTML;
     }
 
+    // ===== 主题/样式（从后台读取，应用到 CSS 变量） =====
+    function applyTheme(s) {
+      const root = document.documentElement;
+      if (s.accentColor) root.style.setProperty('--accent', s.accentColor);
+      const ratioMap = { '1/1': '1 / 1', '16/11': '16 / 11', '4/5': '4 / 5', '3/2': '3 / 2' };
+      if (s.cardRatio && ratioMap[s.cardRatio]) root.style.setProperty('--card-ratio', ratioMap[s.cardRatio]);
+      const sizeMap = {
+        large: 'clamp(46px, 8.5vw, 116px)',
+        medium: 'clamp(40px, 7vw, 90px)',
+        small: 'clamp(34px, 5.5vw, 72px)'
+      };
+      if (s.fontSizeTier && sizeMap[s.fontSizeTier]) root.style.setProperty('--hero-size', sizeMap[s.fontSizeTier]);
+      const fontMap = {
+        'system': '"Helvetica Neue","Inter","PingFang SC","Microsoft YaHei",Arial,sans-serif',
+        'noto-sans': '"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif',
+        'noto-serif': '"Noto Serif SC","Songti SC",serif',
+        'zcool-xiaowei': '"ZCOOL XiaoWei",serif'
+      };
+      if (s.fontChoice && fontMap[s.fontChoice]) {
+        root.style.setProperty('--font-site', fontMap[s.fontChoice]);
+        if (s.fontChoice !== 'system') {
+          const hrefs = {
+            'noto-sans': 'https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&display=swap',
+            'noto-serif': 'https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&display=swap',
+            'zcool-xiaowei': 'https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&display=swap'
+          };
+          const href = hrefs[s.fontChoice];
+          if (href && !document.querySelector('link[href="' + href + '"]')) {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = href;
+            document.head.appendChild(link);
+          }
+        }
+      }
+    }
+
     // ===== 渲染函数 =====
     function renderContent(data) {
       const s = data.settings;
+      applyTheme(s);
 
       document.getElementById('navLogo').textContent = (s.heroName || 'Portfolio') + '.';
       document.getElementById('heroBadge').textContent = s.statusBadge || '正在寻找新的合作机会';
@@ -661,7 +703,7 @@
           useCdn: true,
         });
         const [settings, skills] = await Promise.all([
-          client.fetch('*[_type == "siteSettings"][0]{ ..., heroAvatar, aboutAvatar, works[]{ image{asset->{url}}, title, description, tags } }'),
+          client.fetch('*[_type == "siteSettings"][0]{ ..., heroAvatar{asset->{url}}, aboutAvatar{asset->{url}}, works[]{ image{asset->{url}}, title, description, tags } }'),
           client.fetch('*[_type == "skill"] | order(order asc) { title, description, icon, level, order }'),
         ]);
         const data = {
