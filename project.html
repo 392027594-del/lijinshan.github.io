@@ -290,19 +290,33 @@
       blocks.forEach(t => { const el = document.createElement('p'); el.innerHTML = renderBold(escapeHtml(t)); overview.appendChild(el); });
       if (!blocks.length) overview.innerHTML = '<p>暂无详细描述。</p>';
 
-      // 满幅图组：用同色系不同明度模拟多张图
+      // 满幅图组：优先用后台详情图组 gallery[]，没有则回退占位
       const figs = document.getElementById('caseFigures');
       figs.innerHTML = '';
-      const figCount = 3;
-      for (let f = 0; f < figCount; f++) {
-        const useImg = (f === 0 && imgUrl);
-        const bg = useImg ? `url('${imgUrl}') center/cover` : WARM_THUMBS[(idx + f + 1) % WARM_THUMBS.length];
-        const tall = f === 1;
-        figs.innerHTML += `
-          <figure class="case-figure ${tall ? 'tall' : ''}">
-            <div class="img" style="background: ${bg};">${useImg ? '' : escapeHtml(p.icon || '🎨')}</div>
-            <figcaption class="cap">图 ${String(f+1).padStart(2,'0')} — ${escapeHtml(p.title || '')}</figcaption>
-          </figure>`;
+      const gallery = normArray(p.gallery);
+      if (gallery && gallery.length) {
+        gallery.forEach((g, f) => {
+          const gUrl = (g && g.asset && g.asset.url) ? (g.asset.url + '?w=1600&q=80&auto=format') : '';
+          if (!gUrl) return;
+          const tall = (f % 3 === 1); // 每隔一张做竖图，节奏感
+          figs.innerHTML += `
+            <figure class="case-figure ${tall ? 'tall' : ''}">
+              <div class="img" style="background: url('${gUrl}') center/cover;"></div>
+              <figcaption class="cap">图 ${String(f+1).padStart(2,'0')} — ${escapeHtml(p.title || '')}</figcaption>
+            </figure>`;
+        });
+      } else {
+        const figCount = 3;
+        for (let f = 0; f < figCount; f++) {
+          const useImg = (f === 0 && imgUrl);
+          const bg = useImg ? `url('${imgUrl}') center/cover` : WARM_THUMBS[(idx + f + 1) % WARM_THUMBS.length];
+          const tall = f === 1;
+          figs.innerHTML += `
+            <figure class="case-figure ${tall ? 'tall' : ''}">
+              <div class="img" style="background: ${bg};">${useImg ? '' : escapeHtml(p.icon || '🎨')}</div>
+              <figcaption class="cap">图 ${String(f+1).padStart(2,'0')} — ${escapeHtml(p.title || '')}</figcaption>
+            </figure>`;
+        }
       }
 
       // 下一个项目
@@ -322,7 +336,7 @@
         const { createClient } = await import('https://esm.sh/@sanity/client@6.22.2');
         const client = createClient({ projectId: SANITY_PROJECT_ID, dataset: SANITY_DATASET, apiVersion: SANITY_API_VERSION, useCdn: true });
         const [settings] = await Promise.all([
-          client.fetch('*[_type == "siteSettings"][0]{ ..., heroName, works[]{ image{asset->{url}}, title, description, tags } }')
+          client.fetch('*[_type == "siteSettings"][0]{ ..., heroName, works[]{ image{asset->{url}}, gallery[]{asset->{url}}, title, description, tags } }')
         ]);
         const works = (settings && settings.works && settings.works.length > 0) ? settings.works : DEMO_DATA.works;
         const data = { settings: { ...DEMO_DATA.settings, ...settings }, works: works };
