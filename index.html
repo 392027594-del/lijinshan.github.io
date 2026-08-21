@@ -424,6 +424,8 @@
         heroTagline: '专注于打造兼具美感与功能性的数字产品，用设计连接用户与体验。',
         statusBadge: '正在寻找新的合作机会',
         avatarLetter: 'Y',
+        heroAvatar: null,
+        aboutAvatar: null,
         aboutTitle: '一点点自我介绍',
         aboutParagraphs: [
           '我是一名拥有 **5 年经验** 的产品设计师，擅长从概念到落地的全流程设计，关注用户体验与视觉表达的平衡。',
@@ -450,6 +452,12 @@
         { title: '移动端 App 重设计', description: '主导一款百万级用户 App 的体验重构，核心流程转化率提升 32%。', icon: '📱', gradient: 'linear-gradient(135deg, #f093fb, #f5576c)', tags: ['UX 设计', '移动端'] },
         { title: '数据可视化平台', description: '设计了一套面向企业用户的数据分析看板，支持自定义图表和实时监控。', icon: '📊', gradient: 'linear-gradient(135deg, #4facfe, #00f2fe)', tags: ['数据可视化', 'B 端'] },
         { title: '官网落地页设计', description: '为初创团队打造高转化落地页，上线首周注册用户突破 10,000。', icon: '🚀', gradient: 'linear-gradient(135deg, #43e97b, #38f9d7)', tags: ['Landing Page', '增长设计'] }
+      ],
+      works: [
+        { title: '品牌视觉升级', description: '为一家科技公司完成全链路品牌视觉体系升级，包括 Logo、色彩规范和组件库。', image: null, tags: ['品牌设计', 'Design System'] },
+        { title: '移动端 App 重设计', description: '主导一款百万级用户 App 的体验重构，核心流程转化率提升 32%。', image: null, tags: ['UX 设计', '移动端'] },
+        { title: '数据可视化平台', description: '设计了一套面向企业用户的数据分析看板，支持自定义图表和实时监控。', image: null, tags: ['数据可视化', 'B 端'] },
+        { title: '官网落地页设计', description: '为初创团队打造高转化落地页，上线首周注册用户突破 10,000。', image: null, tags: ['Landing Page', '增长设计'] }
       ],
       skills: [
         { title: 'UI / UX 设计', description: '用户研究、交互设计、视觉设计、原型制作', icon: '🎨', level: 95 },
@@ -492,7 +500,15 @@
         `你好，我是<span class="accent">${escapeHtml(s.heroName || '')}</span><br>我是一名${escapeHtml(s.heroRole || '')}`;
       document.getElementById('heroSubtitle').textContent = s.heroTagline || '';
 
-      document.getElementById('heroAvatar').textContent = s.avatarLetter || 'Y';
+      const heroAvatarEl = document.getElementById('heroAvatar');
+      const heroAvatarUrl = (s.heroAvatar && s.heroAvatar.asset && s.heroAvatar.asset.url)
+        ? s.heroAvatar.asset.url + '?w=600&q=80&auto=format' : '';
+      if (heroAvatarUrl) {
+        heroAvatarEl.style.background = `url('${heroAvatarUrl}') center/cover`;
+        heroAvatarEl.textContent = '';
+      } else {
+        heroAvatarEl.textContent = s.avatarLetter || 'Y';
+      }
       document.getElementById('heroRoleName').textContent = s.heroRole || '产品设计师';
 
       document.getElementById('aboutTitle').textContent = s.aboutTitle || '一点点自我介绍';
@@ -503,7 +519,15 @@
         pEl.innerHTML = renderBold(escapeHtml(p));
         aboutTextEl.appendChild(pEl);
       });
-      document.getElementById('aboutAvatar').textContent = s.avatarLetter || 'Y';
+      const aboutAvatarEl = document.getElementById('aboutAvatar');
+      const aboutAvatarUrl = (s.aboutAvatar && s.aboutAvatar.asset && s.aboutAvatar.asset.url)
+        ? s.aboutAvatar.asset.url + '?w=400&q=80&auto=format' : '';
+      if (aboutAvatarUrl) {
+        aboutAvatarEl.style.background = `url('${aboutAvatarUrl}') center/cover`;
+        aboutAvatarEl.textContent = '';
+      } else {
+        aboutAvatarEl.textContent = s.avatarLetter || 'Y';
+      }
       document.getElementById('aboutName').textContent = s.heroName || '你的名字';
       document.getElementById('aboutRole').textContent = s.heroRole || '产品设计师';
 
@@ -516,10 +540,10 @@
       document.getElementById('aboutStats').innerHTML = statsHtml;
       document.getElementById('aboutStatsCard').innerHTML = statsHtml;
 
-      // Projects
+      // Works（来自 siteSettings.works，无图时回退渐变+emoji）
       const projectsEl = document.getElementById('projectsGrid');
       projectsEl.innerHTML = '';
-      (data.projects || []).forEach((project, i) => {
+      (data.works || []).forEach((project, i) => {
         const idx = String(i + 1).padStart(2, '0');
         const bg = WARM_THUMBS[i % WARM_THUMBS.length];
         const imgUrl = (project.image && project.image.asset && project.image.asset.url)
@@ -636,14 +660,13 @@
           apiVersion: SANITY_API_VERSION,
           useCdn: true,
         });
-        const [settings, projects, skills] = await Promise.all([
-          client.fetch('*[_type == "siteSettings"][0]'),
-          client.fetch('*[_type == "project"] | order(order asc) { title, description, icon, gradient, tags, order, image{asset->{url, metadata{dimensions}}} }'),
+        const [settings, skills] = await Promise.all([
+          client.fetch('*[_type == "siteSettings"][0]{ ..., heroAvatar, aboutAvatar, works[]{ image{asset->{url}}, title, description, tags } }'),
           client.fetch('*[_type == "skill"] | order(order asc) { title, description, icon, level, order }'),
         ]);
         const data = {
           settings: { ...DEMO_DATA.settings, ...settings },
-          projects: (projects && projects.length > 0) ? projects : DEMO_DATA.projects,
+          works: (settings && settings.works && settings.works.length > 0) ? settings.works : DEMO_DATA.works,
           skills: (skills && skills.length > 0) ? skills : DEMO_DATA.skills,
         };
         renderContent(data);

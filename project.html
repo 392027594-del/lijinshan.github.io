@@ -207,6 +207,12 @@
         { title: '移动端 App 重设计', description: '主导一款百万级用户 App 的体验重构，梳理核心流程、重构信息架构，核心流程转化率提升 32%，用户留存明显改善。', icon: '📱', tags: ['UX 设计', '移动端'] },
         { title: '数据可视化平台', description: '设计了一套面向企业用户的数据分析看板，支持自定义图表与实时监控，把复杂数据转化为可决策的洞察。', icon: '📊', tags: ['数据可视化', 'B 端'] },
         { title: '官网落地页设计', description: '为初创团队打造高转化落地页，围绕用户动机设计叙事节奏，上线首周注册用户突破 10,000。', icon: '🚀', tags: ['Landing Page', '增长设计'] }
+      ],
+      works: [
+        { title: '品牌视觉升级', description: '为一家科技公司完成全链路品牌视觉体系升级，包括 Logo、色彩规范和组件库。从调研到落地，建立可延展的视觉语言，支撑后续多端产品一致呈现。', image: null, tags: ['品牌设计', 'Design System'] },
+        { title: '移动端 App 重设计', description: '主导一款百万级用户 App 的体验重构，梳理核心流程、重构信息架构，核心流程转化率提升 32%，用户留存明显改善。', image: null, tags: ['UX 设计', '移动端'] },
+        { title: '数据可视化平台', description: '设计了一套面向企业用户的数据分析看板，支持自定义图表与实时监控，把复杂数据转化为可决策的洞察。', image: null, tags: ['数据可视化', 'B 端'] },
+        { title: '官网落地页设计', description: '为初创团队打造高转化落地页，围绕用户动机设计叙事节奏，上线首周注册用户突破 10,000。', image: null, tags: ['Landing Page', '增长设计'] }
       ]
     };
 
@@ -243,9 +249,9 @@
       const params = new URLSearchParams(location.search);
       let idx = parseInt(params.get('i') || '0', 10);
       if (isNaN(idx) || idx < 0) idx = 0;
-      const projects = normArray(data.projects) || DEMO_DATA.projects;
-      if (idx >= projects.length) idx = 0;
-      const p = projects[idx];
+      const works = normArray(data.works) || normArray(data.settings && data.settings.works) || DEMO_DATA.works;
+      if (idx >= works.length) idx = 0;
+      const p = works[idx];
       const s = data.settings || {};
 
       document.getElementById('navLogo').textContent = (s.heroName || 'Portfolio') + '.';
@@ -300,8 +306,8 @@
       }
 
       // 下一个项目
-      const nextIdx = (idx + 1) % projects.length;
-      const next = projects[nextIdx];
+      const nextIdx = (idx + 1) % works.length;
+      const next = works[nextIdx];
       document.getElementById('caseNext').setAttribute('href', `project.html?i=${nextIdx}`);
       document.getElementById('caseNextTitle').textContent = next.title || '下一个项目';
 
@@ -315,11 +321,11 @@
       try {
         const { createClient } = await import('https://esm.sh/@sanity/client@6.22.2');
         const client = createClient({ projectId: SANITY_PROJECT_ID, dataset: SANITY_DATASET, apiVersion: SANITY_API_VERSION, useCdn: true });
-        const [settings, projects] = await Promise.all([
-          client.fetch('*[_type == "siteSettings"][0]'),
-          client.fetch('*[_type == "project"] | order(order asc) { title, description, icon, gradient, tags, order, image{asset->{url, metadata{dimensions}}} }')
+        const [settings] = await Promise.all([
+          client.fetch('*[_type == "siteSettings"][0]{ ..., heroName, works[]{ image{asset->{url}}, title, description, tags } }')
         ]);
-        const data = { settings: { ...DEMO_DATA.settings, ...settings }, projects: projects };
+        const works = (settings && settings.works && settings.works.length > 0) ? settings.works : DEMO_DATA.works;
+        const data = { settings: { ...DEMO_DATA.settings, ...settings }, works: works };
         renderCase(data);
       } catch (err) {
         console.warn('Sanity 连接失败，使用演示数据:', err.message);
