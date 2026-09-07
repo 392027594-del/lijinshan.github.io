@@ -3,348 +3,330 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>作品详情 · Portfolio</title>
+  <title>Case · Brand &amp; Visual Design</title>
   <style>
     :root {
-      --bg: #f5f5f3;
-      --bg-alt: #efefea;
-      --surface: #ffffff;
-      --text: #0a0a0a;
-      --text-soft: #5a5a55;
-      --text-faint: #9a9a92;
-      --line: #e2e2dc;
+      --bg: #0a0a0a;
+      --bg-2: #141414;
+      --line: #2a2a2a;
+      --text: #f5f5f3;
+      --text-soft: #a8a8a0;
+      --text-faint: #6a6a64;
       --accent: #ff6a6a;
-      --accent-soft: #b76341;
-      --accent-2: #5bbad5;
-      --max-width: 1240px;
+      --max-width: 1320px;
       --pad: clamp(20px, 5vw, 56px);
+      --font-site: "Helvetica Neue", "Inter", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      --font-serif: "Cormorant Garamond", "Times New Roman", "Songti SC", "宋体", serif;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      background: var(--bg); color: var(--text);
-      font-family: "Helvetica Neue", "Inter", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
-      -webkit-font-smoothing: antialiased; line-height: 1.6; overflow-x: hidden;
-    }
+    html { scroll-behavior: smooth; background: var(--bg); }
+    body { background: var(--bg); color: var(--text); font-family: var(--font-site);
+      -webkit-font-smoothing: antialiased; line-height: 1.6; overflow-x: hidden; }
     a { color: inherit; text-decoration: none; }
     img { max-width: 100%; display: block; }
+    ::selection { background: var(--accent); color: var(--bg); }
 
-    .scroll-progress { position: fixed; top: 0; left: 0; height: 3px; width: 0; background: var(--accent); z-index: 200; }
-
-    /* 导航 */
-    .navbar {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 22px var(--pad);
-      transition: background .35s ease, border-color .35s ease, padding .35s ease;
-      border-bottom: 1px solid transparent;
+    .top-bar, .bottom-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px var(--pad);
+      font-size: 11px; font-weight: 600; letter-spacing: .22em;
+      text-transform: uppercase; color: var(--text-soft);
+      border-bottom: 1px solid var(--line);
     }
-    .navbar.scrolled { background: rgba(255,255,255,.86); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); padding: 14px var(--pad); }
-    .nav-logo { font-weight: 800; font-size: 20px; letter-spacing: -0.02em; }
-    .nav-links { list-style: none; display: flex; gap: clamp(20px, 3vw, 40px); align-items: center; }
-    .nav-links a { font-size: 13px; text-transform: uppercase; letter-spacing: .14em; color: var(--text-soft); font-weight: 600; position: relative; padding: 4px 0; transition: color .25s ease; }
-    .nav-links a::after { content: ""; position: absolute; left: 0; bottom: 0; height: 1.5px; width: 0; background: var(--accent); transition: width .3s ease; }
-    .nav-links a:hover { color: var(--text); }
-    .nav-links a:hover::after { width: 100%; }
-    .nav-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; }
-    .nav-toggle span { width: 26px; height: 2px; background: var(--text); transition: .3s; }
+    .bottom-bar { border-bottom: none; border-top: 1px solid var(--line); }
 
     .wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--pad); }
-    .eyebrow { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; }
-    .reveal { opacity: 0; transform: translateY(28px); transition: opacity .8s ease, transform .8s ease; }
-    .reveal.visible { opacity: 1; transform: none; }
 
     /* 返回链接 */
     .back-link {
-      display: inline-flex; align-items: center; gap: 8px; margin-top: clamp(110px, 16vh, 170px);
-      font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--text-soft);
+      display: inline-flex; align-items: center; gap: 8px; margin-top: 60px;
+      font-size: 11px; font-weight: 700; letter-spacing: .22em;
+      text-transform: uppercase; color: var(--text-soft);
       transition: color .25s ease, gap .25s ease;
     }
-    .back-link:hover { color: var(--accent); gap: 12px; }
+    .back-link:hover { color: var(--accent); gap: 14px; }
 
-    /* 案例 HERO */
-    .case-hero { padding: clamp(28px, 4vw, 56px) 0 clamp(40px, 6vw, 72px); }
-    .case-hero h1 {
-      font-size: clamp(40px, 7vw, 104px); font-weight: 800; letter-spacing: -0.035em; line-height: 0.98;
-      margin-bottom: 24px; max-width: 14ch;
+    /* HERO */
+    .case-hero { padding: 60px 0 80px; position: relative; overflow: hidden; }
+    .case-hero .num {
+      font-family: var(--font-serif); font-size: clamp(120px, 22vw, 320px);
+      font-weight: 700; font-style: italic;
+      color: rgba(255,255,255,.04);
+      position: absolute; right: 30px; top: 30px; line-height: 1;
+      pointer-events: none; user-select: none;
     }
-    .case-hero .lede { font-size: clamp(17px, 1.8vw, 23px); color: var(--text-soft); max-width: 640px; line-height: 1.6; }
+    .case-hero .eyebrow {
+      display: inline-block; font-size: 11px; font-weight: 700;
+      letter-spacing: .28em; text-transform: uppercase; color: var(--accent);
+      margin-bottom: 24px;
+    }
+    .case-hero h1 {
+      font-size: clamp(48px, 9vw, 140px); font-weight: 800;
+      letter-spacing: -0.04em; line-height: 0.95; margin-bottom: 28px;
+    }
+    .case-hero .lede {
+      font-size: clamp(16px, 1.8vw, 23px); color: var(--text-soft);
+      max-width: 720px; line-height: 1.6;
+    }
 
-    /* metas 信息行 */
-    .metas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; margin: clamp(36px, 5vw, 60px) 0; }
+    /* 信息行 */
+    .metas {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+      background: var(--line); border: 1px solid var(--line);
+      border-radius: 4px; overflow: hidden;
+      margin: 40px 0 80px;
+    }
     .meta { background: var(--bg); padding: 18px 20px; }
-    .meta-k { display: block; font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 8px; }
-    .meta-v { font-size: 16px; font-weight: 700; letter-spacing: -0.01em; }
+    .meta-k { display: block; font-size: 10px; font-weight: 700; letter-spacing: .22em;
+      text-transform: uppercase; color: var(--text-faint); margin-bottom: 8px; }
+    .meta-v { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; }
 
-    /* 满幅封面 */
+    /* 封面 */
     .case-cover {
-      aspect-ratio: 16 / 9; border-radius: 6px; overflow: hidden;
-      display: flex; align-items: center; justify-content: center;
-      font-size: clamp(70px, 12vw, 160px); color: rgba(255,255,255,.92);
+      aspect-ratio: 16 / 9; border-radius: 4px; overflow: hidden;
+      background: var(--bg-2);
       margin-bottom: clamp(60px, 9vw, 120px);
     }
+    .case-cover img { width: 100%; height: 100%; object-fit: cover; }
 
-    /* Overview 两栏 */
-    .case-overview { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(36px, 6vw, 96px); padding-bottom: clamp(60px, 9vw, 120px); }
-    .case-overview .label { font-size: 12px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); }
-    .case-overview .body p { font-size: clamp(18px, 1.9vw, 24px); line-height: 1.7; margin-bottom: 22px; }
+    /* Overview */
+    .case-overview {
+      display: grid; grid-template-columns: .8fr 1.2fr;
+      gap: clamp(36px, 6vw, 96px); padding-bottom: clamp(60px, 9vw, 120px);
+      border-bottom: 1px solid var(--line); margin-bottom: 80px;
+    }
+    .case-overview .label {
+      font-size: 11px; font-weight: 700; letter-spacing: .28em;
+      text-transform: uppercase; color: var(--accent);
+    }
+    .case-overview .body p {
+      font-size: clamp(17px, 1.8vw, 22px); color: var(--text);
+      margin-bottom: 22px; line-height: 1.7;
+    }
     .case-overview .body strong { font-weight: 700; }
 
-    /* 满幅图组 */
-    .case-figures { display: flex; flex-direction: column; gap: clamp(28px, 4vw, 56px); padding-bottom: clamp(60px, 9vw, 120px); }
-    .case-figure { border-radius: 6px; overflow: hidden; }
-    .case-figure .img { aspect-ratio: 16 / 10; display: flex; align-items: center; justify-content: center; font-size: clamp(50px, 8vw, 110px); color: rgba(255,255,255,.92); }
-    .case-figure .cap { font-size: 13px; color: var(--text-faint); letter-spacing: .04em; padding: 14px 2px 0; }
-    .case-figure.tall .img { aspect-ratio: 4 / 5; max-width: 760px; margin: 0 auto; }
+    /* 图组 */
+    .case-figures {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: clamp(28px, 4vw, 56px);
+      padding-bottom: clamp(80px, 12vh, 160px);
+    }
+    .case-figure { border-radius: 4px; overflow: hidden; background: var(--bg-2); }
+    .case-figure img { width: 100%; height: auto; display: block; }
+    .case-figure .cap {
+      font-size: 11px; color: var(--text-faint); letter-spacing: .12em;
+      text-transform: uppercase; padding: 14px 4px 0;
+      display: flex; justify-content: space-between;
+    }
+    .case-figure.full { grid-column: 1 / -1; }
 
     /* 下一个项目 */
-    .case-next { border-top: 1px solid var(--line); padding: clamp(48px, 7vw, 90px) 0; }
-    .case-next a { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
-    .case-next .k { font-size: 12px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--text-faint); }
-    .case-next .t { font-size: clamp(28px, 5vw, 64px); font-weight: 800; letter-spacing: -0.03em; transition: color .25s ease; }
-    .case-next a:hover .t { color: var(--accent); }
-
-    /* 页脚 */
-    footer { border-top: 1px solid var(--line); padding: clamp(48px, 7vw, 90px) 0; }
-    footer .wrap { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
-    .footer-mark { font-size: clamp(28px, 5vw, 56px); font-weight: 800; letter-spacing: -0.03em; }
-    .footer-mark .accent { color: var(--accent); }
-    #footerText { font-size: 13px; color: var(--text-faint); letter-spacing: .02em; }
-
-    .loader { position: fixed; inset: 0; background: var(--bg); z-index: 300; display: flex; align-items: center; justify-content: center; transition: opacity .5s ease; }
-    .loader.hidden { opacity: 0; pointer-events: none; }
-    .loader .spinner { width: 38px; height: 38px; border: 3px solid var(--line); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .demo-banner { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #fff; font-size: 13px; font-weight: 600; padding: 11px 20px; border-radius: 100px; z-index: 250; box-shadow: 0 12px 30px -12px rgba(255,106,106,.6); max-width: 92vw; text-align: center; }
-
-    ::-webkit-scrollbar { width: 10px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 100px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
-    ::selection { background: var(--accent); color: #fff; }
+    .case-next { border-top: 1px solid var(--line); padding: clamp(60px, 9vh, 120px) 0; }
+    .case-next a {
+      display: grid; grid-template-columns: auto 1fr auto; align-items: baseline; gap: 24px;
+      transition: color .25s ease;
+    }
+    .case-next a:hover { color: var(--accent); }
+    .case-next .k {
+      font-size: 11px; font-weight: 700; letter-spacing: .28em;
+      text-transform: uppercase; color: var(--text-faint);
+    }
+    .case-next .t {
+      font-size: clamp(36px, 6vw, 88px); font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+    .case-next .en {
+      font-size: 11px; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--text-faint);
+    }
 
     @media (max-width: 900px) {
       .metas { grid-template-columns: repeat(2, 1fr); }
       .case-overview { grid-template-columns: 1fr; gap: 24px; }
-    }
-    @media (max-width: 640px) {
-      .nav-links { position: absolute; top: 100%; right: var(--pad); left: var(--pad); flex-direction: column; align-items: flex-start; gap: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 22px; transform: translateY(-10px); opacity: 0; pointer-events: none; transition: .3s; }
-      .nav-links.open { transform: none; opacity: 1; pointer-events: auto; }
-      .nav-toggle { display: flex; }
-      .metas { grid-template-columns: 1fr 1fr; }
+      .case-figures { grid-template-columns: 1fr; }
+      .case-next a { grid-template-columns: 1fr; gap: 8px; }
     }
   </style>
 </head>
 <body>
-  <div class="scroll-progress" id="scrollProgress"></div>
-  <div class="loader" id="loader"><div class="spinner"></div></div>
 
-  <nav class="navbar" id="navbar">
-    <a href="index.html" class="nav-logo" id="navLogo">Portfolio.</a>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="index.html#work">作品</a></li>
-      <li><a href="index.html#about">关于</a></li>
-      <li><a href="index.html#skills">技能</a></li>
-      <li><a href="index.html#contact">联系</a></li>
-    </ul>
-    <button class="nav-toggle" id="navToggle" aria-label="菜单"><span></span><span></span><span></span></button>
-  </nav>
+  <div class="top-bar">
+    <span>@Design Catalog</span>
+    <span>Brand &amp; Visual Design</span>
+  </div>
 
   <main class="wrap">
-    <a href="index.html#projects" class="back-link" id="backLink">← 返回作品</a>
+    <a href="index.html" class="back-link">← 返回目录</a>
 
-    <!-- 案例 HERO -->
     <header class="case-hero">
+      <span class="num" id="caseNum">01</span>
       <span class="eyebrow" id="caseEyebrow">Case Study</span>
       <h1 id="caseTitle">加载中...</h1>
       <p class="lede" id="caseLede"></p>
     </header>
 
-    <!-- metas 信息行 -->
     <div class="metas" id="caseMetas"></div>
 
-    <!-- 满幅封面 -->
     <div class="case-cover" id="caseCover"></div>
 
-    <!-- Overview 两栏 -->
-    <section class="case-overview reveal">
+    <section class="case-overview">
       <div class="label">Overview · 项目概述</div>
       <div class="body" id="caseOverview"></div>
     </section>
 
-    <!-- 满幅图组 -->
-    <section class="case-figures reveal" id="caseFigures"></section>
+    <section class="case-figures" id="caseFigures"></section>
 
-    <!-- 下一个项目 -->
-    <section class="case-next reveal">
+    <section class="case-next">
       <a href="#" id="caseNext">
         <span class="k">下一个项目 →</span>
         <span class="t" id="caseNextTitle"></span>
+        <span class="en" id="caseNextEn"></span>
       </a>
     </section>
   </main>
 
-  <footer>
-    <div class="wrap">
-      <div class="footer-mark">Portfolio<span class="accent">.</span></div>
-      <p id="footerText">© 2026 · 用心设计，持续迭代</p>
-    </div>
-  </footer>
+  <div class="bottom-bar">
+    <span id="footerText">© 2025 · Brand &amp; Visual Design</span>
+    <span>Lijinshan Portfolio</span>
+  </div>
 
   <script type="module">
-    const SANITY_PROJECT_ID = '4i3qoqt0';
-    const SANITY_DATASET = 'production';
-    const SANITY_API_VERSION = '2024-01-01';
-
-    const DEMO_DATA = {
-      settings: {
-        heroName: '你的名字',
-        footerText: '© 2026 你的名字 · 用心设计，持续迭代',
-        contactTitle: '有项目想聊聊？'
+    // 与 index.html 保持一致的本地默认
+    const LOCAL_SECTIONS = [
+      {
+        slug: 'brand', num: '01', title: '品牌设计', en: 'Brand Design',
+        desc: '从品牌定位、视觉语言到落地物料的完整品牌体系设计。',
+        tags: ['LOGO','VI','字体','辅助图形'], year: '2025',
+        cover: 'images/01_brand/p02_img08_7632bb9a.webp',
+        gallery: [
+          'images/01_brand/p02_img07_b6d2fdf0.webp',
+          'images/01_brand/p02_img05_74e57ae1.webp',
+          'images/01_brand/p02_img06_d159f940.webp',
+          'images/01_brand/p01_img01_aab024af.webp'
+        ]
       },
-      projects: [
-        { title: '品牌视觉升级', description: '为一家科技公司完成全链路品牌视觉体系升级，包括 Logo、色彩规范和组件库。从调研到落地，建立可延展的视觉语言，支撑后续多端产品一致呈现。', icon: '🎨', tags: ['品牌设计', 'Design System'] },
-        { title: '移动端 App 重设计', description: '主导一款百万级用户 App 的体验重构，梳理核心流程、重构信息架构，核心流程转化率提升 32%，用户留存明显改善。', icon: '📱', tags: ['UX 设计', '移动端'] },
-        { title: '数据可视化平台', description: '设计了一套面向企业用户的数据分析看板，支持自定义图表与实时监控，把复杂数据转化为可决策的洞察。', icon: '📊', tags: ['数据可视化', 'B 端'] },
-        { title: '官网落地页设计', description: '为初创团队打造高转化落地页，围绕用户动机设计叙事节奏，上线首周注册用户突破 10,000。', icon: '🚀', tags: ['Landing Page', '增长设计'] }
-      ],
-      works: [
-        { title: '品牌视觉升级', description: '为一家科技公司完成全链路品牌视觉体系升级，包括 Logo、色彩规范和组件库。从调研到落地，建立可延展的视觉语言，支撑后续多端产品一致呈现。', image: null, tags: ['品牌设计', 'Design System'] },
-        { title: '移动端 App 重设计', description: '主导一款百万级用户 App 的体验重构，梳理核心流程、重构信息架构，核心流程转化率提升 32%，用户留存明显改善。', image: null, tags: ['UX 设计', '移动端'] },
-        { title: '数据可视化平台', description: '设计了一套面向企业用户的数据分析看板，支持自定义图表与实时监控，把复杂数据转化为可决策的洞察。', image: null, tags: ['数据可视化', 'B 端'] },
-        { title: '官网落地页设计', description: '为初创团队打造高转化落地页，围绕用户动机设计叙事节奏，上线首周注册用户突破 10,000。', image: null, tags: ['Landing Page', '增长设计'] }
-      ]
-    };
-
-    const WARM_THUMBS = [
-      'linear-gradient(140deg, #ff6a6a, #b76341)',
-      'linear-gradient(140deg, #5bbad5, #6a83a6)',
-      'linear-gradient(140deg, #c3c5bc, #40451b)',
-      'linear-gradient(140deg, #b3845d, #ff6a6a)',
-      'linear-gradient(140deg, #5bbad5, #c3c5bc)',
-      'linear-gradient(140deg, #b76341, #40451b)'
+      {
+        slug: 'kv', num: '02', title: '主视觉 KV', en: 'Main Visual KV',
+        desc: '产品发布会主视觉、电商详情页、传播海报。围绕产品核心卖点的视觉锤与延展系统。',
+        tags: ['主视觉','KV','电商','延展'], year: '2025',
+        cover: 'images/02_kv/p11_img02_dc8c69ee.webp',
+        gallery: [
+          'images/02_kv/p10_img02_591f9536.webp',
+          'images/02_kv/p10_img04_d5dcbd36.webp',
+          'images/02_kv/p10_img05_283a91a8.webp',
+          'images/02_kv/p11_img05_990165b5.webp',
+          'images/02_kv/p11_img04_15f01808.webp'
+        ]
+      },
+      {
+        slug: 'visual', num: '03', title: '视觉 & 版式', en: 'Visual & Layout',
+        desc: '包装设计、节庆礼盒、品牌活动推广物料。从 0-1 全流程包装设计到延展物料。',
+        tags: ['包装','礼盒','活动','排版'], year: '2025',
+        cover: 'images/03_visual/p03_img02_544eb040.webp',
+        gallery: [
+          'images/03_visual/p03_img03_7766e262.webp',
+          'images/03_visual/p03_img05_b384cc2d.webp',
+          'images/03_visual/p03_img07_c1a387af.webp',
+          'images/03_visual/p04_img04_93e0c765.webp',
+          'images/03_visual/p04_img05_ecce3855.webp',
+          'images/03_visual/p05_img01_77a33cd4.webp',
+          'images/03_visual/p06_img01_623229af.webp',
+          'images/03_visual/p08_img01_fd922c3b.webp'
+        ]
+      },
+      {
+        slug: 'font', num: '04', title: '字体设计', en: 'Font Design',
+        desc: '中英体字字体设计与商业字库应用。兼顾屏幕显示与印刷质感。',
+        tags: ['中文','英文','字库'], year: '2025',
+        cover: 'images/04_font/p13_img03_57f77ee3.webp',
+        gallery: [
+          'images/04_font/p13_img02_360df3ad.webp',
+          'images/04_font/p13_img01_13ffd8e0.webp'
+        ]
+      }
     ];
 
-    function escapeHtml(str){ if(!str) return ''; const d=document.createElement('div'); d.textContent=str; return d.innerHTML; }
+    function escapeHtml(s){ if(!s) return ''; const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
     function renderBold(t){ return t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>'); }
 
-    function initAnimations(){
-      const progress = document.getElementById('scrollProgress');
-      const navbar = document.getElementById('navbar');
-      function onScroll(){
-        const h = document.documentElement.scrollHeight - window.innerHeight;
-        progress.style.width = (h>0 ? (window.scrollY/h)*100 : 0) + '%';
-        navbar.classList.toggle('scrolled', window.scrollY > 30);
-      }
-      window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
-      const t = document.getElementById('navToggle'); const l = document.getElementById('navLinks');
-      t.addEventListener('click', () => l.classList.toggle('open'));
-      l.querySelectorAll('a').forEach(a => a.addEventListener('click', () => l.classList.remove('open')));
-      const io = new IntersectionObserver((es) => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.12 });
-      document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-    }
-    function hideLoader(){ const l=document.getElementById('loader'); l.classList.add('hidden'); setTimeout(()=>l.remove(),500); }
+    function renderCase(sections, idx){
+      if (idx >= sections.length) idx = 0;
+      const s = sections[idx];
 
-    function renderCase(data){
+      document.title = s.title + ' · ' + s.en + ' · Portfolio';
+      document.getElementById('caseNum').textContent = s.num;
+      document.getElementById('caseEyebrow').textContent = s.en + ' / Case Study';
+      document.getElementById('caseTitle').textContent = s.title;
+      document.getElementById('caseLede').textContent = s.desc;
+
+      const metas = [
+        { k: '板块', v: s.title },
+        { k: '类别', v: s.en },
+        { k: '年份', v: s.year || '2025' },
+        { k: '状态', v: '已发布' }
+      ];
+      document.getElementById('caseMetas').innerHTML = metas.map(m =>
+        `<div class="meta"><span class="meta-k">${escapeHtml(m.k)}</span><span class="meta-v">${escapeHtml(m.v)}</span></div>`
+      ).join('');
+
+      const coverEl = document.getElementById('caseCover');
+      coverEl.innerHTML = `<img src="${s.cover}" alt="${escapeHtml(s.title)}" />`;
+
+      const overview = document.getElementById('caseOverview');
+      overview.innerHTML = `<p>${renderBold(escapeHtml(s.desc))}</p>` +
+        (s.tags && s.tags.length ? `<p>关键词：${s.tags.map(t=>`<strong>${escapeHtml(t)}</strong>`).join(' · ')}</p>` : '');
+
+      const figs = document.getElementById('caseFigures');
+      figs.innerHTML = '';
+      (s.gallery || []).forEach((src, i) => {
+        const isFull = (i % 5 === 0);
+        figs.innerHTML += `
+          <figure class="case-figure ${isFull ? 'full' : ''}">
+            <img src="${src}" alt="${escapeHtml(s.title)} - 图 ${i+1}" loading="lazy" />
+            <figcaption class="cap"><span>${escapeHtml(s.title)}</span><span>${String(i+1).padStart(2,'0')}</span></figcaption>
+          </figure>`;
+      });
+
+      const nextIdx = (idx + 1) % sections.length;
+      const next = sections[nextIdx];
+      document.getElementById('caseNext').setAttribute('href', `project.html?i=${nextIdx}`);
+      document.getElementById('caseNextTitle').textContent = next.title;
+      document.getElementById('caseNextEn').textContent = next.en;
+    }
+
+    async function init(){
       const params = new URLSearchParams(location.search);
       let idx = parseInt(params.get('i') || '0', 10);
       if (isNaN(idx) || idx < 0) idx = 0;
-      const works = normArray(data.works) || normArray(data.settings && data.settings.works) || DEMO_DATA.works;
-      if (idx >= works.length) idx = 0;
-      const p = works[idx];
-      const s = data.settings || {};
 
-      document.getElementById('navLogo').textContent = (s.heroName || 'Portfolio') + '.';
-      document.getElementById('footerText').textContent = s.footerText || '© 2026 · 用心设计，持续迭代';
-
-      document.getElementById('caseEyebrow').textContent = (p.tags && p.tags[0]) ? p.tags[0] : 'Case Study';
-      document.getElementById('caseTitle').textContent = p.title || '未命名项目';
-      document.getElementById('caseLede').textContent = p.description || '';
-
-      const tags = normArray(p.tags);
-      const metas = [
-        { k: '服务', v: tags ? tags.join(' · ') : '—' },
-        { k: '年份', v: '2026' },
-        { k: '分类', v: (tags && tags[0]) ? tags[0] : '设计' },
-        { k: '状态', v: '已上线' }
-      ];
-      document.getElementById('caseMetas').innerHTML = metas.map(m =>
-        `<div class="meta"><span class="meta-k">${m.k}</span><span class="meta-v">${escapeHtml(m.v)}</span></div>`).join('');
-
-      const imgUrl = (p.image && p.image.asset && p.image.asset.url)
-        ? p.image.asset.url + '?w=1400&q=80&auto=format' : '';
-      const coverBg = WARM_THUMBS[idx % WARM_THUMBS.length];
-      const cover = document.getElementById('caseCover');
-      if (imgUrl) {
-        cover.style.background = `url('${imgUrl}') center/cover`;
-        cover.textContent = '';
-      } else {
-        cover.style.background = coverBg;
-        cover.textContent = p.icon || '🎨';
-      }
-
-      const overview = document.getElementById('caseOverview');
-      overview.innerHTML = '';
-      const paras = (p.description || '').split('\n').filter(Boolean);
-      const blocks = (normArray(p.body) || paras.length ? paras : [p.description || '']);
-      blocks.forEach(t => { const el = document.createElement('p'); el.innerHTML = renderBold(escapeHtml(t)); overview.appendChild(el); });
-      if (!blocks.length) overview.innerHTML = '<p>暂无详细描述。</p>';
-
-      // 满幅图组：优先用后台详情图组 gallery[]，没有则回退占位
-      const figs = document.getElementById('caseFigures');
-      figs.innerHTML = '';
-      const gallery = normArray(p.gallery);
-      if (gallery && gallery.length) {
-        gallery.forEach((g, f) => {
-          const gUrl = (g && g.asset && g.asset.url) ? (g.asset.url + '?w=1600&q=80&auto=format') : '';
-          if (!gUrl) return;
-          const tall = (f % 3 === 1); // 每隔一张做竖图，节奏感
-          figs.innerHTML += `
-            <figure class="case-figure ${tall ? 'tall' : ''}">
-              <div class="img" style="background: url('${gUrl}') center/cover;"></div>
-              <figcaption class="cap">图 ${String(f+1).padStart(2,'0')} — ${escapeHtml(p.title || '')}</figcaption>
-            </figure>`;
-        });
-      } else {
-        const figCount = 3;
-        for (let f = 0; f < figCount; f++) {
-          const useImg = (f === 0 && imgUrl);
-          const bg = useImg ? `url('${imgUrl}') center/cover` : WARM_THUMBS[(idx + f + 1) % WARM_THUMBS.length];
-          const tall = f === 1;
-          figs.innerHTML += `
-            <figure class="case-figure ${tall ? 'tall' : ''}">
-              <div class="img" style="background: ${bg};">${useImg ? '' : escapeHtml(p.icon || '🎨')}</div>
-              <figcaption class="cap">图 ${String(f+1).padStart(2,'0')} — ${escapeHtml(p.title || '')}</figcaption>
-            </figure>`;
-        }
-      }
-
-      // 下一个项目
-      const nextIdx = (idx + 1) % works.length;
-      const next = works[nextIdx];
-      document.getElementById('caseNext').setAttribute('href', `project.html?i=${nextIdx}`);
-      document.getElementById('caseNextTitle').textContent = next.title || '下一个项目';
-
-      initAnimations();
-    }
-
-    function normArray(a){ return Array.isArray(a) && a.length ? a : null; }
-
-    async function init(){
-      if (SANITY_PROJECT_ID === 'YOUR_PROJECT_ID') { renderCase(DEMO_DATA); hideLoader(); return; }
+      let sections = LOCAL_SECTIONS;
       try {
         const { createClient } = await import('https://esm.sh/@sanity/client@6.22.2');
-        const client = createClient({ projectId: SANITY_PROJECT_ID, dataset: SANITY_DATASET, apiVersion: SANITY_API_VERSION, useCdn: true });
-        const [settings] = await Promise.all([
-          client.fetch('*[_type == "siteSettings"][0]{ ..., heroName, works[]{ image{asset->{url}}, gallery[]{asset->{url}}, title, description, tags } }')
-        ]);
-        const works = (settings && settings.works && settings.works.length > 0) ? settings.works : DEMO_DATA.works;
-        const data = { settings: { ...DEMO_DATA.settings, ...settings }, works: works };
-        renderCase(data);
-      } catch (err) {
-        console.warn('Sanity 连接失败，使用演示数据:', err.message);
-        renderCase(DEMO_DATA);
-      } finally { hideLoader(); }
+        const client = createClient({ projectId: '4i3qoqt0', dataset: 'production', apiVersion: '2024-01-01', useCdn: true });
+        const data = await client.fetch(`*[_type == "siteSettings"][0]{
+          works[]{ image{asset->{url}}, gallery[]{asset->{url}}, title, description, tags }
+        }`);
+        if (data && data.works && data.works.length){
+          sections = data.works.map((w, i) => {
+            const local = LOCAL_SECTIONS[i] || LOCAL_SECTIONS[0];
+            const cover = (w.image && w.image.asset && w.image.asset.url) ? (w.image.asset.url + '?w=1400&q=80&auto=format') : local.cover;
+            const gallery = (w.gallery && w.gallery.length)
+              ? w.gallery.map(g => (g.asset && g.asset.url) ? (g.asset.url + '?w=1400&q=80&auto=format') : '').filter(Boolean)
+              : local.gallery;
+            return {
+              slug: local.slug, num: local.num,
+              title: w.title || local.title,
+              en: local.en, desc: w.description || local.desc,
+              tags: w.tags || local.tags, year: '2025',
+              cover, gallery
+            };
+          });
+        }
+      } catch (err){
+        console.warn('Sanity 拉取失败，使用本地默认：', err.message);
+      }
+
+      renderCase(sections, idx);
     }
     init();
   </script>

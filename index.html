@@ -3,733 +3,452 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Portfolio · 作品集</title>
+  <title>Portfolio · 视觉设计 · DESIGN CATALOG</title>
   <style>
     /* ============================================================
-       配色与变量 —— 照 the-brandidentity.com 案例页感觉
-       米白底 + 近黑字 + 珊瑚红强调（站壳色调）
+       DESIGN CATALOG —— 深度色编辑式目录风格
+       黑底白字 / 索引编号 / 装饰衬体水印 / 眉头眉脚
        ============================================================ */
     :root {
-      --bg: #f5f5f3;
-      --bg-alt: #efefea;
-      --surface: #ffffff;
-      --text: #0a0a0a;
-      --text-soft: #5a5a55;
-      --text-faint: #9a9a92;
-      --line: #e2e2dc;
-      --accent: #ff6a6a;       /* 珊瑚红 */
-      --accent-soft: #b76341;  /* 陶土 */
-      --accent-2: #5bbad5;     /* 天蓝 */
-      --max-width: 1240px;
+      --bg: #0a0a0a;
+      --bg-2: #141414;
+      --line: #2a2a2a;
+      --text: #f5f5f3;
+      --text-soft: #a8a8a0;
+      --text-faint: #6a6a64;
+      --accent: #ff6a6a;
+      --max-width: 1320px;
       --pad: clamp(20px, 5vw, 56px);
       --card-ratio: 1 / 1;
-      --hero-size: clamp(40px, 7vw, 90px);
       --font-site: "Helvetica Neue", "Inter", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      --font-serif: "Cormorant Garamond", "Times New Roman", "Songti SC", "宋体", serif;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; background: var(--bg); }
     body {
-      background: var(--bg);
-      color: var(--text);
+      background: var(--bg); color: var(--text);
       font-family: var(--font-site);
-      -webkit-font-smoothing: antialiased;
-      line-height: 1.6;
-      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased; line-height: 1.6; overflow-x: hidden;
     }
     a { color: inherit; text-decoration: none; }
     img { max-width: 100%; display: block; }
 
-    /* 滚动进度条 */
-    .scroll-progress {
-      position: fixed; top: 0; left: 0; height: 3px; width: 0;
-      background: var(--accent); z-index: 200;
-    }
+    ::selection { background: var(--accent); color: var(--bg); }
 
-    /* ============================================================
-       导航 —— 极简（header--b 感觉）：左 wordmark / 右菜单
-       ============================================================ */
-    .navbar {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 22px var(--pad);
-      transition: background .35s ease, border-color .35s ease, padding .35s ease;
-      border-bottom: 1px solid transparent;
-    }
-    .navbar.scrolled {
-      background: rgba(255,255,255,.86);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--line);
+    /* 眉头眉脚 bar */
+    .top-bar, .bottom-bar {
+      display: flex; justify-content: space-between; align-items: center;
       padding: 14px var(--pad);
+      font-size: 11px; font-weight: 600; letter-spacing: .22em;
+      text-transform: uppercase; color: var(--text-soft);
+      border-bottom: 1px solid var(--line);
     }
-    .nav-logo {
-      font-weight: 800; font-size: 20px; letter-spacing: -0.02em;
-    }
-    .nav-links {
-      list-style: none; display: flex; gap: clamp(20px, 3vw, 40px); align-items: center;
-    }
-    .nav-links a {
-      font-size: 13px; text-transform: uppercase; letter-spacing: .14em;
-      color: var(--text-soft); font-weight: 600; position: relative; padding: 4px 0;
-      transition: color .25s ease;
-    }
-    .nav-links a::after {
-      content: ""; position: absolute; left: 0; bottom: 0; height: 1.5px; width: 0;
-      background: var(--accent); transition: width .3s ease;
-    }
-    .nav-links a:hover { color: var(--text); }
-    .nav-links a:hover::after { width: 100%; }
-    .nav-toggle {
-      display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none;
-    }
-    .nav-toggle span { width: 26px; height: 2px; background: var(--text); transition: .3s; }
+    .bottom-bar { border-bottom: none; border-top: 1px solid var(--line); }
 
     /* ============================================================
-       通用版式
-       ============================================================ */
-    .wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--pad); }
-    .eyebrow {
-      display: inline-block; font-size: 12px; font-weight: 700;
-      letter-spacing: .2em; text-transform: uppercase; color: var(--accent);
-      margin-bottom: 18px;
-    }
-    .section-title {
-      font-size: clamp(30px, 4.4vw, 60px); font-weight: 800;
-      letter-spacing: -0.025em; line-height: 1.04;
-    }
-    .section { padding: clamp(80px, 13vh, 170px) 0; }
-    .section-head { max-width: 760px; margin-bottom: clamp(40px, 6vw, 78px); }
-    .reveal { opacity: 0; transform: translateY(28px); transition: opacity .8s ease, transform .8s ease; }
-    .reveal.visible { opacity: 1; transform: none; }
-
-    /* ============================================================
-       HERO —— 大字号编辑式 + metas 信息行 + 大幅视觉块
+       HERO —— 装饰水印 + 大字标题 + 左侧小目录
        ============================================================ */
     .hero {
-      padding: clamp(140px, 20vh, 240px) 0 clamp(60px, 8vh, 110px);
+      position: relative; min-height: calc(100vh - 100px);
+      display: flex; align-items: center; justify-content: center;
+      padding: clamp(60px, 10vh, 120px) var(--pad);
+      border-bottom: 1px solid var(--line); overflow: hidden;
+    }
+    /* 巨型衬体水印 */
+    .watermark {
+      position: absolute; left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      font-family: var(--font-serif);
+      font-style: italic; font-weight: 700;
+      font-size: clamp(120px, 18vw, 280px);
+      letter-spacing: -0.02em;
+      color: rgba(255,255,255,.035);
+      white-space: nowrap; pointer-events: none; user-select: none;
+      line-height: 1;
     }
     .hero-grid {
-      display: grid; grid-template-columns: 1.05fr .95fr; gap: clamp(32px, 5vw, 80px);
+      position: relative; z-index: 2; max-width: var(--max-width);
+      margin: 0 auto; width: 100%;
+      display: grid; grid-template-columns: 1fr 1.4fr; gap: clamp(40px, 6vw, 100px);
       align-items: center;
     }
-    .hero-kicker {
-      display: inline-block; font-size: 12px; font-weight: 700;
-      letter-spacing: .2em; text-transform: uppercase; color: var(--accent);
-      border: 1px solid var(--accent); border-radius: 100px; padding: 7px 16px; margin-bottom: 28px;
+    .hero-left { display: flex; flex-direction: column; gap: 28px; }
+    .toc {
+      list-style: none; display: flex; flex-direction: column; gap: 10px;
+      font-size: 13px;
     }
-    #heroTitle {
-      font-size: var(--hero-size); font-weight: 800;
-      letter-spacing: -0.035em; line-height: 0.98; margin-bottom: 26px;
+    .toc li {
+      display: flex; align-items: baseline; gap: 18px;
+      padding: 8px 0; border-bottom: 1px solid var(--line);
+      transition: color .25s ease, padding .25s ease;
     }
-    #heroTitle .accent { color: var(--accent); }
-    .intro {
-      font-size: clamp(16px, 1.6vw, 20px); color: var(--text-soft);
-      max-width: 520px; line-height: 1.55; margin-bottom: 44px;
-    }
+    .toc li:hover { color: var(--accent); padding-left: 8px; cursor: pointer; }
+    .toc .num { font-family: var(--font-serif); font-size: 22px; font-weight: 600; color: var(--text-faint); min-width: 36px; }
+    .toc .en { font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--text-faint); min-width: 120px; }
+    .toc .cn { font-weight: 600; letter-spacing: .04em; }
 
-    /* metas 信息行（the-brandidentity 标志性装置） */
-    .metas {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
-      background: var(--line); border: 1px solid var(--line); border-radius: 4px; overflow: hidden;
+    .hero-right { position: relative; }
+    .hero-eyebrow {
+      display: inline-block; font-size: 11px; font-weight: 700;
+      letter-spacing: .28em; text-transform: uppercase; color: var(--accent);
+      margin-bottom: 32px;
     }
-    .meta { background: var(--bg); padding: 18px 20px; }
-    .meta-k {
-      display: block; font-size: 11px; font-weight: 700; letter-spacing: .14em;
-      text-transform: uppercase; color: var(--text-faint); margin-bottom: 8px;
+    .hero-title {
+      font-size: clamp(64px, 12vw, 180px); font-weight: 800;
+      letter-spacing: -0.04em; line-height: 0.92; margin-bottom: 36px;
     }
-    .meta-v { font-size: 16px; font-weight: 700; letter-spacing: -0.01em; }
-
-    /* 视觉块 */
-    .hero-visual { position: relative; }
-    .hero-photo {
-      aspect-ratio: 4 / 5; border-radius: 6px; overflow: hidden;
-      background: var(--accent);
-      background: linear-gradient(150deg, var(--accent), color-mix(in srgb, var(--accent) 55%, #000) 55%, color-mix(in srgb, var(--accent) 35%, #000));
-      display: flex; align-items: center; justify-content: center;
-      font-size: clamp(90px, 14vw, 180px); font-weight: 800; color: rgba(255,255,255,.92);
-      box-shadow: 0 30px 70px -30px rgba(183,99,65,.6);
+    .hero-title .accent { color: var(--accent); }
+    .hero-sub {
+      font-size: clamp(18px, 2vw, 26px); color: var(--text-soft);
+      letter-spacing: 0.4em; font-weight: 500;
     }
-    .hero-chips {
-      position: absolute; right: -14px; bottom: -22px; display: flex; flex-wrap: wrap;
-      gap: 10px; max-width: 70%;
+    .scroll-hint {
+      position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+      font-size: 10px; letter-spacing: .28em; text-transform: uppercase;
+      color: var(--text-faint);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
     }
-    .hero-chips span {
-      background: var(--surface); border: 1px solid var(--line); border-radius: 100px;
-      width: 52px; height: 52px; display: flex; align-items: center; justify-content: center;
-      font-size: 22px; box-shadow: 0 14px 30px -16px rgba(0,0,0,.35);
+    .scroll-hint .arrow {
+      width: 1px; height: 30px; background: var(--text-faint); position: relative;
+    }
+    .scroll-hint .arrow::after {
+      content: ""; position: absolute; bottom: 0; left: 50%;
+      width: 6px; height: 6px; border-right: 1px solid var(--text-faint);
+      border-bottom: 1px solid var(--text-faint); transform: translate(-50%, 50%) rotate(45deg);
     }
 
     /* ============================================================
-       ABOUT —— 左标签(粘性)右正文 编辑两栏
+       作品 SECTION —— 索引化 2x2 编辑网格
        ============================================================ */
-    .about-grid {
-      display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(36px, 6vw, 96px);
-      align-items: start;
-    }
-    .about-aside { position: sticky; top: 120px; }
-    .about-portrait {
-      width: 92px; height: 92px; border-radius: 50%; margin-bottom: 28px;
-      background: linear-gradient(150deg, #5bbad5, #6a83a6);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 38px; font-weight: 800; color: #fff;
-    }
-    .about-stats { display: flex; flex-direction: column; gap: 0; }
-    .stat-item {
-      display: flex; align-items: baseline; gap: 14px; padding: 16px 0;
-      border-top: 1px solid var(--line);
-    }
-    .stat-item:last-child { border-bottom: 1px solid var(--line); }
-    .stat-item .num { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; min-width: 78px; }
-    .stat-item .label { font-size: 14px; color: var(--text-soft); }
-    .about-text p { font-size: clamp(17px, 1.7vw, 21px); color: var(--text); margin-bottom: 22px; line-height: 1.7; }
-    .about-text strong { font-weight: 700; }
-    .about-stats-inline { display: none; }
+    .works { padding: clamp(60px, 10vh, 130px) 0 clamp(80px, 12vh, 160px); }
+    .works-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--pad); }
 
-    /* ============================================================
-       WORK —— 图注式作品网格（figure + caption）
-       ============================================================ */
-    .projects-grid {
-      display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(28px, 4vw, 56px);
+    .works-head {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-bottom: clamp(48px, 7vw, 88px); padding-bottom: 24px;
+      border-bottom: 1px solid var(--line);
     }
-    .project-card { cursor: pointer; color: inherit; text-decoration: none; display: block; }
-    .project-thumb {
-      position: relative; aspect-ratio: var(--card-ratio); border-radius: 6px; overflow: hidden;
-      display: flex; align-items: center; justify-content: center;
-      font-size: clamp(50px, 7vw, 88px); color: rgba(255,255,255,.92);
-      transition: transform .5s cubic-bezier(.2,.7,.2,1);
+    .works-head .label {
+      font-size: 11px; font-weight: 700; letter-spacing: .28em;
+      text-transform: uppercase; color: var(--text-soft);
     }
-    .project-card:hover .project-thumb { transform: scale(1.03); }
-    .project-index {
-      position: absolute; top: 16px; left: 18px; font-size: 13px; font-weight: 700;
-      letter-spacing: .1em; color: rgba(255,255,255,.95);
-      background: rgba(0,0,0,.22); padding: 5px 11px; border-radius: 100px; backdrop-filter: blur(4px);
-    }
-    .project-body { padding: 22px 2px 0; }
-    .project-body h3 { font-size: clamp(20px, 2vw, 26px); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 10px; }
-    .project-body p { font-size: 15px; color: var(--text-soft); margin-bottom: 16px; line-height: 1.65; }
-    .project-tags { display: flex; flex-wrap: wrap; gap: 8px; }
-    .project-tags .tag {
-      font-size: 12px; font-weight: 600; letter-spacing: .02em; color: var(--text-soft);
-      border: 1px solid var(--line); border-radius: 100px; padding: 5px 12px;
+    .works-head .year {
+      font-family: var(--font-serif); font-size: 28px; font-weight: 600;
+      color: var(--text-faint); letter-spacing: .04em;
     }
 
-    /* ============================================================
-       SKILLS —— 干净行式卡片
-       ============================================================ */
-    .skills-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
-    .skill-card { background: var(--bg); padding: clamp(24px, 3vw, 38px); }
-    .skill-head { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
-    .skill-icon {
-      width: 48px; height: 48px; border-radius: 10px; flex: none;
-      background: var(--surface); border: 1px solid var(--line);
-      display: flex; align-items: center; justify-content: center; font-size: 22px;
+    .works-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: clamp(32px, 5vw, 80px) clamp(28px, 4vw, 60px);
     }
-    .skill-meta { display: flex; align-items: baseline; justify-content: space-between; width: 100%; gap: 12px; }
-    .skill-meta h3 { font-size: 19px; font-weight: 700; letter-spacing: -0.01em; }
-    .skill-pct { font-size: 14px; font-weight: 700; color: var(--accent); }
-    .skill-card p { font-size: 14px; color: var(--text-soft); margin-bottom: 18px; line-height: 1.6; }
-    .skill-bar { height: 4px; background: var(--line); border-radius: 100px; overflow: hidden; }
-    .skill-bar-fill { height: 100%; width: 0; background: var(--accent); border-radius: 100px; transition: width 1.2s cubic-bezier(.2,.7,.2,1); }
+
+    .work-card { display: block; color: inherit; cursor: pointer; }
+    .work-card .thumb {
+      position: relative; aspect-ratio: var(--card-ratio);
+      border-radius: 4px; overflow: hidden; background: var(--bg-2);
+      margin-bottom: 26px;
+    }
+    .work-card .thumb img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform .7s cubic-bezier(.2,.7,.2,1), opacity .5s ease;
+    }
+    .work-card:hover .thumb img { transform: scale(1.04); }
+    .work-card .thumb .index {
+      position: absolute; top: 18px; left: 20px;
+      font-family: var(--font-serif); font-size: 56px; font-weight: 600;
+      color: rgba(255,255,255,.92); line-height: 1;
+      mix-blend-mode: difference;
+    }
+    .work-card .meta { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--line); margin-bottom: 16px; }
+    .work-card .meta .t {
+      font-size: clamp(22px, 2.4vw, 32px); font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .work-card .meta .en {
+      font-size: 11px; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--text-faint); font-weight: 600;
+    }
+    .work-card .desc {
+      font-size: 15px; color: var(--text-soft); line-height: 1.7;
+      max-width: 480px; margin-bottom: 18px;
+    }
+    .work-card .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .work-card .tags span {
+      font-size: 11px; font-weight: 600; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--text-faint);
+      border: 1px solid var(--line); padding: 5px 12px; border-radius: 100px;
+    }
+    .work-card .view-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 700; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--text);
+      margin-top: 12px; padding-bottom: 4px;
+      border-bottom: 1px solid var(--text);
+      transition: color .25s ease, gap .25s ease;
+    }
+    .work-card:hover .view-link { color: var(--accent); gap: 14px; border-color: var(--accent); }
 
     /* ============================================================
-       CONTACT —— 大字号编辑式
+       联系区 —— 编辑式
        ============================================================ */
-    .contact { text-align: left; }
-    #contactTitle { font-size: clamp(38px, 7vw, 96px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.0; margin-bottom: 28px; }
-    #contactTitle .accent { color: var(--accent); }
-    #contactDesc { font-size: clamp(16px, 1.6vw, 20px); color: var(--text-soft); max-width: 560px; margin-bottom: 40px; }
-    .contact-links { display: flex; flex-wrap: wrap; gap: 14px; }
+    .contact { padding: clamp(60px, 10vh, 140px) 0; border-top: 1px solid var(--line); position: relative; overflow: hidden; }
+    .contact-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--pad); position: relative; z-index: 2; }
+    .contact h2 {
+      font-size: clamp(48px, 9vw, 140px); font-weight: 800;
+      letter-spacing: -0.04em; line-height: 1.0; margin-bottom: 32px;
+    }
+    .contact h2 .accent { color: var(--accent); }
+    .contact p { font-size: clamp(16px, 1.6vw, 20px); color: var(--text-soft); max-width: 640px; margin-bottom: 44px; }
+    .contact-links { display: flex; flex-wrap: wrap; gap: 12px; }
     .contact-link {
-      font-size: 15px; font-weight: 600; padding: 13px 24px; border-radius: 100px;
+      font-size: 13px; font-weight: 600; letter-spacing: .1em;
+      padding: 13px 24px; border-radius: 100px;
       border: 1px solid var(--text); transition: background .3s ease, color .3s ease;
     }
     .contact-link:hover { background: var(--text); color: var(--bg); }
 
-    /* ============================================================
-       FOOTER
-       ============================================================ */
-    footer {
-      border-top: 1px solid var(--line); padding: clamp(48px, 7vw, 90px) 0;
+    .contact .watermark-sm {
+      position: absolute; right: -60px; bottom: -80px;
+      font-family: var(--font-serif); font-style: italic; font-weight: 700;
+      font-size: clamp(80px, 12vw, 180px);
+      color: rgba(255,255,255,.04);
+      pointer-events: none; user-select: none; line-height: 1;
     }
-    footer .wrap { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
-    .footer-mark { font-size: clamp(28px, 5vw, 56px); font-weight: 800; letter-spacing: -0.03em; }
-    .footer-mark .accent { color: var(--accent); }
-    #footerText { font-size: 13px; color: var(--text-faint); letter-spacing: .02em; }
-
-    /* ============================================================
-       加载 & 演示横幅
-       ============================================================ */
-    .loader {
-      position: fixed; inset: 0; background: var(--bg); z-index: 300;
-      display: flex; align-items: center; justify-content: center; transition: opacity .5s ease;
-    }
-    .loader.hidden { opacity: 0; pointer-events: none; }
-    .loader .spinner {
-      width: 38px; height: 38px; border: 3px solid var(--line); border-top-color: var(--accent);
-      border-radius: 50%; animation: spin 1s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .demo-banner {
-      position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
-      background: var(--accent); color: #fff; font-size: 13px; font-weight: 600;
-      padding: 11px 20px; border-radius: 100px; z-index: 250; box-shadow: 0 12px 30px -12px rgba(255,106,106,.6);
-      max-width: 92vw; text-align: center;
-    }
-
-    ::-webkit-scrollbar { width: 10px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 100px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
-    ::selection { background: var(--accent); color: #fff; }
 
     /* ============================================================
        响应式
        ============================================================ */
     @media (max-width: 900px) {
-      .hero-grid { grid-template-columns: 1fr; gap: 48px; }
-      .hero-visual { max-width: 420px; }
-      .about-grid { grid-template-columns: 1fr; gap: 40px; }
-      .about-aside { position: static; }
-      .about-stats { display: none; }
-      .about-stats-inline { display: flex; gap: 28px; flex-wrap: wrap; margin-top: 32px; }
-      .about-stats-inline .stat-item { border: none; padding: 0; flex-direction: column; gap: 2px; }
-      .projects-grid { grid-template-columns: 1fr; }
-      .skills-grid { grid-template-columns: 1fr; }
-      .metas { grid-template-columns: repeat(2, 1fr); }
+      .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+      .works-grid { grid-template-columns: 1fr; gap: 56px; }
+      .toc { flex-direction: row; flex-wrap: wrap; gap: 16px 28px; }
+      .toc li { border: none; padding: 0; }
+      .toc .en { display: none; }
     }
     @media (max-width: 640px) {
-      .nav-links {
-        position: absolute; top: 100%; right: var(--pad); left: var(--pad);
-        flex-direction: column; align-items: flex-start; gap: 18px;
-        background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
-        padding: 22px; transform: translateY(-10px); opacity: 0; pointer-events: none; transition: .3s;
-      }
-      .nav-links.open { transform: none; opacity: 1; pointer-events: auto; }
-      .nav-toggle { display: flex; }
-      .metas { grid-template-columns: 1fr 1fr; }
+      .top-bar, .bottom-bar { font-size: 10px; letter-spacing: .18em; }
     }
   </style>
 </head>
 <body>
-  <div class="scroll-progress" id="scrollProgress"></div>
 
-  <div class="loader" id="loader">
-    <div class="spinner"></div>
+  <!-- 眉头 -->
+  <div class="top-bar">
+    <span>@Design Catalog</span>
+    <span>Brand &amp; Visual Design</span>
   </div>
-
-  <!-- 极简导航 -->
-  <nav class="navbar" id="navbar">
-    <a href="#" class="nav-logo" id="navLogo">Portfolio.</a>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="#work">作品</a></li>
-      <li><a href="#about">关于</a></li>
-      <li><a href="#skills">技能</a></li>
-      <li><a href="#contact">联系</a></li>
-    </ul>
-    <button class="nav-toggle" id="navToggle" aria-label="菜单">
-      <span></span><span></span><span></span>
-    </button>
-  </nav>
 
   <!-- HERO -->
   <header class="hero">
-    <div class="wrap">
-      <div class="hero-grid">
-        <div class="hero-copy">
-          <div class="hero-kicker" id="heroBadge">正在寻找新的合作机会</div>
-          <h1 id="heroTitle">加载中...</h1>
-          <p class="intro" id="heroSubtitle"></p>
-          <!-- metas 信息行（标志性装置） -->
-          <div class="metas">
-            <div class="meta"><span class="meta-k">姓名</span><span class="meta-v" id="aboutName">—</span></div>
-            <div class="meta"><span class="meta-k">角色</span><span class="meta-v" id="heroRoleName">—</span></div>
-            <div class="meta"><span class="meta-k">专长</span><span class="meta-v" id="aboutRole">—</span></div>
-            <div class="meta"><span class="meta-k">状态</span><span class="meta-v" id="heroMetaStatus">开放合作</span></div>
-          </div>
-        </div>
-        <div class="hero-visual">
-          <div class="hero-photo" id="heroAvatar">Y</div>
-          <div class="hero-chips" id="heroChips"></div>
-        </div>
+    <div class="watermark">Portfolio Design</div>
+    <div class="hero-grid">
+      <div class="hero-left">
+        <ul class="toc" id="toc">
+          <li><span class="num">01</span><span class="en">Brand Design</span><span class="cn">品牌设计</span></li>
+          <li><span class="num">02</span><span class="en">Main Visual KV</span><span class="cn">主视觉 KV</span></li>
+          <li><span class="num">03</span><span class="en">Visual Layout</span><span class="cn">视觉 &amp; 版式</span></li>
+          <li><span class="num">04</span><span class="en">Font Design</span><span class="cn">字体设计</span></li>
+        </ul>
       </div>
+      <div class="hero-right">
+        <div class="hero-eyebrow">© 2025 / Visual Designer</div>
+        <h1 class="hero-title" id="heroTitle">视觉<span class="accent">设计</span></h1>
+        <p class="hero-sub">三维 / 插画 / 版式</p>
+      </div>
+    </div>
+    <div class="scroll-hint">
+      <span>Scroll</span>
+      <span class="arrow"></span>
     </div>
   </header>
 
-  <!-- ABOUT -->
-  <section id="about" class="section reveal">
-    <div class="wrap">
-      <div class="about-grid">
-        <aside class="about-aside">
-          <span class="eyebrow" id="aboutTitle">关于</span>
-          <div class="about-portrait" id="aboutAvatar">Y</div>
-          <div class="about-stats" id="aboutStatsCard"></div>
-        </aside>
-        <div class="about-main">
-          <div class="about-text" id="aboutText"></div>
-          <div class="about-stats-inline" id="aboutStats"></div>
-        </div>
+  <!-- WORKS -->
+  <section class="works" id="work">
+    <div class="works-wrap">
+      <div class="works-head">
+        <span class="label">© 2025 / Selected Works</span>
+        <span class="year">Vol. 01</span>
       </div>
-    </div>
-  </section>
-
-  <!-- WORK -->
-  <section id="projects" class="section reveal">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow" id="workEyebrow">精选作品 · Selected Work</span>
-        <h2 class="section-title" id="workTitle">近期的一些项目</h2>
-      </div>
-      <div class="projects-grid" id="projectsGrid"></div>
-    </div>
-  </section>
-
-  <!-- SKILLS -->
-  <section id="skills" class="section reveal">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow" id="skillsEyebrow">技能 · Skills</span>
-        <h2 class="section-title" id="skillsTitle">我擅长的工具和领域</h2>
-      </div>
-      <div class="skills-grid" id="skillsGrid"></div>
+      <div class="works-grid" id="worksGrid"></div>
     </div>
   </section>
 
   <!-- CONTACT -->
-  <section id="contact" class="section contact reveal">
-    <div class="wrap">
+  <section class="contact" id="contact">
+    <div class="watermark-sm">2025</div>
+    <div class="contact-wrap">
       <h2 id="contactTitle">有项目想<span class="accent">聊聊</span>？</h2>
-      <p id="contactDesc">无论是合作、咨询还是随便交流，欢迎随时联系。我通常会在 24 小时内回复。</p>
+      <p id="contactDesc">无论是品牌设计、视觉延展还是排版需求，欢迎随时联系。</p>
       <div class="contact-links" id="contactLinks"></div>
     </div>
   </section>
 
-  <!-- FOOTER -->
-  <footer>
-    <div class="wrap">
-      <div class="footer-mark" id="navLogoFooter">Portfolio<span class="accent">.</span></div>
-      <p id="footerText">© 2026 · 用心设计，持续迭代</p>
-    </div>
-  </footer>
+  <!-- 眉脚 -->
+  <div class="bottom-bar">
+    <span id="footerText">© 2025 · Brand &amp; Visual Design</span>
+    <span>Lijinshan Portfolio</span>
+  </div>
 
-  <!-- ===== Sanity Config & Data Layer ===== -->
   <script type="module">
     // ============================================================
-    //  Sanity 配置
+    // 本地默认数据（来自 PDF）
     // ============================================================
-    const SANITY_PROJECT_ID = '4i3qoqt0';
-    const SANITY_DATASET = 'production';
-    const SANITY_API_VERSION = '2024-01-01';
-
-    // ===== Demo 数据（Sanity 未配置时使用） =====
-    const DEMO_DATA = {
-      settings: {
-        heroName: '你的名字',
-        heroRole: '设计师',
-        heroTagline: '专注于打造兼具美感与功能性的数字产品，用设计连接用户与体验。',
-        statusBadge: '正在寻找新的合作机会',
-        avatarLetter: 'Y',
-        heroAvatar: null,
-        aboutAvatar: null,
-        aboutTitle: '一点点自我介绍',
-        aboutParagraphs: [
-          '我是一名拥有 **5 年经验** 的产品设计师，擅长从概念到落地的全流程设计，关注用户体验与视觉表达的平衡。',
-          '过去几年里，我参与了多个从 0 到 1 的项目，涵盖 Web 端、移动端和数据可视化等领域。我相信好的设计不只是好看，更是解决问题。',
-          '工作之外，我喜欢研究新的设计趋势、写技术博客，偶尔也做做摄影。如果你有好玩的项目想聊聊，随时找我。'
-        ],
-        stats: [
-          { num: '50+', label: '项目交付' },
-          { num: '5年', label: '从业经验' },
-          { num: '∞', label: '热情' }
-        ],
-        footerText: '© 2026 你的名字 · 用心设计，持续迭代',
-        contactTitle: '有项目想聊聊？',
-        contactDesc: '无论是合作、咨询还是随便交流，欢迎随时联系。我通常会在 24 小时内回复。',
-        contactLinks: [
-          { icon: '📧', label: 'Email', url: 'mailto:hello@example.com' },
-          { icon: '💬', label: '微信', url: '#' },
-          { icon: '🐙', label: 'GitHub', url: '#' },
-          { icon: '📝', label: '博客', url: '#' }
+    const LOCAL_SECTIONS = [
+      {
+        slug: 'brand',
+        num: '01',
+        title: '品牌设计',
+        en: 'Brand Design',
+        desc: '从品牌定位、视觉语言到落地物料的完整品牌体系设计，覆盖 Logo / VI / 字体 / 辅助图形。',
+        tags: ['LOGO', 'VI', '字体设计', '辅助图形'],
+        cover: 'images/01_brand/p02_img08_7632bb9a.webp',
+        gallery: [
+          'images/01_brand/p02_img07_b6d2fdf0.webp',
+          'images/01_brand/p02_img05_74e57ae1.webp',
+          'images/01_brand/p02_img06_d159f940.webp',
+          'images/01_brand/p01_img01_aab024af.webp'
         ]
       },
-      projects: [
-        { title: '品牌视觉升级', description: '为一家科技公司完成全链路品牌视觉体系升级，包括 Logo、色彩规范和组件库。', icon: '🎨', gradient: 'linear-gradient(135deg, #667eea, #764ba2)', tags: ['品牌设计', 'Design System'] },
-        { title: '移动端 App 重设计', description: '主导一款百万级用户 App 的体验重构，核心流程转化率提升 32%。', icon: '📱', gradient: 'linear-gradient(135deg, #f093fb, #f5576c)', tags: ['UX 设计', '移动端'] },
-        { title: '数据可视化平台', description: '设计了一套面向企业用户的数据分析看板，支持自定义图表和实时监控。', icon: '📊', gradient: 'linear-gradient(135deg, #4facfe, #00f2fe)', tags: ['数据可视化', 'B 端'] },
-        { title: '官网落地页设计', description: '为初创团队打造高转化落地页，上线首周注册用户突破 10,000。', icon: '🚀', gradient: 'linear-gradient(135deg, #43e97b, #38f9d7)', tags: ['Landing Page', '增长设计'] }
-      ],
-      works: [
-        { title: '品牌视觉升级', description: '为一家科技公司完成全链路品牌视觉体系升级，包括 Logo、色彩规范和组件库。', image: null, tags: ['品牌设计', 'Design System'] },
-        { title: '移动端 App 重设计', description: '主导一款百万级用户 App 的体验重构，核心流程转化率提升 32%。', image: null, tags: ['UX 设计', '移动端'] },
-        { title: '数据可视化平台', description: '设计了一套面向企业用户的数据分析看板，支持自定义图表和实时监控。', image: null, tags: ['数据可视化', 'B 端'] },
-        { title: '官网落地页设计', description: '为初创团队打造高转化落地页，上线首周注册用户突破 10,000。', image: null, tags: ['Landing Page', '增长设计'] }
-      ],
-      skills: [
-        { title: 'UI / UX 设计', description: '用户研究、交互设计、视觉设计、原型制作', icon: '🎨', level: 95 },
-        { title: '设计系统', description: '组件库搭建、设计规范、跨平台一致性', icon: '📐', level: 88 },
-        { title: '前端开发', description: 'HTML / CSS / JavaScript，React，动效实现', icon: '💻', level: 80 },
-        { title: '数据可视化', description: '图表设计、仪表盘、信息架构', icon: '📊', level: 85 },
-        { title: '团队协作', description: '跨部门沟通、设计评审、项目管理', icon: '🤝', level: 90 },
-        { title: '品牌设计', description: 'Logo 设计、VI 规范、品牌策略', icon: '✏️', level: 75 }
-      ]
-    };
-
-    // 参考页暖色系（用于作品缩略图，统一色调）
-    const WARM_THUMBS = [
-      'linear-gradient(140deg, #ff6a6a, #b76341)',
-      'linear-gradient(140deg, #5bbad5, #6a83a6)',
-      'linear-gradient(140deg, #c3c5bc, #40451b)',
-      'linear-gradient(140deg, #b3845d, #ff6a6a)',
-      'linear-gradient(140deg, #5bbad5, #c3c5bc)',
-      'linear-gradient(140deg, #b76341, #40451b)'
+      {
+        slug: 'kv',
+        num: '02',
+        title: '主视觉 KV',
+        en: 'Main Visual KV',
+        desc: '产品发布会主视觉、电商详情页、传播海报。围绕产品核心卖点的视觉锤与延展系统。',
+        tags: ['主视觉', 'KV', '电商详情', '延展'],
+        cover: 'images/02_kv/p11_img02_dc8c69ee.webp',
+        gallery: [
+          'images/02_kv/p10_img02_591f9536.webp',
+          'images/02_kv/p10_img04_d5dcbd36.webp',
+          'images/02_kv/p10_img05_283a91a8.webp',
+          'images/02_kv/p11_img05_990165b5.webp',
+          'images/02_kv/p11_img04_15f01808.webp'
+        ]
+      },
+      {
+        slug: 'visual',
+        num: '03',
+        title: '视觉 & 版式',
+        en: 'Visual & Layout',
+        desc: '包装设计、节庆礼盒、品牌活动推广物料。从 0-1 全流程包装设计到延展物料，兼顾美感与落地。',
+        tags: ['包装', '礼盒', '活动推广', '排版'],
+        cover: 'images/03_visual/p03_img02_544eb040.webp',
+        gallery: [
+          'images/03_visual/p03_img03_7766e262.webp',
+          'images/03_visual/p03_img05_b384cc2d.webp',
+          'images/03_visual/p03_img07_c1a387af.webp',
+          'images/03_visual/p04_img04_93e0c765.webp',
+          'images/03_visual/p04_img05_ecce3855.webp',
+          'images/03_visual/p05_img01_77a33cd4.webp',
+          'images/03_visual/p06_img01_623229af.webp',
+          'images/03_visual/p08_img01_fd922c3b.webp'
+        ]
+      },
+      {
+        slug: 'font',
+        num: '04',
+        title: '字体设计',
+        en: 'Font Design',
+        desc: '中英体字字体设计与商业字库应用。兼顾屏幕显示与印刷质感，服务于品牌视觉系统。',
+        tags: ['中文字体', '英文字体', '字库'],
+        cover: 'images/04_font/p13_img03_57f77ee3.webp',
+        gallery: [
+          'images/04_font/p13_img02_360df3ad.webp',
+          'images/04_font/p13_img01_13ffd8e0.webp'
+        ]
+      }
     ];
 
-    // ===== 工具函数 =====
-    function renderBold(text) {
-      return text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-    }
-    function escapeHtml(str) {
-      if (!str) return '';
-      const div = document.createElement('div');
-      div.textContent = str;
-      return div.innerHTML;
+    function applyTheme(s){
+      const root = document.documentElement;
+      if (s && s.accentColor) root.style.setProperty('--accent', s.accentColor);
+      const ratioMap = { '1/1':'1 / 1', '16/11':'16 / 11', '4/5':'4 / 5', '3/2':'3 / 2' };
+      if (s && s.cardRatio && ratioMap[s.cardRatio]) root.style.setProperty('--card-ratio', ratioMap[s.cardRatio]);
     }
 
-    // ===== 主题/样式（从后台读取，应用到 CSS 变量） =====
-    function applyTheme(s) {
-      const root = document.documentElement;
-      if (s.accentColor) root.style.setProperty('--accent', s.accentColor);
-      const ratioMap = { '1/1': '1 / 1', '16/11': '16 / 11', '4/5': '4 / 5', '3/2': '3 / 2' };
-      if (s.cardRatio && ratioMap[s.cardRatio]) root.style.setProperty('--card-ratio', ratioMap[s.cardRatio]);
-      const sizeMap = {
-        large: 'clamp(46px, 8.5vw, 116px)',
-        medium: 'clamp(40px, 7vw, 90px)',
-        small: 'clamp(34px, 5.5vw, 72px)'
-      };
-      if (s.fontSizeTier && sizeMap[s.fontSizeTier]) root.style.setProperty('--hero-size', sizeMap[s.fontSizeTier]);
-      const fontMap = {
-        'system': '"Helvetica Neue","Inter","PingFang SC","Microsoft YaHei",Arial,sans-serif',
-        'noto-sans': '"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif',
-        'noto-serif': '"Noto Serif SC","Songti SC",serif',
-        'zcool-xiaowei': '"ZCOOL XiaoWei",serif'
-      };
-      if (s.fontChoice && fontMap[s.fontChoice]) {
-        root.style.setProperty('--font-site', fontMap[s.fontChoice]);
-        if (s.fontChoice !== 'system') {
-          const hrefs = {
-            'noto-sans': 'https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&display=swap',
-            'noto-serif': 'https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&display=swap',
-            'zcool-xiaowei': 'https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&display=swap'
-          };
-          const href = hrefs[s.fontChoice];
-          if (href && !document.querySelector('link[href="' + href + '"]')) {
-            const link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = href;
-            document.head.appendChild(link);
-          }
+    function escapeHtml(s){ if(!s) return ''; const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+    function renderWorks(sections){
+      const grid = document.getElementById('worksGrid');
+      grid.innerHTML = sections.map((s, i) => `
+        <a class="work-card" href="project.html?i=${i}">
+          <div class="thumb">
+            <img src="${s.cover}" alt="${escapeHtml(s.title)}" loading="lazy" />
+            <span class="index">${s.num}</span>
+          </div>
+          <div class="meta">
+            <span class="t">${escapeHtml(s.title)}</span>
+            <span class="en">${escapeHtml(s.en)}</span>
+          </div>
+          <p class="desc">${escapeHtml(s.desc)}</p>
+          <div class="tags">${(s.tags||[]).map(t=>`<span>${escapeHtml(t)}</span>`).join('')}</div>
+          <span class="view-link">查看作品 →</span>
+        </a>
+      `).join('');
+    }
+
+    function renderContact(settings){
+      const titleEl = document.getElementById('contactTitle');
+      const descEl = document.getElementById('contactDesc');
+      const linksEl = document.getElementById('contactLinks');
+      if (settings){
+        if (settings.contactTitle){
+          titleEl.innerHTML = escapeHtml(settings.contactTitle).replace(/\*\*(.+?)\*\*/g, '<span class="accent">$1</span>');
+        }
+        if (settings.contactDesc) descEl.textContent = settings.contactDesc;
+        if (settings.contactLinks && settings.contactLinks.length){
+          linksEl.innerHTML = settings.contactLinks.map(l =>
+            `<a href="${escapeHtml(l.url||'#')}" class="contact-link">${escapeHtml(l.label||'')}</a>`
+          ).join('');
         }
       }
+      // 默认联系方式（真实信息从 PDF）
+      linksEl.innerHTML = linksEl.innerHTML || `
+        <a href="mailto:392027594@qq.com" class="contact-link">📧 Email · 392027594@qq.com</a>
+        <a href="tel:18210265989" class="contact-link">📱 Phone · 18210265989</a>
+        <a href="#" class="contact-link">💬 WeChat · a18210265989</a>
+      `;
     }
 
-    // ===== 渲染函数 =====
-    function renderContent(data) {
-      const s = data.settings;
-      applyTheme(s);
-
-      document.getElementById('navLogo').textContent = (s.heroName || 'Portfolio') + '.';
-      document.getElementById('heroBadge').textContent = s.statusBadge || '正在寻找新的合作机会';
-      document.getElementById('heroTitle').innerHTML =
-        `你好，我是<span class="accent">${escapeHtml(s.heroName || '')}</span><br>我是一名${escapeHtml(s.heroRole || '')}`;
-      document.getElementById('heroSubtitle').textContent = s.heroTagline || '';
-
-      const heroAvatarEl = document.getElementById('heroAvatar');
-      const heroAvatarUrl = (s.heroAvatar && s.heroAvatar.asset && s.heroAvatar.asset.url)
-        ? s.heroAvatar.asset.url + '?w=600&q=80&auto=format' : '';
-      if (heroAvatarUrl) {
-        heroAvatarEl.style.background = `url('${heroAvatarUrl}') center/cover`;
-        heroAvatarEl.textContent = '';
-      } else {
-        heroAvatarEl.textContent = s.avatarLetter || 'Y';
-      }
-      document.getElementById('heroRoleName').textContent = s.heroRole || '产品设计师';
-
-      document.getElementById('aboutTitle').textContent = s.aboutTitle || '一点点自我介绍';
-      const aboutTextEl = document.getElementById('aboutText');
-      aboutTextEl.innerHTML = '';
-      (s.aboutParagraphs || []).forEach(p => {
-        const pEl = document.createElement('p');
-        pEl.innerHTML = renderBold(escapeHtml(p));
-        aboutTextEl.appendChild(pEl);
-      });
-      const aboutAvatarEl = document.getElementById('aboutAvatar');
-      const aboutAvatarUrl = (s.aboutAvatar && s.aboutAvatar.asset && s.aboutAvatar.asset.url)
-        ? s.aboutAvatar.asset.url + '?w=400&q=80&auto=format' : '';
-      if (aboutAvatarUrl) {
-        aboutAvatarEl.style.background = `url('${aboutAvatarUrl}') center/cover`;
-        aboutAvatarEl.textContent = '';
-      } else {
-        aboutAvatarEl.textContent = s.avatarLetter || 'Y';
-      }
-      document.getElementById('aboutName').textContent = s.heroName || '你的名字';
-      document.getElementById('aboutRole').textContent = s.heroRole || '产品设计师';
-
-      // Stats（hero meta + about card 两处）
-      const statsHtml = (s.stats || []).map(stat => `
-        <div class="stat-item">
-          <div class="num">${escapeHtml(stat.num)}</div>
-          <div class="label">${escapeHtml(stat.label)}</div>
-        </div>`).join('');
-      document.getElementById('aboutStats').innerHTML = statsHtml;
-      document.getElementById('aboutStatsCard').innerHTML = statsHtml;
-
-      // Works（来自 siteSettings.works，无图时回退渐变+emoji）
-      const projectsEl = document.getElementById('projectsGrid');
-      projectsEl.innerHTML = '';
-      (data.works || []).forEach((project, i) => {
-        const idx = String(i + 1).padStart(2, '0');
-        const bg = WARM_THUMBS[i % WARM_THUMBS.length];
-        const imgUrl = (project.image && project.image.asset && project.image.asset.url)
-          ? project.image.asset.url + '?w=900&q=80&auto=format' : '';
-        const thumbBg = imgUrl ? `url('${imgUrl}') center/cover, ${bg}` : bg;
-        const tagsHtml = (project.tags || []).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('');
-        projectsEl.innerHTML += `
-          <a class="project-card" href="project.html?i=${i}">
-            <div class="project-thumb" style="background: ${thumbBg};">
-              <div class="project-index">${idx}</div>
-              ${imgUrl ? '' : `<span>${escapeHtml(project.icon || '🎨')}</span>`}
-            </div>
-            <div class="project-body">
-              <h3>${escapeHtml(project.title)}</h3>
-              <p>${escapeHtml(project.description)}</p>
-              <div class="project-tags">${tagsHtml}</div>
-            </div>
-          </a>`;
-      });
-
-      // Skills
-      const skillsEl = document.getElementById('skillsGrid');
-      skillsEl.innerHTML = '';
-      (data.skills || []).forEach(skill => {
-        skillsEl.innerHTML += `
-          <div class="skill-card">
-            <div class="skill-head">
-              <div class="skill-icon">${escapeHtml(skill.icon || '🎨')}</div>
-              <div class="skill-meta">
-                <h3>${escapeHtml(skill.title)}</h3>
-                <span class="skill-pct">${skill.level || 80}%</span>
-              </div>
-            </div>
-            <p>${escapeHtml(skill.description || '')}</p>
-            <div class="skill-bar"><div class="skill-bar-fill" data-width="${skill.level || 80}%"></div></div>
-          </div>`;
-      });
-
-      // Hero 浮动技能芯片（取前 3 个）
-      const chipsEl = document.getElementById('heroChips');
-      chipsEl.innerHTML = '';
-      (data.skills || []).slice(0, 3).forEach(skill => {
-        chipsEl.innerHTML += `<span>${escapeHtml(skill.icon || '🎨')}</span>`;
-      });
-
-      // Contact
-      document.getElementById('contactTitle').innerHTML = escapeHtml(s.contactTitle || '有项目想聊聊？').replace(/\*\*(.+?)\*\*/g, '<span class="accent">$1</span>');
-      document.getElementById('contactDesc').textContent = s.contactDesc || '';
-      const contactEl = document.getElementById('contactLinks');
-      contactEl.innerHTML = '';
-      (s.contactLinks || []).forEach(link => {
-        contactEl.innerHTML += `
-          <a href="${escapeHtml(link.url || '#')}" class="contact-link">${escapeHtml(link.icon || '')} ${escapeHtml(link.label || '')}</a>`;
-      });
-
-      document.getElementById('footerText').textContent = s.footerText || '© 2026 · 用心设计，持续迭代';
-
-      // 板块标题（后台可改，无值则保留 HTML 默认）
-      if (s.workEyebrow) document.getElementById('workEyebrow').textContent = s.workEyebrow;
-      if (s.workTitle) document.getElementById('workTitle').textContent = s.workTitle;
-      if (s.skillsEyebrow) document.getElementById('skillsEyebrow').textContent = s.skillsEyebrow;
-      if (s.skillsTitle) document.getElementById('skillsTitle').textContent = s.skillsTitle;
-      if (s.heroMetaStatus) document.getElementById('heroMetaStatus').textContent = s.heroMetaStatus;
-      if (s.footerLogo) document.getElementById('navLogoFooter').innerHTML = escapeHtml(s.footerLogo) + '<span class="accent">.</span>';
-
-      initAnimations();
-    }
-
-    function initAnimations() {
-      const progress = document.getElementById('scrollProgress');
-      const navbar = document.getElementById('navbar');
-      function onScroll() {
-        const h = document.documentElement.scrollHeight - window.innerHeight;
-        const pct = h > 0 ? (window.scrollY / h) * 100 : 0;
-        progress.style.width = pct + '%';
-        navbar.classList.toggle('scrolled', window.scrollY > 30);
-      }
-      window.addEventListener('scroll', onScroll, { passive: true });
-      onScroll();
-
-      const navToggle = document.getElementById('navToggle');
-      const navLinks = document.getElementById('navLinks');
-      navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
-      navLinks.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => navLinks.classList.remove('open'));
-      });
-
-      const revealObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            entry.target.querySelectorAll('.skill-bar-fill').forEach(bar => {
-              bar.style.width = bar.dataset.width;
-            });
-          }
-        });
-      }, { threshold: 0.12 });
-      document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
-    }
-
-    function hideLoader() {
-      const loader = document.getElementById('loader');
-      loader.classList.add('hidden');
-      setTimeout(() => loader.remove(), 500);
-    }
-
-    async function init() {
-      if (SANITY_PROJECT_ID === 'YOUR_PROJECT_ID') {
-        renderContent(DEMO_DATA);
-        hideLoader();
-        const banner = document.createElement('div');
-        banner.className = 'demo-banner';
-        banner.innerHTML = '⚠️ 当前为演示数据 · 在 index.html 中配置 Sanity Project ID 后生效';
-        document.body.appendChild(banner);
-        return;
-      }
+    async function init(){
+      let settings = null;
+      let remoteSections = null;
       try {
         const { createClient } = await import('https://esm.sh/@sanity/client@6.22.2');
-        const client = createClient({
-          projectId: SANITY_PROJECT_ID,
-          dataset: SANITY_DATASET,
-          apiVersion: SANITY_API_VERSION,
-          useCdn: true,
-        });
-        const [settings, skills] = await Promise.all([
-          client.fetch('*[_type == "siteSettings"][0]{ ..., heroAvatar{asset->{url}}, aboutAvatar{asset->{url}}, works[]{ image{asset->{url}}, title, description, tags } }'),
-          client.fetch('*[_type == "skill"] | order(order asc) { title, description, icon, level, order }'),
-        ]);
-        const data = {
-          settings: { ...DEMO_DATA.settings, ...settings },
-          works: (settings && settings.works && settings.works.length > 0) ? settings.works : DEMO_DATA.works,
-          skills: (skills && skills.length > 0) ? skills : DEMO_DATA.skills,
-        };
-        renderContent(data);
-      } catch (err) {
-        console.warn('Sanity 连接失败，使用演示数据:', err.message);
-        renderContent(DEMO_DATA);
-        const banner = document.createElement('div');
-        banner.className = 'demo-banner';
-        banner.innerHTML = '⚠️ Sanity 连接失败，当前为演示数据 · 请检查 Project ID 和 CORS 配置';
-        document.body.appendChild(banner);
-      } finally {
-        hideLoader();
+        const client = createClient({ projectId: '4i3qoqt0', dataset: 'production', apiVersion: '2024-01-01', useCdn: true });
+        const data = await client.fetch(`*[_type == "siteSettings"][0]{
+          ..., heroName, accentColor, cardRatio,
+          contactTitle, contactDesc, contactLinks,
+          works[]{ image{asset->{url}}, gallery[]{asset->{url}}, title, description, tags }
+        }`);
+        if (data){
+          settings = data;
+          if (data.works && data.works.length){
+            remoteSections = data.works.map((w, i) => {
+              const local = LOCAL_SECTIONS[i] || LOCAL_SECTIONS[0];
+              const cover = (w.image && w.image.asset && w.image.asset.url) ? (w.image.asset.url + '?w=900&q=80&auto=format') : local.cover;
+              const gallery = (w.gallery && w.gallery.length)
+                ? w.gallery.map(g => (g.asset && g.asset.url) ? (g.asset.url + '?w=1400&q=80&auto=format') : '').filter(Boolean)
+                : local.gallery;
+              return {
+                slug: local.slug, num: local.num,
+                title: w.title || local.title,
+                en: local.en,
+                desc: w.description || local.desc,
+                tags: w.tags || local.tags,
+                cover, gallery
+              };
+            });
+          }
+        }
+      } catch (err){
+        console.warn('Sanity 拉取失败，使用本地默认：', err.message);
       }
+
+      applyTheme(settings);
+      renderWorks(remoteSections || LOCAL_SECTIONS);
+      renderContact(settings);
     }
     init();
   </script>
