@@ -6,8 +6,8 @@
  *   heroName / contactPhone / contactWechat / contactEmail
  *   works[]                        作品（顺序 = 页面顺序，hide=true 隐藏）
  *     .title / .hide
- *     .slots[]                     有序图片数组，按顺序填入页面 [data-slot]
- *       .asset -> path   .alt     .focus（object-position，如 "50% 30%"）
+ *     .slots[]                     图片槽位（.name = 页面 data-slot 编号，按名匹配）
+ *       .name  .asset -> path   .alt     .focus（object-position，如 "50% 30%"）
  * ============================================================ */
 (function () {
   /* ---------- 移动端导航折叠 ---------- */
@@ -62,27 +62,33 @@
       if (s.contactWechat) setText(".contact .grp:nth-child(2) .val", s.contactWechat);
       if (s.contactEmail) setText(".contact .grp:nth-child(3) .val", s.contactEmail);
 
-      /* 作品槽位：works[] 顺序展开，hide=true 跳过 */
+      /* 作品槽位：按槽位编号（name）精确匹配；无 name 的旧数据按顺序兜底 */
       var works = (s.works || []).filter(function (w) { return !w.hide; });
       var slotEls = Array.prototype.slice.call(document.querySelectorAll("[data-slot]"));
-      var flat = [];
-      works.forEach(function (w) { (w.slots || []).forEach(function (sl) { flat.push(sl); }); });
-      var n = Math.min(flat.length, slotEls.length);
-      for (var i = 0; i < n; i++) {
-        var url = imageUrl(flat[i].asset && flat[i].asset.path);
-        if (!url) continue;
-        var el = slotEls[i];
+      var byName = {};
+      var ordered = [];
+      works.forEach(function (w) {
+        (w.slots || []).forEach(function (sl) {
+          ordered.push(sl);
+          if (sl && sl.name) byName[sl.name] = sl;
+        });
+      });
+      slotEls.forEach(function (el) {
+        var sl = byName[el.getAttribute("data-slot")] || ordered.shift();
+        if (!sl) return;
+        var url = imageUrl(sl.asset && sl.asset.path);
+        if (!url) return;
         var img = el.tagName === "IMG" ? el : el.querySelector("img");
         if (img) {
           img.src = url;
-          if (flat[i].alt) img.alt = flat[i].alt;
-          if (flat[i].focus) img.style.objectPosition = flat[i].focus;
+          if (sl.alt) img.alt = sl.alt;
+          if (sl.focus) img.style.objectPosition = sl.focus;
         } else {
           el.style.backgroundImage = "url('" + url + "')";
           el.style.backgroundSize = "cover";
-          el.style.backgroundPosition = flat[i].focus || "center";
+          el.style.backgroundPosition = sl.focus || "center";
         }
-      }
+      });
     })
     .catch(function () {
       /* 静默失败：使用本地图片与文案 */
