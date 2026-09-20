@@ -1,454 +1,326 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-page-node-id="V2owHPupcaj7YGMa3Bryd9">
-<head data-page-node-id="JNEUTTvrb1P8SLieIBDvoJ">
-  <meta charset="UTF-8" data-page-node-id="IVHYlmSBu0FbzYiDuIi9C3" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="G43L4drCKQm6ZDbwOPpMjR" />
-  <title>Portfolio · 视觉设计 · DESIGN CATALOG</title>
-  <style>
-    /* ============================================================
-       DESIGN CATALOG —— 深度色编辑式目录风格
-       黑底白字 / 索引编号 / 装饰衬体水印 / 眉头眉脚
-       ============================================================ */
-    :root {
-      --bg: #0a0a0a;
-      --bg-2: #141414;
-      --line: #2a2a2a;
-      --text: #f5f5f3;
-      --text-soft: #a8a8a0;
-      --text-faint: #6a6a64;
-      --accent: #ff6a6a;
-      --max-width: 1320px;
-      --pad: clamp(20px, 5vw, 56px);
-      --card-ratio: 1 / 1;
-      --font-site: "Helvetica Neue", "Inter", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
-      --font-serif: "Cormorant Garamond", "Times New Roman", "Songti SC", "宋体", serif;
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; background: var(--bg); }
-    body {
-      background: var(--bg); color: var(--text);
-      font-family: var(--font-site);
-      -webkit-font-smoothing: antialiased; line-height: 1.6; overflow-x: hidden;
-    }
-    a { color: inherit; text-decoration: none; }
-    img { max-width: 100%; display: block; }
-
-    ::selection { background: var(--accent); color: var(--bg); }
-
-    /* 眉头眉脚 bar */
-    .top-bar, .bottom-bar {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 14px var(--pad);
-      font-size: 11px; font-weight: 600; letter-spacing: .22em;
-      text-transform: uppercase; color: var(--text-soft);
-      border-bottom: 1px solid var(--line);
-    }
-    .bottom-bar { border-bottom: none; border-top: 1px solid var(--line); }
-
-    /* ============================================================
-       HERO —— 装饰水印 + 大字标题 + 左侧小目录
-       ============================================================ */
-    .hero {
-      position: relative; min-height: calc(100vh - 100px);
-      display: flex; align-items: center; justify-content: center;
-      padding: clamp(60px, 10vh, 120px) var(--pad);
-      border-bottom: 1px solid var(--line); overflow: hidden;
-    }
-    /* 巨型衬体水印 */
-    .watermark {
-      position: absolute; left: 50%; top: 50%;
-      transform: translate(-50%, -50%);
-      font-family: var(--font-serif);
-      font-style: italic; font-weight: 700;
-      font-size: clamp(120px, 18vw, 280px);
-      letter-spacing: -0.02em;
-      color: rgba(255,255,255,.035);
-      white-space: nowrap; pointer-events: none; user-select: none;
-      line-height: 1;
-    }
-    .hero-grid {
-      position: relative; z-index: 2; max-width: var(--max-width);
-      margin: 0 auto; width: 100%;
-      display: grid; grid-template-columns: 1fr 1.4fr; gap: clamp(40px, 6vw, 100px);
-      align-items: center;
-    }
-    .hero-left { display: flex; flex-direction: column; gap: 28px; }
-    .toc { list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 13px; }
-    .toc li { border-bottom: 1px solid var(--line); }
-    .toc li a {
-      display: flex; align-items: baseline; gap: 18px;
-      padding: 8px 0; width: 100%;
-      transition: color .25s ease, padding .25s ease;
-    }
-    .toc li a:hover { color: var(--accent); padding-left: 8px; }
-    .toc .num { font-family: var(--font-serif); font-size: 22px; font-weight: 600; color: var(--text-faint); min-width: 36px; }
-    .toc .en { font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--text-faint); min-width: 120px; }
-    .toc .cn { font-weight: 600; letter-spacing: .04em; }
-
-    .hero-right { position: relative; }
-    .hero-eyebrow {
-      display: inline-block; font-size: 11px; font-weight: 700;
-      letter-spacing: .28em; text-transform: uppercase; color: var(--accent);
-      margin-bottom: 32px;
-    }
-    .hero-title {
-      font-size: clamp(64px, 12vw, 180px); font-weight: 800;
-      letter-spacing: -0.04em; line-height: 0.92; margin-bottom: 36px;
-    }
-    .hero-title .accent { color: var(--accent); }
-    .hero-sub {
-      font-size: clamp(18px, 2vw, 26px); color: var(--text-soft);
-      letter-spacing: 0.4em; font-weight: 500;
-    }
-    .scroll-hint {
-      position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
-      font-size: 10px; letter-spacing: .28em; text-transform: uppercase;
-      color: var(--text-faint);
-      display: flex; flex-direction: column; align-items: center; gap: 8px;
-    }
-    .scroll-hint .arrow {
-      width: 1px; height: 30px; background: var(--text-faint); position: relative;
-    }
-    .scroll-hint .arrow::after {
-      content: ""; position: absolute; bottom: 0; left: 50%;
-      width: 6px; height: 6px; border-right: 1px solid var(--text-faint);
-      border-bottom: 1px solid var(--text-faint); transform: translate(-50%, 50%) rotate(45deg);
-    }
-
-    /* ============================================================
-       作品 SECTION —— 索引化 2x2 编辑网格
-       ============================================================ */
-    .works { padding: clamp(60px, 10vh, 130px) 0 clamp(80px, 12vh, 160px); }
-    .works-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--pad); }
-
-    .works-head {
-      display: flex; justify-content: space-between; align-items: baseline;
-      margin-bottom: clamp(48px, 7vw, 88px); padding-bottom: 24px;
-      border-bottom: 1px solid var(--line);
-    }
-    .works-head .label {
-      font-size: 11px; font-weight: 700; letter-spacing: .28em;
-      text-transform: uppercase; color: var(--text-soft);
-    }
-    .works-head .year {
-      font-family: var(--font-serif); font-size: 28px; font-weight: 600;
-      color: var(--text-faint); letter-spacing: .04em;
-    }
-
-    .works-grid {
-      display: grid; grid-template-columns: repeat(2, 1fr);
-      gap: clamp(32px, 5vw, 80px) clamp(28px, 4vw, 60px);
-    }
-
-    .work-card { display: block; color: inherit; cursor: pointer; }
-    .work-card .thumb {
-      position: relative; aspect-ratio: var(--card-ratio);
-      border-radius: 4px; overflow: hidden; background: var(--bg-2);
-      margin-bottom: 26px;
-    }
-    .work-card .thumb img {
-      width: 100%; height: 100%; object-fit: cover;
-      transition: transform .7s cubic-bezier(.2,.7,.2,1), opacity .5s ease;
-    }
-    .work-card:hover .thumb img { transform: scale(1.04); }
-    .work-card .thumb .index {
-      position: absolute; top: 18px; left: 20px;
-      font-family: var(--font-serif); font-size: 56px; font-weight: 600;
-      color: rgba(255,255,255,.92); line-height: 1;
-      mix-blend-mode: difference;
-    }
-    .work-card .meta { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--line); margin-bottom: 16px; }
-    .work-card .meta .t {
-      font-size: clamp(22px, 2.4vw, 32px); font-weight: 800;
-      letter-spacing: -0.02em;
-    }
-    .work-card .meta .en {
-      font-size: 11px; letter-spacing: .22em; text-transform: uppercase;
-      color: var(--text-faint); font-weight: 600;
-    }
-    .work-card .desc {
-      font-size: 15px; color: var(--text-soft); line-height: 1.7;
-      max-width: 480px; margin-bottom: 18px;
-    }
-    .work-card .tags { display: flex; flex-wrap: wrap; gap: 8px; }
-    .work-card .tags span {
-      font-size: 11px; font-weight: 600; letter-spacing: .12em;
-      text-transform: uppercase; color: var(--text-faint);
-      border: 1px solid var(--line); padding: 5px 12px; border-radius: 100px;
-    }
-    .work-card .view-link {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-size: 12px; font-weight: 700; letter-spacing: .2em;
-      text-transform: uppercase; color: var(--text);
-      margin-top: 12px; padding-bottom: 4px;
-      border-bottom: 1px solid var(--text);
-      transition: color .25s ease, gap .25s ease;
-    }
-    .work-card:hover .view-link { color: var(--accent); gap: 14px; border-color: var(--accent); }
-
-    /* ============================================================
-       联系区 —— 编辑式
-       ============================================================ */
-    .contact { padding: clamp(60px, 10vh, 140px) 0; border-top: 1px solid var(--line); position: relative; overflow: hidden; }
-    .contact-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--pad); position: relative; z-index: 2; }
-    .contact h2 {
-      font-size: clamp(48px, 9vw, 140px); font-weight: 800;
-      letter-spacing: -0.04em; line-height: 1.0; margin-bottom: 32px;
-    }
-    .contact h2 .accent { color: var(--accent); }
-    .contact p { font-size: clamp(16px, 1.6vw, 20px); color: var(--text-soft); max-width: 640px; margin-bottom: 44px; }
-    .contact-links { display: flex; flex-wrap: wrap; gap: 12px; }
-    .contact-link {
-      font-size: 13px; font-weight: 600; letter-spacing: .1em;
-      padding: 13px 24px; border-radius: 100px;
-      border: 1px solid var(--text); transition: background .3s ease, color .3s ease;
-    }
-    .contact-link:hover { background: var(--text); color: var(--bg); }
-
-    .contact .watermark-sm {
-      position: absolute; right: -60px; bottom: -80px;
-      font-family: var(--font-serif); font-style: italic; font-weight: 700;
-      font-size: clamp(80px, 12vw, 180px);
-      color: rgba(255,255,255,.04);
-      pointer-events: none; user-select: none; line-height: 1;
-    }
-
-    /* ============================================================
-       响应式
-       ============================================================ */
-    @media (max-width: 900px) {
-      .hero-grid { grid-template-columns: 1fr; gap: 40px; }
-      .works-grid { grid-template-columns: 1fr; gap: 56px; }
-      .toc { flex-direction: row; flex-wrap: wrap; gap: 16px 28px; }
-      .toc li { border: none; padding: 0; }
-      .toc .en { display: none; }
-    }
-    @media (max-width: 640px) {
-      .top-bar, .bottom-bar { font-size: 10px; letter-spacing: .18em; }
-    }
-  </style>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>李金山 · 视觉设计作品集</title>
+<meta name="description" content="李金山 品牌视觉设计师作品集：品牌设计 / 主视觉KV / 视觉版式 / 字体设计" />
+<link rel="stylesheet" href="styles.css" />
 </head>
-<body data-page-node-id="QaqNBxlXeU6MRo7cC2vcsq">
+<body>
 
-  <!-- 眉头 -->
-  <div class="top-bar" data-page-node-id="LQqhFAsYlFJIsvwFmHh0JT">
-    <span data-page-node-id="Jood4s5FFXHMMNLNrIzGXW">@Design Catalog</span>
-    <span data-page-node-id="Fu6g726JYQBLOxEDDl2BHd">Brand &amp; Visual Design</span>
+<!-- 顶部固定细导航 -->
+<nav class="topbar">
+  <span class="brand">LI JINSHAN</span>
+  <a href="#home">目录</a>
+  <a href="#c01">01 品牌设计</a>
+  <a href="#c02">02 主视觉KV</a>
+  <a href="#c03">03 视觉&amp;版式</a>
+  <a href="#c04">04 字体设计</a>
+  <span class="sp"></span>
+  <a class="top" href="#home">TOP ↑</a>
+</nav>
+
+<!-- ================= p01 首页 ================= -->
+<header id="home">
+  <div class="home-top">
+    <div class="wm25-stair">
+      <span style="left:calc(var(--u) * -76); top:calc(var(--u) * 615);">2</span>
+      <span style="left:calc(var(--u) * -15); top:calc(var(--u) * 701);">0</span>
+      <span style="left:calc(var(--u) * 35);  top:calc(var(--u) * 808);">2</span>
+      <span style="left:calc(var(--u) * 71);  top:calc(var(--u) * 932);">5</span>
+    </div>
+    <div class="wm25-col"><span>2</span><span>0</span><span>2</span><span>5</span><span>2</span><span>0</span><span>2</span><span>5</span><span>2</span><span>0</span><span>2</span><span>5</span></div>
+
+    <div class="dir">
+      <a class="it" href="#c01"><span class="cn">品牌设计</span><span class="en">Brand design</span><span class="num">01</span></a>
+      <a class="it todo" href="#c02"><span class="cn">主视觉KV设计</span><span class="en">Main visual KV design</span><span class="num">02</span></a>
+      <a class="it todo" href="#c03"><span class="cn">视觉&amp;版式</span><span class="en">Visual&amp;Layout</span><span class="num">03</span></a>
+      <a class="it todo" href="#c04"><span class="cn">字体设计</span><span class="en">Font Design</span><span class="num">04</span></a>
+    </div>
+
+    <div class="contact">
+      <div class="grp"><div class="lbl">Mobile Phone</div><div class="val">18210265989</div></div>
+      <div class="grp"><div class="lbl">Wechat</div><div class="val">a18210265989</div></div>
+      <div class="grp"><div class="lbl">E-mail</div><div class="val">392027594@qq.com</div></div>
+    </div>
+
+    <h1 class="hero-t">视觉设计</h1>
+    <div class="hero-s">三维/插画/版式</div>
+    <p class="hero-b">As a visual brand designer this past year, I led multiple brand visual system upgrades, with select cases recognized by industry awards. By mastering AI-aided tools and motion design, I enhanced innovation and execution efficiency in brand storytelling.</p>
+    <div class="role cn">视觉设计师</div>
+    <div class="role en">Brand Visual designer</div>
+
+    <div class="deco-c">
+      <div class="c">C</div>
+      <div class="t r1">ONTACT</div>
+      <div class="t r2">INFORMATION</div>
+    </div>
+    <div class="please">Please Enjoy</div>
+
+    <div class="grey-slot gs1" data-slot="home_grey1"></div>
+    <div class="grey-slot gs2" data-slot="home_grey2"></div>
   </div>
 
-  <!-- HERO -->
-  <header class="hero" data-page-node-id="cUh8IDH46rGRyfAQBz57gk">
-    <div class="watermark" data-page-node-id="BefDlmRdDRTOFfcwRT6wnb">Portfolio Design</div>
-    <div class="hero-grid" data-page-node-id="3Mxk6MAwjS316525dRSvsB">
-      <div class="hero-left" data-page-node-id="rHbaAzXar411lz39rV74wY">
-        <ul class="toc" id="toc">
-          <li><a href="project.html?i=0"><span class="num">01</span><span class="en">Brand Design</span><span class="cn">品牌设计</span></a></li>
-          <li><a href="project.html?i=1"><span class="num">02</span><span class="en">Main Visual KV</span><span class="cn">主视觉 KV</span></a></li>
-          <li><a href="project.html?i=2"><span class="num">03</span><span class="en">Visual Layout</span><span class="cn">视觉 &amp; 版式</span></a></li>
-          <li><a href="project.html?i=3"><span class="num">04</span><span class="en">Font Design</span><span class="cn">字体设计</span></a></li>
-        </ul>
-      </div>
-      <div class="hero-right" data-page-node-id="5nB3uV0ClyaFlUNau8EjEA">
-        <div class="hero-eyebrow" data-page-node-id="OZTRpEmnbE1ofkiv2DZaDJ">© 2025 / Visual Designer</div>
-        <h1 class="hero-title" id="heroTitle" data-page-node-id="6WjbzFHavuEMGlXJmzWxlM">视觉<span class="accent" data-page-node-id="F2XIlXe4dqyjTG1gTxHrhE">设计</span></h1>
-        <p class="hero-sub" data-page-node-id="hgKTEDbmXQRPIsobeW6u8G">三维 / 插画 / 版式</p>
-      </div>
-    </div>
-    <div class="scroll-hint" data-page-node-id="Bl5EGXsBtCsgvBnixh5fWr">
-      <span data-page-node-id="ZoUbDo68dwjkFsO4E4tiF5">Scroll</span>
-      <span class="arrow" data-page-node-id="gmfLMxrT6hnh7Gt4meNVoQ"></span>
-    </div>
-  </header>
+  <div class="home-bar"><span>@DESIGN CATALOG</span><span>Brand&amp;Visual Design</span></div>
 
-  <!-- WORKS -->
-  <section class="works" id="work" data-page-node-id="3kqXPkppuFBHJE721s47mP">
-    <div class="works-wrap" data-page-node-id="6gZQch5NFTAF4HCUOLDKdk">
-      <div class="works-head" data-page-node-id="KLagJgWASRrIyNoz65UjB5">
-        <span class="label" data-page-node-id="QwJKNQNXA4KiucqAwqfTgM">© 2025 / Selected Works</span>
-        <span class="year" data-page-node-id="zGqNiOfKVMVKGilQAlGnv8">Vol. 01</span>
-      </div>
-      <div class="works-grid" id="worksGrid" data-page-node-id="jJMSDMexDPK7wAO0GdPGLR"></div>
+  <div class="exp-section">
+    <div class="exp-portrait" data-slot="home_portrait"><img src="images/v2/p01_portrait.webp" alt="李金山" /></div>
+    <div class="job">
+      <div class="co">北京甜蜜点礼品有限公司</div>
+      <div class="meta"><span class="role">产品视觉设计师</span><span class="date">2025.06-2025.10</span></div>
+      <p class="desc">公司作为盒马等大型商超线下鲜花礼品供货渠道，打造鲜花产品，包括但不限于各大节日节气（例如七夕节、情人节、中秋节、圣诞节、新年等）鲜花礼品、鲜花联名品等。</p>
     </div>
-  </section>
-
-  <!-- CONTACT -->
-  <section class="contact" id="contact" data-page-node-id="DmhAjtckWXOtHFrcejsJ7O">
-    <div class="watermark-sm" data-page-node-id="QFfe5U32TJpM1S0vkB3DwB">2025</div>
-    <div class="contact-wrap" data-page-node-id="GKPAdEgqmSToLHeFSx3zbd">
-      <h2 id="contactTitle" data-page-node-id="iriRLFvDQRJn1cUqNNCs7F">有项目想<span class="accent" data-page-node-id="B3v5iUJdM8DwhPvPm9F6oT">聊聊</span>？</h2>
-      <p id="contactDesc" data-page-node-id="t5D8uRteliYV5zXJQgkFRx">无论是品牌设计、视觉延展还是排版需求，欢迎随时联系。</p>
-      <div class="contact-links" id="contactLinks" data-page-node-id="PNLUN76MFHBVYJdYQs1h47"></div>
+    <div class="job">
+      <div class="co">央广优选供应链有限公司</div>
+      <div class="meta"><span class="role">设计主管</span><span class="date">2024.04-2025.02</span></div>
+      <p class="desc">品牌视觉设计，根据公司产品研发，进行产品视觉研发，监督供应商产品生产落地，产品包括但不限于（中秋礼品、端午礼品、酒类）等其他产品。后期监督产落地，并为产品制作一系列推广视觉设计。</p>
+      <p class="pt"><b>01</b>：前期对接供应商，现场确认物料产品细节，对产品结果负责，并跟进打样环节，后期确认大货，监督包装生产流程，确保产品无误。</p>
+      <p class="pt"><b>02</b>：线上线下海报宣传，针对产品进行推广设计，包括但不限于移动端运营位海报设计，产品详情页、折页、其他渠道推广设计等，围绕着产品进行一系列设计工作。</p>
+      <p class="pt"><b>03</b>：开展公司其他设计工作，包括不限于节日宣发海报，公司门头标志设计，朋友圈海报，微信小程序界面设计等公司其他工作。配合公司工作调整，进行不同种类设计工作。</p>
     </div>
-  </section>
+    <div class="job">
+      <div class="co">东业兴吉（北京）文化传媒有限公司</div>
+      <div class="meta"><span class="role">视觉设计师</span><span class="date">2019.08-2024.04</span></div>
+    </div>
+    <div class="job">
+      <div class="co">联想（北京）有限公司</div>
+      <div class="meta"><span class="role">视觉设计师</span><span class="date">2017.08-2019.03</span></div>
+    </div>
+  </div>
+</header>
 
-  <!-- 眉脚 -->
-  <div class="bottom-bar" data-page-node-id="nyB7mHsWqK0FwnldVAN94n">
-    <span id="footerText" data-page-node-id="Acx4uwjutrebLiP0hqHzzy">© 2025 · Brand &amp; Visual Design</span>
-    <span data-page-node-id="CTAAl4PT7tto77mUkDhBwd">Lijinshan Portfolio</span>
+<!-- ================= 01 品牌设计 · 听粽（p02–p04） ================= -->
+<section id="c01">
+  <!-- 章头带 -->
+  <div class="ch-head">
+    <div class="giant">01</div>
+    <div class="cn-t">品牌设计</div>
+    <div class="en-t">BRAND DESIGN</div>
+    <div class="mini-nav">
+      <div class="it"><div class="cn2">主视觉KV设计</div><div class="en2">Main Visual KV Design</div></div>
+      <div class="it"></div>
+      <div class="it"><div class="cn2">视觉&amp;版式</div><div class="en2">Visual&amp;Layout</div></div>
+      <div class="it"><div class="cn2">字体设计</div><div class="en2">Font Design</div></div>
+    </div>
+    <p class="bio">As a visual brand designer this past year, I led multiple brand visual system upgrades, with select cases recognized by industry awards. By mastering AI-aided tools and motion design, I enhanced innovation and execution efficiency in brand storytelling.</p>
+    <svg class="ring" viewBox="0 0 300 300">
+      <defs><path id="ringpath" d="M150,150 m-105,0 a105,105 0 1,1 210,0 a105,105 0 1,1 -210,0" /></defs>
+      <text font-size="52" letter-spacing="10"><textPath href="#ringpath">2025 2025 2025 2025</textPath></text>
+    </svg>
+    <div class="wm25-left">2025</div>
   </div>
 
-  <script type="module">
-    // ============================================================
-    // 本地默认数据（来自 PDF）
-    // ============================================================
-    const LOCAL_SECTIONS = [
-      {
-        slug: 'brand',
-        num: '01',
-        title: '品牌设计',
-        en: 'Brand Design',
-        desc: '从品牌定位、视觉语言到落地物料的完整品牌体系设计，覆盖 Logo / VI / 字体 / 辅助图形。',
-        tags: ['LOGO', 'VI', '字体设计', '辅助图形'],
-        cover: 'images/01_brand/p02_img08_7632bb9a.webp',
-        gallery: [
-          'images/01_brand/p02_img07_b6d2fdf0.webp',
-          'images/01_brand/p02_img05_74e57ae1.webp',
-          'images/01_brand/p02_img06_d159f940.webp',
-          'images/01_brand/p01_img01_aab024af.webp'
-        ]
-      },
-      {
-        slug: 'kv',
-        num: '02',
-        title: '主视觉 KV',
-        en: 'Main Visual KV',
-        desc: '产品发布会主视觉、电商详情页、传播海报。围绕产品核心卖点的视觉锤与延展系统。',
-        tags: ['主视觉', 'KV', '电商详情', '延展'],
-        cover: 'images/02_kv/p11_img02_dc8c69ee.webp',
-        gallery: [
-          'images/02_kv/p10_img02_591f9536.webp',
-          'images/02_kv/p10_img04_d5dcbd36.webp',
-          'images/02_kv/p10_img05_283a91a8.webp',
-          'images/02_kv/p11_img05_990165b5.webp',
-          'images/02_kv/p11_img04_15f01808.webp'
-        ]
-      },
-      {
-        slug: 'visual',
-        num: '03',
-        title: '视觉 & 版式',
-        en: 'Visual & Layout',
-        desc: '包装设计、节庆礼盒、品牌活动推广物料。从 0-1 全流程包装设计到延展物料，兼顾美感与落地。',
-        tags: ['包装', '礼盒', '活动推广', '排版'],
-        cover: 'images/03_visual/p03_img02_544eb040.webp',
-        gallery: [
-          'images/03_visual/p03_img03_7766e262.webp',
-          'images/03_visual/p03_img05_b384cc2d.webp',
-          'images/03_visual/p03_img07_c1a387af.webp',
-          'images/03_visual/p04_img04_93e0c765.webp',
-          'images/03_visual/p04_img05_ecce3855.webp',
-          'images/03_visual/p05_img01_77a33cd4.webp',
-          'images/03_visual/p06_img01_623229af.webp',
-          'images/03_visual/p08_img01_fd922c3b.webp'
-        ]
-      },
-      {
-        slug: 'font',
-        num: '04',
-        title: '字体设计',
-        en: 'Font Design',
-        desc: '中英体字字体设计与商业字库应用。兼顾屏幕显示与印刷质感，服务于品牌视觉系统。',
-        tags: ['中文字体', '英文字体', '字库'],
-        cover: 'images/04_font/p13_img03_57f77ee3.webp',
-        gallery: [
-          'images/04_font/p13_img02_360df3ad.webp',
-          'images/04_font/p13_img01_13ffd8e0.webp'
-        ]
-      }
-    ];
+  <div class="runbar"><span>@DESIGN CATALOG</span><span>Brand&amp;Visual Design</span></div>
 
-    function applyTheme(s){
-      const root = document.documentElement;
-      if (s && s.accentColor) root.style.setProperty('--accent', s.accentColor);
-      const ratioMap = { '1/1':'1 / 1', '16/11':'16 / 11', '4/5':'4 / 5', '3/2':'3 / 2' };
-      if (s && s.cardRatio && ratioMap[s.cardRatio]) root.style.setProperty('--card-ratio', ratioMap[s.cardRatio]);
-    }
+  <!-- 项目背景 / 目标 / 总结 -->
+  <div class="secA">
+    <div class="l">
+      <div class="tt3">TINGZONG<br />BRAND&amp;PACKAGING DESIGN<br />听粽品牌&amp;包装设计</div>
+      <div class="labels">
+        <div>品牌策划</div>
+        <div>标识设计</div>
+        <div>视觉设计</div>
+        <div>包装设计</div>
+      </div>
+    </div>
+    <div class="r">
+      <div class="blk">
+        <div class="h">项目背景</div>
+        <p class="para">随着消费者对生活和品质与文化的不断追求，粽子市场从单纯的"节日刚需"转向"情感消费+日常零食"的转型期，近年来，突出高端化（礼盒装市场份额快速攀升，消费者愿为文化附加值买单）年轻化（设计需兼顾传统节庆符号与潮流表达）等等，所以该项目要打造具有文化内涵与年轻化的双重需求，建立长期价值。</p>
+      </div>
+      <div class="blk">
+        <div class="h">项目目标</div>
+        <p class="para">解决市场痛点：打破"传统=陈旧""潮流=浮夸"，构建传统与现代结合的视觉风格。提升品牌知名度，吸引年轻化客户。</p>
+      </div>
+      <div class="blk">
+        <div class="h">总结</div>
+        <p class="para">在竞争加剧与消费升级的双重驱动下，从传统文化入手去挖掘，需通过文化厚度角度进行思考设计，为消费者带来全新的美学与情感体验，本项目将以此为目标，重塑品牌视觉。</p>
+      </div>
+    </div>
+  </div>
 
-    function escapeHtml(s){ if(!s) return ''; const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+  <div class="runbar" style="margin-top:calc(var(--u) * 100);"><span>@DESIGN CATALOG</span><span>Brand&amp;Visual Design</span></div>
 
-    function renderWorks(sections){
-      const grid = document.getElementById('worksGrid');
-      grid.innerHTML = sections.map((s, i) => `
-        <a class="work-card" href="project.html?i=${i}">
-          <div class="thumb">
-            <img src="${s.cover}" alt="${escapeHtml(s.title)}" loading="lazy" />
-            <span class="index">${s.num}</span>
-          </div>
-          <div class="meta">
-            <span class="t">${escapeHtml(s.title)}</span>
-            <span class="en">${escapeHtml(s.en)}</span>
-          </div>
-          <p class="desc">${escapeHtml(s.desc)}</p>
-          <div class="tags">${(s.tags||[]).map(t=>`<span>${escapeHtml(t)}</span>`).join('')}</div>
-          <span class="view-link">查看作品 →</span>
-        </a>
-      `).join('');
-    }
+  <div class="bandimg"><img src="images/v2/p02_band.webp" alt="听粽 · 古画意境长卷" style="width:100%; height:auto;" data-slot="c01_band" /></div>
 
-    function renderContact(settings){
-      const titleEl = document.getElementById('contactTitle');
-      const descEl = document.getElementById('contactDesc');
-      const linksEl = document.getElementById('contactLinks');
-      if (settings){
-        if (settings.contactTitle){
-          titleEl.innerHTML = escapeHtml(settings.contactTitle).replace(/\*\*(.+?)\*\*/g, '<span class="accent">$1</span>');
-        }
-        if (settings.contactDesc) descEl.textContent = settings.contactDesc;
-        if (settings.contactLinks && settings.contactLinks.length){
-          linksEl.innerHTML = settings.contactLinks.map(l =>
-            `<a href="${escapeHtml(l.url||'#')}" class="contact-link">${escapeHtml(l.label||'')}</a>`
-          ).join('');
-        }
-      }
-      // 默认联系方式（真实信息从 PDF）
-      linksEl.innerHTML = linksEl.innerHTML || `
-        <a href="mailto:392027594@qq.com" class="contact-link">📧 Email · 392027594@qq.com</a>
-        <a href="tel:18210265989" class="contact-link">📱 Phone · 18210265989</a>
-        <a href="#" class="contact-link">💬 WeChat · a18210265989</a>
-      `;
-    }
+  <!-- 品牌关键词 / 定位 / 理念 -->
+  <div class="secB">
+    <div class="l">
+      <div class="tt2">品牌关键词</div>
+      <div class="circles">
+        <div class="cc">年轻化</div>
+        <div class="cc">传统与现代结合</div>
+        <div class="cc">国风</div>
+      </div>
+    </div>
+    <div class="r">
+      <div class="blk">
+        <div class="h">品牌定位</div>
+        <p class="para">面向20到40岁的年轻与中年群体，传统文化与现代视觉融合，打造具有视觉冲击力与体现传统文化的产品，设计灵感来源于古画作【清院本十二月令图轴·五月绢本设色】，将元素提炼出来，名称融入与"听"相结合的概念，打破常规，表达文化理念，帮助打造传统与现代结合的产品。</p>
+      </div>
+      <div class="blk">
+        <div class="h">品牌理念</div>
+        <p class="para">解构千年文化中的无声诗画，将古卷中的气韵、留白、笔墨转化为现代视觉语言，让年轻一代在喧嚣中"听见"传统文化的呼吸，让中年群体在传承中"看见"当代美学的觉醒。做一座横跨时空的文化桥梁，让传统不沉默，让创新不浮夸。</p>
+      </div>
+    </div>
+  </div>
 
-    async function init(){
-      let settings = null;
-      let remoteSections = null;
-      try {
-        const { createClient } = await import('https://esm.sh/@sanity/client@6.22.2');
-        const client = createClient({ projectId: '4i3qoqt0', dataset: 'production', apiVersion: '2024-01-01', useCdn: true });
-        const data = await client.fetch(`*[_type == "siteSettings"][0]{
-          ..., heroName, accentColor, cardRatio,
-          contactTitle, contactDesc, contactLinks,
-          works[]{ image{asset->{url}}, gallery[]{asset->{url}}, title, description, tags }
-        }`);
-        if (data){
-          settings = data;
-          if (data.works && data.works.length){
-            remoteSections = data.works.map((w, i) => {
-              const local = LOCAL_SECTIONS[i] || LOCAL_SECTIONS[0];
-              const cover = (w.image && w.image.asset && w.image.asset.url) ? (w.image.asset.url + '?w=900&q=80&auto=format') : local.cover;
-              const gallery = (w.gallery && w.gallery.length)
-                ? w.gallery.map(g => (g.asset && g.asset.url) ? (g.asset.url + '?w=1400&q=80&auto=format') : '').filter(Boolean)
-                : local.gallery;
-              return {
-                slug: local.slug, num: local.num,
-                title: w.title || local.title,
-                en: local.en,
-                desc: w.description || local.desc,
-                tags: w.tags || local.tags,
-                cover, gallery
-              };
-            });
-          }
-        }
-      } catch (err){
-        console.warn('Sanity 拉取失败，使用本地默认：', err.message);
-      }
+  <div class="runbar" style="margin-top:calc(var(--u) * 100);"><span>@DESIGN CATALOG</span><span>Brand&amp;Visual Design</span></div>
 
-      applyTheme(settings);
-      renderWorks(remoteSections || LOCAL_SECTIONS);
-      renderContact(settings);
-    }
-    init();
-  </script>
+  <!-- LOGO -->
+  <div class="secC">
+    <div class="l">
+      <div class="big-t">品牌视觉设计</div>
+      <div class="big-e">Visual Brand<br />Design</div>
+      <div class="tt2 tt"><span class="en">LOGO DESIGN</span><span class="cn">标志设计</span></div>
+      <p class="para">听粽的标志设计，在图形上以中式方形框架为基础，融入粽叶元素，粽叶在视觉上以长条形为主，所以根据粽叶形态，字体设计同样采样修长字体，视觉上突出轻盈与秀丽，风格简约，融入文化内涵与现代审美，传递出和谐的品牌理念。<br />字体部分，"听"字笔画采取粽叶末端形状，体现品牌特点，选用无衬线体，易于延展与识别，突出品牌特点。</p>
+    </div>
+    <div class="logo-slot" data-slot="c01_logo"><img src="images/v2/p02_logo.webp" alt="听粽 LOGO 字体设计" /></div>
+  </div>
+
+  <div class="runbar" style="margin-top:calc(var(--u) * 100);"><span>@DESIGN CATALOG</span><span>Brand&amp;Visual Design</span></div>
+
+  <!-- 辅助图形 & 品牌色 -->
+  <div class="secD">
+    <div class="head">
+      <div class="tt tt2"><span class="en">AUXILIARY GRAPHICS&amp;BRAND COLORS</span><span class="cn">辅助图形&amp;品牌色</span></div>
+      <p class="para">辅助图形提取传统吉祥纹样，包括如意纹、长寿锁纹，事事如意纹，莲花纹，将传统纹样融入品牌当中，体现产品吉祥与美好的寓意，搭配中国古代传统颜色，与纹样遥相呼应。</p>
+    </div>
+    <div class="grid">
+      <div class="cells">
+        <div class="phrow">
+          <div class="cell-photo" data-slot="c01_photo_ruyi"><img src="images/v2/p02_photo_ruyi.webp" alt="玉如意纹样" /></div>
+          <div class="cell-photo" data-slot="c01_photo_lock"><img src="images/v2/p02_photo_lock.webp" alt="长寿锁纹样" /></div>
+        </div>
+        <div class="swrow">
+          <div class="sw"><div class="blk" style="background:#36724A;"></div><div class="spec" style="color:#e9d8be;">36724A<br />CMYK：81 47 84 7<br />RGB：54 114 74</div></div>
+          <div class="sw" data-slot="c01_seal_grn"><img src="images/v2/p02_seal_grn.webp" alt="听粽印章 · 绿" style="width:100%; height:100%; object-fit:cover;" /></div>
+          <div class="sw"><div class="blk" style="background:#B45732;"></div><div class="spec" style="color:#e9d8be;">B45732<br />CMYK：36 77 88 2<br />RGB：180 87 50</div></div>
+          <div class="sw" data-slot="c01_seal_org"><img src="images/v2/p02_seal_org.webp" alt="听粽印章 · 橙" style="width:100%; height:100%; object-fit:cover;" /></div>
+        </div>
+        <div class="phrow">
+          <div class="cell-photo" data-slot="c01_photo_shi"><img src="images/v2/p02_photo_shi.webp" alt="柿柿如意纹样" /></div>
+          <div class="cell-photo" data-slot="c01_photo_lian"><img src="images/v2/p02_photo_lian.webp" alt="莲华纹样" /></div>
+        </div>
+        <div class="swrow">
+          <div class="sw"><div class="blk" style="background:#B37533;"></div><div class="spec" style="color:#e9d8be;">B37533<br />CMYK：37 61 89 0<br />RGB：179 117 51</div></div>
+          <div class="sw" data-slot="c01_seal_gld"><img src="images/v2/p02_seal_gld.webp" alt="听粽印章 · 金" style="width:100%; height:100%; object-fit:cover;" /></div>
+          <div class="sw"><div class="blk" style="background:#566B30;"></div><div class="spec" style="color:#e9d8be;">566B30<br />CMYK：72 51 100 12<br />RGB：86 107 48</div></div>
+          <div class="sw" data-slot="c01_seal_olv"><img src="images/v2/p02_seal_olv.webp" alt="听粽印章 · 橄榄" style="width:100%; height:100%; object-fit:cover;" /></div>
+        </div>
+      </div>
+      <div class="swatches">
+        <div class="bigsw" style="background:#ECDBC1;">
+          <div class="spec" style="color:#c39459;">ECDBC1<br />CMYK：10 16 26 0<br />RGB：236 219 193</div>
+        </div>
+        <div class="bigsw" style="background:#FFF6ED;">
+          <div class="spec" style="color:#c39459;">FFF6ED<br />CMYK：0 6 8 0<br />RGB：255 246 237</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 图形提取 -->
+  <div class="secE">
+    <div class="cols">
+      <div class="l">
+        <div class="tt tt2"><span class="en">BRAND VISION</span><span class="cn">品牌视觉</span></div>
+        <div class="tt2 tt"><span class="en">LOONG BOAT PATTERN EXTRACTION</span><span class="cn">龙舟图案提取</span></div>
+        <p class="para">产品不仅仅是当代年轻人的产品，更是透出人文气息的产品。将传统文化与现代美学相结合，为消费者带来新一代的中式美学。</p>
+      </div>
+      <div class="r">
+        <div class="tt2 tt"><span class="en">KITE PATTERN</span><span class="cn">风筝图案提取</span></div>
+        <p class="para">结合传统风筝纹样，端午节正值风筝季节。彩鸾云里剪飞絮，双双风鹤舞初春。</p>
+      </div>
+    </div>
+    <div class="arts">
+      <div class="a1" data-slot="c01_boat_ref"><img src="images/v2/p02_boat_ref.webp" alt="古画参考" /></div>
+      <div class="a2" data-slot="c01_boat_art"><img src="images/v2/p02_boat_art.webp" alt="龙舟图案" /></div>
+      <div class="a3" data-slot="c01_kite_art"><img src="images/v2/p02_kite_art.webp" alt="风筝图案" /></div>
+    </div>
+  </div>
+
+  <div class="runbar" style="margin-top:calc(var(--u) * 120);"><span>@DESIGN CATALOG</span><span>Brand&amp;Visual Design</span></div>
+
+  <!-- 文案提取 -->
+  <div class="secF">
+    <div class="l">
+      <div class="tt tt2"><span class="en">TEXT EXTRACTION</span><span class="cn">文案提取</span></div>
+      <p class="para">根据品牌特点，结合品"声"的寓意，进行品牌广告语提炼，提取古代诗词句式，进行归纳，在不失传统文化的调性下，进行创作。</p>
+      <div class="poem-tiles">
+        <img src="images/v2/p02_poem_1.webp" alt="粽声沸 乡音归" data-slot="c01_poem1" />
+        <img src="images/v2/p02_poem_2.webp" alt="叶簌语 香润耳" data-slot="c01_poem2" />
+        <img src="images/v2/p02_poem_3.webp" alt="叩古韵 品新声" data-slot="c01_poem3" />
+        <img src="images/v2/p02_poem_4.webp" alt="传情响 听团圆" data-slot="c01_poem4" />
+      </div>
+    </div>
+    <div class="poems">
+      <div class="main">听风裹叶绿&emsp;叶底江河涌</div>
+      <div class="it"><div class="p1">粽声沸&emsp;乡音归</div><div class="p2">粽叶轻启</div></div>
+      <div class="it"><div class="p1">叩古韵&emsp;品新声</div><div class="p2">叶间藏音</div></div>
+      <div class="it"><div class="p1">叶簌语&emsp;香润耳</div><div class="p2">声沸唐宋</div></div>
+      <div class="it"><div class="p1">传情响&emsp;听团圆</div><div class="p2">慢嚼古韵</div></div>
+    </div>
+  </div>
+
+  <!-- ===== p03 物料应用墙 ===== -->
+  <div class="runbar"><span>@DESIGN CATALOG</span><span>Brand&amp;Visual Design</span></div>
+  <div class="collage" style="height:calc(var(--u) * 3060);">
+    <div class="ab" style="left:calc(var(--u)*140); top:calc(var(--u)*40);   width:calc(var(--u)*815); height:calc(var(--u)*823);" data-slot="c01_bag"><img src="images/v2/p03_bag.webp" alt="听粽手提袋" /></div>
+    <div class="ab" style="left:calc(var(--u)*935); top:calc(var(--u)*50);   width:calc(var(--u)*80);  height:calc(var(--u)*200);"><img src="images/v2/p03_sticker.webp" alt="贴纸" /></div>
+    <div class="ab" style="left:calc(var(--u)*960); top:calc(var(--u)*430);  width:calc(var(--u)*190); height:calc(var(--u)*439);" data-slot="c01_bookmark"><img src="images/v2/p03_bookmark.webp" alt="书签吊牌" /></div>
+    <div class="ab" style="left:calc(var(--u)*1238);top:calc(var(--u)*115);  width:calc(var(--u)*571); height:calc(var(--u)*205);" data-slot="c01_banner1"><img src="images/v2/p03_banner1.webp" alt="横幅 · 龙舟" /></div>
+    <div class="ab" style="left:calc(var(--u)*1234);top:calc(var(--u)*325);  width:calc(var(--u)*575); height:calc(var(--u)*215);" data-slot="c01_banner2"><img src="images/v2/p03_banner2.webp" alt="横幅 · 粽子" /></div>
+    <div class="ab" style="left:calc(var(--u)*1310);top:calc(var(--u)*500);  width:calc(var(--u)*435); height:calc(var(--u)*335);" data-slot="c01_stickers"><img src="images/v2/p03_stickers.webp" alt="异形贴纸组" /></div>
+    <div class="ab" style="left:calc(var(--u)*150); top:calc(var(--u)*865);  width:calc(var(--u)*1106);height:calc(var(--u)*637);" data-slot="c01_bigbanner"><img src="images/v2/p03_bigbanner.webp" alt="龙舟大横幅" /></div>
+    <div class="ab" style="left:calc(var(--u)*1314);top:calc(var(--u)*859);  width:calc(var(--u)*454); height:calc(var(--u)*639);" data-slot="c01_kitepost"><img src="images/v2/p03_kitepost.webp" alt="风筝海报" /></div>
+    <div class="ab" style="left:calc(var(--u)*154); top:calc(var(--u)*1562); width:calc(var(--u)*280); height:calc(var(--u)*340);" data-slot="c01_card1"><img src="images/v2/p03_card1.webp" alt="名片组" /></div>
+    <div class="ab" style="left:calc(var(--u)*482); top:calc(var(--u)*1556); width:calc(var(--u)*628); height:calc(var(--u)*346);" data-slot="c01_card2"><img src="images/v2/p03_card2.webp" alt="风筝横卡" /></div>
+    <div class="ab" style="left:calc(var(--u)*1152);top:calc(var(--u)*1562); width:calc(var(--u)*196); height:calc(var(--u)*339);" data-slot="c01_card3"><img src="images/v2/p03_card3.webp" alt="竖版卡" /></div>
+    <div class="ab" style="left:calc(var(--u)*1394);top:calc(var(--u)*1555); width:calc(var(--u)*500); height:calc(var(--u)*346);" data-slot="c01_card4"><img src="images/v2/p03_card4.webp" alt="双联卡" /></div>
+    <div class="ab" style="left:calc(var(--u)*140); top:calc(var(--u)*1942); width:calc(var(--u)*1780);height:calc(var(--u)*213);" data-slot="c01_hband1"><img src="images/v2/p03_hband1.webp" alt="横幅条 · 艾草链/壹茶就粽" /></div>
+    <div class="ab" style="left:calc(var(--u)*140); top:calc(var(--u)*2205); width:calc(var(--u)*1780);height:calc(var(--u)*225);" data-slot="c01_hband2"><img src="images/v2/p03_hband2.webp" alt="横幅条 2" /></div>
+    <div class="ab" style="left:calc(var(--u)*153); top:calc(var(--u)*2440); width:calc(var(--u)*549); height:calc(var(--u)*245);" data-slot="c01_mask1"><img src="images/v2/p03_mask1.webp" alt="口罩 · 龙舟" /></div>
+    <div class="ab" style="left:calc(var(--u)*517); top:calc(var(--u)*2440); width:calc(var(--u)*593); height:calc(var(--u)*245);" data-slot="c01_mask2"><img src="images/v2/p03_mask2.webp" alt="口罩 · 风筝" /></div>
+    <div class="ab" style="left:calc(var(--u)*1305);top:calc(var(--u)*2440); width:calc(var(--u)*610); height:calc(var(--u)*245);" data-slot="c01_tape"><img src="images/v2/p03_tape.webp" alt="纸胶带" /></div>
+    <div class="ab" style="left:calc(var(--u)*150); top:calc(var(--u)*2630); width:calc(var(--u)*290); height:calc(var(--u)*400);" data-slot="c01_poster1"><img src="images/v2/p03_poster1.webp" alt="海报 1" /></div>
+    <div class="ab" style="left:calc(var(--u)*440); top:calc(var(--u)*2630); width:calc(var(--u)*295); height:calc(var(--u)*400);" data-slot="c01_poster2"><img src="images/v2/p03_poster2.webp" alt="海报 2" /></div>
+    <div class="ab" style="left:calc(var(--u)*735); top:calc(var(--u)*2630); width:calc(var(--u)*290); height:calc(var(--u)*400);" data-slot="c01_poster3"><img src="images/v2/p03_poster3.webp" alt="海报 3" /></div>
+    <div class="ab" style="left:calc(var(--u)*1025);top:calc(var(--u)*2630); width:calc(var(--u)*296); height:calc(var(--u)*400);" data-slot="c01_poster4"><img src="images/v2/p03_poster4.webp" alt="海报 4" /></div>
+    <div class="ab" style="left:calc(var(--u)*1402);top:calc(var(--u)*2630); width:calc(var(--u)*402); height:calc(var(--u)*400);" data-slot="c01_letter"><img src="images/v2/p03_letter.webp" alt="信纸" /></div>
+  </div>
+
+  <!-- ===== p04 包装 3D 展示 ===== -->
+  <div class="runbar"><span>@DESIGN CATALOG</span><span>Brand&amp;Visual Design</span></div>
+  <div class="collage" style="height:calc(var(--u) * 7250);">
+    <div class="ab" style="left:calc(var(--u)*52);  top:calc(var(--u)*59);"><span class="tag-box">物料设计展示</span></div>
+    <div class="ab poem-en" style="left:calc(var(--u)*25); top:calc(var(--u)*183);">Listen as the wind swathes the leaves in lush green, beneath which rivers of memory surge; the vibrant echoes of zongzi resound, familiar hometown voices returns—tapping into ancient rhythms while savoring new melodies. Leaves whisper their secrets, scent caresses the ear, feelings resonate in melody—hear the call of reunion.</div>
+    <div class="ab" style="left:calc(var(--u)*399); top:calc(var(--u)*180);  width:calc(var(--u)*1500);height:calc(var(--u)*902);" data-slot="c01_board1"><img src="images/v2/p04_board1.webp" alt="信纸 / 信封 / 名片板" /></div>
+    <div class="ab" style="left:calc(var(--u)*24);  top:calc(var(--u)*1189); width:calc(var(--u)*767); height:calc(var(--u)*791);" data-slot="c01_torn"><img src="images/v2/p04_torn.webp" alt="撕角海报" /></div>
+    <div class="ab" style="left:calc(var(--u)*960); top:calc(var(--u)*1189); width:calc(var(--u)*936); height:calc(var(--u)*744);" data-slot="c01_bag4"><img src="images/v2/p04_bag.webp" alt="手提袋" /></div>
+    <div class="ab" style="left:calc(var(--u)*1582);top:calc(var(--u)*2097);"><span class="tag-box">物料设计展示</span></div>
+    <div class="ab" style="left:calc(var(--u)*24);  top:calc(var(--u)*2225); width:calc(var(--u)*1497);height:calc(var(--u)*903);" data-slot="c01_board2"><img src="images/v2/p04_board2.webp" alt="信封信纸板" /></div>
+    <div class="ab" style="left:calc(var(--u)*1211);top:calc(var(--u)*3244);"><span class="tag-box">物料设计展示</span></div>
+    <div class="ab poem-en" style="left:calc(var(--u)*1184);top:calc(var(--u)*3369);">Listen as the wind swathes the leaves in lush green, beneath which rivers of memory surge; the vibrant echoes of zongzi resound, familiar hometown voices returns—tapping into ancient rhythms while savoring new melodies. Leaves whisper their secrets, scent caresses the ear, feelings resonate in melody—hear the call of reunion.</div>
+    <div class="ab" style="left:calc(var(--u)*24);  top:calc(var(--u)*3374); width:calc(var(--u)*616); height:calc(var(--u)*688);" data-slot="c01_jars"><img src="images/v2/p04_jars.webp" alt="罐体渲染" /></div>
+    <div class="ab" style="left:calc(var(--u)*1582);top:calc(var(--u)*4356);"><span class="tag-box">物料设计展示</span></div>
+    <div class="ab" style="left:calc(var(--u)*24);  top:calc(var(--u)*4483); width:calc(var(--u)*1257);height:calc(var(--u)*698);" data-slot="c01_longbox1"><img src="images/v2/p04_longbox1.webp" alt="长条礼盒渲染" /></div>
+    <div class="ab" style="left:calc(var(--u)*24);  top:calc(var(--u)*5181); width:calc(var(--u)*1256);height:calc(var(--u)*673);" data-slot="c01_longbox2"><img src="images/v2/p04_longbox2.webp" alt="盒组渲染" /></div>
+    <div class="ab" style="left:calc(var(--u)*52);  top:calc(var(--u)*5926);"><span class="tag-box">物料设计展示</span></div>
+    <div class="ab" style="left:calc(var(--u)*638); top:calc(var(--u)*5917); width:calc(var(--u)*1257);height:calc(var(--u)*1314);" data-slot="c01_giftbox"><img src="images/v2/p04_giftbox.webp" alt="礼盒渲染组" /></div>
+    <div class="ab poem-en" style="left:calc(var(--u)*25); top:calc(var(--u)*7129);">Listen as the wind swathes the leaves in lush green, beneath which rivers of memory surge; the vibrant echoes of zongzi resound, familiar hometown voices returns—tapping into ancient rhythms while savoring new melodies. Leaves whisper their secrets, scent caresses the ear, feelings resonate in melody—hear the call of reunion.</div>
+    <div class="ab" style="right:calc(var(--u)*14); top:calc(var(--u)*3923); display:flex; flex-direction:column; align-items:center; gap:calc(var(--u)*14); font-family:var(--font-num); font-weight:500; font-size:calc(var(--u)*59.5); line-height:1; color:rgba(255,255,255,.12);">
+      <span>2</span><span>0</span><span>2</span><span>5</span><span>2</span><span>0</span><span>2</span><span>5</span><span>2</span><span>0</span><span>2</span><span>5</span>
+    </div>
+  </div>
+</section>
+
+<!-- 02/03/04 章节占位：第四阶段补齐 -->
+<div id="c02" style="height:1px;"></div>
+<div id="c03" style="height:1px;"></div>
+<div id="c04" style="height:1px;"></div>
+
+<script src="data.js"></script>
 </body>
 </html>
