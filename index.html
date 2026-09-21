@@ -14,22 +14,22 @@
 
 <!-- 顶部固定细导航 -->
 <nav class="topbar" id="topbar">
-  <span class="brand">LI JINSHAN</span>
+  <span class="brand" data-content="navigation.brand"></span>
   <button class="burger" id="burger" aria-label="打开导航" aria-expanded="false">☰</button>
   <div class="menu">
-    <a href="#home">目录</a>
-    <a href="#c01">01 品牌设计</a>
-    <a href="#c02">02 主视觉KV</a>
-    <a href="#c03">03 视觉&amp;版式</a>
-    <a href="#c04">04 字体设计</a>
+    <a href="#home" data-content="navigation.menu.0"></a>
+    <a href="#c01" data-content="navigation.menu.1"></a>
+    <a href="#c02" data-content="navigation.menu.2"></a>
+    <a href="#c03" data-content="navigation.menu.3"></a>
+    <a href="#c04" data-content="navigation.menu.4"></a>
     <span class="sp"></span>
-    <a class="top" href="#home">TOP ↑</a>
+    <a class="top" href="#home" data-content="navigation.top"></a>
   </div>
 </nav>
 
 <!-- ================= p01 首页 ================= -->
 <header id="home" data-zoom>
-  <div class="home-top">
+  <div class="home-top" data-scene>
     <div class="wm25-stair">
       <span style="left:calc(var(--u) * -76); top:calc(var(--u) * 615);">2</span>
       <span style="left:calc(var(--u) * -15); top:calc(var(--u) * 701);">0</span>
@@ -39,16 +39,16 @@
     <div class="wm25-col"><span>2</span><span>0</span><span>2</span><span>5</span><span>2</span><span>0</span><span>2</span><span>5</span><span>2</span><span>0</span><span>2</span><span>5</span></div>
 
     <div class="dir">
-      <a class="it" href="#c01"><span class="cn">品牌设计</span><span class="en">Brand design</span><span class="num">01</span></a>
-      <a class="it todo" href="#c02"><span class="cn">主视觉KV设计</span><span class="en">Main visual KV design</span><span class="num">02</span></a>
-      <a class="it todo" href="#c03"><span class="cn">视觉&amp;版式</span><span class="en">Visual&amp;Layout</span><span class="num">03</span></a>
-      <a class="it todo" href="#c04"><span class="cn">字体设计</span><span class="en">Font Design</span><span class="num">04</span></a>
+      <a class="it" href="#c01"><span class="cn" data-content="navigation.dir.0.cn"></span><span class="en" data-content="navigation.dir.0.en"></span><span class="num" data-content="navigation.dir.0.num"></span></a>
+      <a class="it todo" href="#c02"><span class="cn" data-content="navigation.dir.1.cn"></span><span class="en" data-content="navigation.dir.1.en"></span><span class="num" data-content="navigation.dir.1.num"></span></a>
+      <a class="it todo" href="#c03"><span class="cn" data-content="navigation.dir.2.cn"></span><span class="en" data-content="navigation.dir.2.en"></span><span class="num" data-content="navigation.dir.2.num"></span></a>
+      <a class="it todo" href="#c04"><span class="cn" data-content="navigation.dir.3.cn"></span><span class="en" data-content="navigation.dir.3.en"></span><span class="num" data-content="navigation.dir.3.num"></span></a>
     </div>
 
     <div class="contact">
-      <div class="grp"><div class="lbl">Mobile Phone</div><div class="val" data-content="contact.phone"></div></div>
-      <div class="grp"><div class="lbl">Wechat</div><div class="val" data-content="contact.wechat"></div></div>
-      <div class="grp"><div class="lbl">Mobile Phone</div><div class="val" data-content="contact.email"></div></div>
+      <div class="grp"><div class="lbl" data-content="contact.labels.0"></div><div class="val" data-content="contact.phone"></div></div>
+      <div class="grp"><div class="lbl" data-content="contact.labels.1"></div><div class="val" data-content="contact.wechat"></div></div>
+      <div class="grp"><div class="lbl" data-content="contact.labels.2"></div><div class="val" data-content="contact.email"></div></div>
     </div>
 
     <h1 class="hero-t" data-content="hero.title"></h1>
@@ -58,19 +58,19 @@
     <div class="role en" data-content="hero.roleEn"></div>
 
     <div class="deco-c">
-      <div class="c">C</div>
-      <div class="t r1">ONTACT</div>
-      <div class="t r2">INFORMATION</div>
+      <div class="c" data-content="hero.decoInitial"></div>
+      <div class="t r1" data-content="hero.decoLine1"></div>
+      <div class="t r2" data-content="hero.decoLine2"></div>
     </div>
-    <div class="please">Please Enjoy</div>
+    <div class="please" data-content="hero.please"></div>
 
     <div class="grey-slot gs1" data-slot="home-grey-01"></div>
     <div class="grey-slot gs2" data-slot="home-grey-02"></div>
   </div>
 
-  <div class="home-bar"><span>@DESIGN CATALOG</span><span>Brand&amp;Visual Design</span></div>
+  <div class="home-bar"><span data-content="catalog.left"></span><span data-content="catalog.right"></span></div>
 
-  <div class="exp-section">
+  <div class="exp-section" data-scene>
     <div class="exp-portrait" data-slot="home-portrait"><img src="images/v2/p01_portrait.webp" alt="李金山" /></div>
     <div class="job">
       <div class="co" data-content="about.jobs.0.co"></div>
@@ -81,9 +81,9 @@
       <div class="co" data-content="about.jobs.1.co"></div>
       <div class="meta"><span class="role" data-content="about.jobs.1.role"></span><span class="date" data-content="about.jobs.1.date"></span></div>
       <p class="desc" data-content="about.jobs.1.desc"></p>
-      <p class="pt"><b>01</b>：前期对接供应商，现场确认物料产品细节，对产品结果负责，并跟进打样环节，后期确认大货，监督包装生产流程，确保产品无误。</p>
-      <p class="pt"><b>02</b>：线上线下海报宣传，针对产品进行推广设计，包括但不限于移动端运营位海报设计，产品详情页、折页、其他渠道推广设计等，围绕着产品进行一系列设计工作。</p>
-      <p class="pt"><b>03</b>：开展公司其他设计工作，包括不限于节日宣发海报，公司门头标志设计，朋友圈海报，微信小程序界面设计等公司其他工作。配合公司工作调整，进行不同种类设计工作。</p>
+      <p class="pt"><b data-content="about.jobs.1.ptnum.0"></b>：<span data-content="about.jobs.1.pt.0"></span></p>
+      <p class="pt"><b data-content="about.jobs.1.ptnum.1"></b>：<span data-content="about.jobs.1.pt.1"></span></p>
+      <p class="pt"><b data-content="about.jobs.1.ptnum.2"></b>：<span data-content="about.jobs.1.pt.2"></span></p>
     </div>
     <div class="job">
       <div class="co" data-content="about.jobs.2.co"></div>
@@ -99,99 +99,99 @@
 <!-- ================= 01 品牌设计 · 听粽（p02–p04） ================= -->
 <section id="c01" data-zoom>
   <!-- 章头带 -->
-  <div class="ch-head">
-    <div class="giant">01</div>
+  <div class="ch-head" data-scene>
+    <div class="giant" data-content="works.0.number"></div>
     <h2 class="cn-t" data-content="works.0.title"></h2>
-    <div class="en-t">BRAND DESIGN</div>
+    <div class="en-t" data-content="works.0.subtitle"></div>
     <div class="mini-nav">
-      <div class="it"><div class="cn2">主视觉KV设计</div><div class="en2">Main Visual KV Design</div></div>
+      <div class="it"><div class="cn2" data-content="works.0.mininav.0.cn"></div><div class="en2" data-content="works.0.mininav.0.en"></div></div>
       <div class="it"></div>
-      <div class="it"><div class="cn2">视觉&amp;版式</div><div class="en2">Visual&amp;Layout</div></div>
-      <div class="it"><div class="cn2">字体设计</div><div class="en2">Font Design</div></div>
+      <div class="it"><div class="cn2" data-content="works.0.mininav.2.cn"></div><div class="en2" data-content="works.0.mininav.2.en"></div></div>
+      <div class="it"><div class="cn2" data-content="works.0.mininav.3.cn"></div><div class="en2" data-content="works.0.mininav.3.en"></div></div>
     </div>
     <p class="bio" data-content="works.0.description"></p>
     <svg class="ring" viewBox="0 0 300 300">
       <defs><path id="ringpath" d="M150,150 m-105,0 a105,105 0 1,1 210,0 a105,105 0 1,1 -210,0" /></defs>
-      <text font-size="52" letter-spacing="10"><textPath href="#ringpath">2025 2025 2025 2025</textPath></text>
+      <text font-size="52" letter-spacing="10"><textPath href="#ringpath" data-content="works.0.yearring">2025 2025 2025 2025</textPath></text>
     </svg>
-    <div class="wm25-left">2025</div>
+    <div class="wm25-left" data-content="works.0.year"></div>
   </div>
 
-  <div class="runbar"><span>@DESIGN CATALOG</span><span>Brand&amp;Visual Design</span></div>
+  <div class="runbar"><span data-content="catalog.left"></span><span data-content="catalog.right"></span></div>
 
   <!-- 项目背景 / 目标 / 总结 -->
-  <div class="secA">
+  <div class="secA" data-scene>
     <div class="l">
-      <h2 class="tt3">TINGZONG<br />BRAND&amp;PACKAGING DESIGN<br />听粽品牌&amp;包装设计</h2>
+      <h2 class="tt3" data-content="works.0.blocks.projectid.body"></h2>
       <div class="labels">
-        <div>品牌策划</div>
-        <div>标识设计</div>
-        <div>视觉设计</div>
-        <div>包装设计</div>
+        <div data-content="works.0.blocks.tags.items.0"></div>
+        <div data-content="works.0.blocks.tags.items.1"></div>
+        <div data-content="works.0.blocks.tags.items.2"></div>
+        <div data-content="works.0.blocks.tags.items.3"></div>
       </div>
     </div>
     <div class="r">
       <div class="blk">
-        <h3 class="h">项目背景</h3>
-        <p class="para">随着消费者对生活和品质与文化的不断追求，粽子市场从单纯的"节日刚需"转向"情感消费+日常零食"的转型期，近年来，突出高端化（礼盒装市场份额快速攀升，消费者愿为文化附加值买单）年轻化（设计需兼顾传统节庆符号与潮流表达）等等，所以该项目要打造具有文化内涵与年轻化的双重需求，建立长期价值。</p>
+        <h3 class="h" data-content="works.0.blocks.background.title"></h3>
+        <div class="para" data-content="works.0.blocks.background.body"></div>
       </div>
       <div class="blk">
-        <h3 class="h">项目目标</h3>
-        <p class="para">解决市场痛点：打破"传统=陈旧""潮流=浮夸"，构建传统与现代结合的视觉风格。提升品牌知名度，吸引年轻化客户。</p>
+        <h3 class="h" data-content="works.0.blocks.goal.title"></h3>
+        <div class="para" data-content="works.0.blocks.goal.body"></div>
       </div>
       <div class="blk">
-        <h3 class="h">总结</h3>
-        <p class="para">在竞争加剧与消费升级的双重驱动下，从传统文化入手去挖掘，需通过文化厚度角度进行思考设计，为消费者带来全新的美学与情感体验，本项目将以此为目标，重塑品牌视觉。</p>
+        <h3 class="h" data-content="works.0.blocks.summary.title"></h3>
+        <div class="para" data-content="works.0.blocks.summary.body"></div>
       </div>
     </div>
   </div>
 
-  <div class="runbar" style="margin-top:calc(var(--u) * 100);"><span>@DESIGN CATALOG</span><span>Brand&amp;Visual Design</span></div>
+  <div class="runbar" style="margin-top:calc(var(--u) * 100);"><span data-content="catalog.left"></span><span data-content="catalog.right"></span></div>
 
-  <div class="bandimg"><img src="images/v2/p02_band.webp" alt="听粽 · 古画意境长卷" style="width:100%; height:auto;" data-slot="brand-01-band" /></div>
+  <div class="bandimg" data-scene><img src="images/v2/p02_band.webp" alt="听粽 · 古画意境长卷" style="width:100%; height:auto;" data-slot="brand-01-band" /></div>
 
   <!-- 品牌关键词 / 定位 / 理念 -->
-  <div class="secB">
+  <div class="secB" data-scene>
     <div class="l">
-      <h2 class="tt2">品牌关键词</h2>
+      <h2 class="tt2" data-content="works.0.blocks.keywords.title"></h2>
       <div class="circles">
-        <div class="cc">年轻化</div>
-        <div class="cc">传统与现代结合</div>
-        <div class="cc">国风</div>
+        <div class="cc" data-content="works.0.blocks.keywords.items.0"></div>
+        <div class="cc" data-content="works.0.blocks.keywords.items.1"></div>
+        <div class="cc" data-content="works.0.blocks.keywords.items.2"></div>
       </div>
     </div>
     <div class="r">
       <div class="blk">
-        <h3 class="h">品牌定位</h3>
-        <p class="para">面向 20 到 40 岁的年轻与中年群体，传统文化与现代视觉融合，打造具有视觉冲击力与体现传统文化的产品，设计灵感来源于古画作【清 清院本 十二月令图轴 五月绢本设色】，将元素提炼出来，名称融入与"听"相结合的概念，打破常规，表达文化理念，帮助打造传统与现代结合的产品。</p>
+        <h3 class="h" data-content="works.0.blocks.positioning.title"></h3>
+        <div class="para" data-content="works.0.blocks.positioning.body"></div>
       </div>
       <div class="blk">
-        <h3 class="h">品牌理念</h3>
-        <p class="para">解构千年文化中的无声诗画，将古卷中的气韵、留白、笔墨转化为现代视觉语言，让年轻一代在喧嚣中"听见"传统文化的呼吸，让中年群体在传承中"看见"当代美学的觉醒。做一座横跨时空的文化桥梁，让传统不沉默，让创新不浮夸。</p>
+        <h3 class="h" data-content="works.0.blocks.philosophy.title"></h3>
+        <div class="para" data-content="works.0.blocks.philosophy.body"></div>
       </div>
     </div>
   </div>
 
-  <div class="runbar" style="margin-top:calc(var(--u) * 100);"><span>@DESIGN CATALOG</span><span>Brand&amp;Visual Design</span></div>
+  <div class="runbar" style="margin-top:calc(var(--u) * 100);"><span data-content="catalog.left"></span><span data-content="catalog.right"></span></div>
 
   <!-- LOGO -->
-  <div class="secC">
+  <div class="secC" data-scene data-imgzoom>
     <div class="l">
-      <h2 class="big-t">品牌视觉设计</h2>
-      <div class="big-e">Visual Brand<br />Design</div>
-      <h2 class="tt2 tt"><span class="en">LOGO DESIGN</span><span class="cn">标志设计</span></h2>
-      <p class="para">听粽的标志设计，在图形上以中式方形框架为基础，融入粽叶元素，粽叶在视觉上以长条形为主，所以根据粽叶形态，字体设计同样采样修长字体，视觉上突出轻盈与秀丽，风格简约，融入文化内涵与现代审美，传递出和谐的品牌理念。<br />字体部分，"听"字笔画采取粽叶末端形状，体现品牌特点，选用无衬线体，易于延展与识别，突出品牌特点。</p>
+      <h2 class="big-t" data-content="works.0.blocks.visualbrand.title"></h2>
+      <div class="big-e" data-content="works.0.blocks.visualbrand.subtitle"></div>
+      <h2 class="tt2 tt"><span class="en" data-content="works.0.blocks.logodesign.subtitle"></span><span class="cn" data-content="works.0.blocks.logodesign.title"></span></h2>
+      <div class="para" data-content="works.0.blocks.logodesign.body"></div>
     </div>
     <div class="logo-slot" data-slot="brand-01-logo"><img src="images/v2/p02_logo.webp" alt="听粽 LOGO 字体设计" /></div>
   </div>
 
-  <div class="runbar" style="margin-top:calc(var(--u) * 100);"><span>@DESIGN CATALOG</span><span>Brand&amp;Visual Design</span></div>
+  <div class="runbar" style="margin-top:calc(var(--u) * 100);"><span data-content="catalog.left"></span><span data-content="catalog.right"></span></div>
 
   <!-- 辅助图形 & 品牌色 -->
-  <div class="secD">
+  <div class="secD" data-scene data-imgzoom>
     <div class="head">
-      <h2 class="tt tt2"><span class="en">AUXILIARY GRAPHICS&amp;BRAND COLORS</span><span class="cn">辅助图形&amp;品牌色</span></h2>
-      <p class="para">辅助图形提取传统吉祥纹样，包括如意纹、长寿锁纹，事事如意纹，莲花纹，将传统纹样融入品牌当中，体现产品吉祥与美好的寓意，搭配中国古代传统颜色，与纹样遥相呼应。</p>
+      <h2 class="tt tt2"><span class="en" data-content="works.0.blocks.auxgraphics.subtitle"></span><span class="cn" data-content="works.0.blocks.auxgraphics.title"></span></h2>
+      <div class="para" data-content="works.0.blocks.auxgraphics.body"></div>
     </div>
     <div class="grid">
       <div class="cells">
@@ -200,9 +200,9 @@
           <div class="cell-photo" data-slot="brand-01-pattern-02-lock"><img src="images/v2/p02_photo_lock.webp" alt="长寿锁纹样" /></div>
         </div>
         <div class="swrow">
-          <div class="sw"><div class="blk" style="background:#36724A;"></div><div class="spec" style="color:#e9d8be;">36724A<br />CMYK：81 47 84 7<br />RGB：54 114 74</div></div>
+          <div class="sw"><div class="blk" style="background:#36724A;"></div><div class="spec" style="color:#e9d8be;" data-content="works.0.blocks.colorspecs.items.0"></div></div>
           <div class="sw" data-slot="brand-01-seal-01-green"><img src="images/v2/p02_seal_grn.webp" alt="听粽印章 · 绿" style="width:100%; height:100%; object-fit:cover;" /></div>
-          <div class="sw"><div class="blk" style="background:#B45732;"></div><div class="spec" style="color:#e9d8be;">B45732<br />CMYK：36 77 88 2<br />RGB：180 87 50</div></div>
+          <div class="sw"><div class="blk" style="background:#B45732;"></div><div class="spec" style="color:#e9d8be;" data-content="works.0.blocks.colorspecs.items.1"></div></div>
           <div class="sw" data-slot="brand-01-seal-02-orange"><img src="images/v2/p02_seal_org.webp" alt="听粽印章 · 橙" style="width:100%; height:100%; object-fit:cover;" /></div>
         </div>
         <div class="phrow">
@@ -210,34 +210,34 @@
           <div class="cell-photo" data-slot="brand-01-pattern-04-lian"><img src="images/v2/p02_photo_lian.webp" alt="莲华纹样" /></div>
         </div>
         <div class="swrow">
-          <div class="sw"><div class="blk" style="background:#B37533;"></div><div class="spec" style="color:#e9d8be;">B37533<br />CMYK：37 61 89 0<br />RGB：179 117 51</div></div>
+          <div class="sw"><div class="blk" style="background:#B37533;"></div><div class="spec" style="color:#e9d8be;" data-content="works.0.blocks.colorspecs.items.2"></div></div>
           <div class="sw" data-slot="brand-01-seal-03-gold"><img src="images/v2/p02_seal_gld.webp" alt="听粽印章 · 金" style="width:100%; height:100%; object-fit:cover;" /></div>
-          <div class="sw"><div class="blk" style="background:#566B30;"></div><div class="spec" style="color:#e9d8be;">566B30<br />CMYK：72 51 100 12<br />RGB：86 107 48</div></div>
+          <div class="sw"><div class="blk" style="background:#566B30;"></div><div class="spec" style="color:#e9d8be;" data-content="works.0.blocks.colorspecs.items.3"></div></div>
           <div class="sw" data-slot="brand-01-seal-04-olive"><img src="images/v2/p02_seal_olv.webp" alt="听粽印章 · 橄榄" style="width:100%; height:100%; object-fit:cover;" /></div>
         </div>
       </div>
       <div class="swatches">
         <div class="bigsw" style="background:#ECDBC1;">
-          <div class="spec" style="color:#c39459;">ECDBC1<br />CMYK：10 16 26 0<br />RGB：236 219 193</div>
+          <div class="spec" style="color:#c39459;" data-content="works.0.blocks.colorspecs.items.4"></div>
         </div>
         <div class="bigsw" style="background:#FFF6ED;">
-          <div class="spec" style="color:#c39459;">FFF6ED<br />CMYK：0 6 8 0<br />RGB：255 246 237</div>
+          <div class="spec" style="color:#c39459;" data-content="works.0.blocks.colorspecs.items.5"></div>
         </div>
       </div>
     </div>
   </div>
 
   <!-- 图形提取 -->
-  <div class="secE">
+  <div class="secE" data-scene data-imgzoom>
     <div class="cols">
       <div class="l">
-        <h2 class="tt tt2"><span class="en">BRAND VISION</span><span class="cn">品牌视觉</span></h2>
-        <h3 class="tt2 tt"><span class="en">LOONG BOAT PATTERN EXTRACTION</span><span class="cn">龙舟图案提取</span></h3>
-        <p class="para">产品不仅仅是当代年轻人的产品，更是透出人文气息的产品。将传统文化与现代美学相结合，为消费者带来新一代的中式美学。</p>
+        <h2 class="tt tt2"><span class="en" data-content="works.0.blocks.brandvision.subtitle"></span><span class="cn" data-content="works.0.blocks.brandvision.title"></span></h2>
+        <h3 class="tt2 tt"><span class="en" data-content="works.0.blocks.boatpattern.subtitle"></span><span class="cn" data-content="works.0.blocks.boatpattern.title"></span></h3>
+        <div class="para" data-content="works.0.blocks.boatpattern.body"></div>
       </div>
       <div class="r">
-        <h3 class="tt2 tt"><span class="en">KITE PATTERN</span><span class="cn">风筝图案提取</span></h3>
-        <p class="para">结合传统风筝纹样，端午节正值风筝季节。彩鸾云里剪飞絮，双双风鹤舞初春。</p>
+        <h3 class="tt2 tt"><span class="en" data-content="works.0.blocks.kitepattern.subtitle"></span><span class="cn" data-content="works.0.blocks.kitepattern.title"></span></h3>
+        <div class="para" data-content="works.0.blocks.kitepattern.body"></div>
       </div>
     </div>
     <div class="arts">
@@ -247,13 +247,13 @@
     </div>
   </div>
 
-  <div class="runbar" style="margin-top:calc(var(--u) * 120);"><span>@DESIGN CATALOG</span><span>Brand&amp;Visual Design</span></div>
+  <div class="runbar" style="margin-top:calc(var(--u) * 120);"><span data-content="catalog.left"></span><span data-content="catalog.right"></span></div>
 
   <!-- 文案提取 -->
-  <div class="secF">
+  <div class="secF" data-scene data-imgzoom>
     <div class="l">
-      <h2 class="tt tt2"><span class="en">TEXT EXTRACTION</span><span class="cn">文案提取</span></h2>
-      <p class="para">根据品牌特点，结合品"声"的寓意，进行品牌广告语提炼，提取古代诗词句式，进行归纳，在不失传统文化的调性下，进行创作。</p>
+      <h2 class="tt tt2"><span class="en" data-content="works.0.blocks.textextraction.subtitle"></span><span class="cn" data-content="works.0.blocks.textextraction.title"></span></h2>
+      <div class="para" data-content="works.0.blocks.textextraction.body"></div>
       <div class="poem-tiles">
         <img src="images/v2/p02_poem_1.webp" alt="粽声沸 乡音归" data-slot="brand-01-poem-01" />
         <img src="images/v2/p02_poem_2.webp" alt="叶簌语 香润耳" data-slot="brand-01-poem-02" />
@@ -262,17 +262,17 @@
       </div>
     </div>
     <div class="poems">
-      <div class="main">听风裹叶绿&emsp;叶底江河涌</div>
-      <div class="it"><div class="p1">粽声沸&emsp;乡音归</div><div class="p2">粽叶轻启</div></div>
-      <div class="it"><div class="p1">叩古韵&emsp;品新声</div><div class="p2">叶间藏音</div></div>
-      <div class="it"><div class="p1">叶簌语&emsp;香润耳</div><div class="p2">声沸唐宋</div></div>
-      <div class="it"><div class="p1">传情响&emsp;听团圆</div><div class="p2">慢嚼古韵</div></div>
+      <div class="main" data-content="works.0.blocks.poems.items.0"></div>
+      <div class="it"><div class="p1" data-content="works.0.blocks.poems.items.1"></div><div class="p2" data-content="works.0.blocks.poems.items.2"></div></div>
+      <div class="it"><div class="p1" data-content="works.0.blocks.poems.items.3"></div><div class="p2" data-content="works.0.blocks.poems.items.4"></div></div>
+      <div class="it"><div class="p1" data-content="works.0.blocks.poems.items.5"></div><div class="p2" data-content="works.0.blocks.poems.items.6"></div></div>
+      <div class="it"><div class="p1" data-content="works.0.blocks.poems.items.7"></div><div class="p2" data-content="works.0.blocks.poems.items.8"></div></div>
     </div>
   </div>
 
   <!-- ===== p03 物料应用墙 ===== -->
-  <div class="runbar"><span>@DESIGN CATALOG</span><span>Brand&amp;Visual Design</span></div>
-  <div class="collage" style="height:calc(var(--u) * 3060);">
+  <div class="runbar"><span data-content="catalog.left"></span><span data-content="catalog.right"></span></div>
+  <div class="collage" style="height:calc(var(--u) * 3060);" data-scene>
     <div class="ab" style="left:calc(var(--u)*140); top:calc(var(--u)*40);   width:calc(var(--u)*815); height:calc(var(--u)*823);" data-slot="brand-02-bag"><img src="images/v2/p03_bag.webp" alt="听粽手提袋" /></div>
     <div class="ab" style="left:calc(var(--u)*935); top:calc(var(--u)*50);   width:calc(var(--u)*80);  height:calc(var(--u)*200);" data-slot="brand-02-sticker-overlay"><img src="images/v2/p03_sticker.webp" alt="贴纸" /></div>
     <div class="ab" style="left:calc(var(--u)*960); top:calc(var(--u)*430);  width:calc(var(--u)*190); height:calc(var(--u)*439);" data-slot="brand-02-bookmark"><img src="images/v2/p03_bookmark.webp" alt="书签吊牌" /></div>
@@ -298,24 +298,24 @@
   </div>
 
   <!-- ===== p04 包装 3D 展示 ===== -->
-  <div class="runbar"><span>@DESIGN CATALOG</span><span>Brand&amp;Visual Design</span></div>
-  <div class="collage" style="height:calc(var(--u) * 7250);">
-    <div class="ab" style="left:calc(var(--u)*52);  top:calc(var(--u)*59);"><span class="tag-box">物料设计展示</span></div>
-    <div class="ab poem-en" style="left:calc(var(--u)*25); top:calc(var(--u)*183);">Listen as the wind swathes the leaves in lush green, beneath which rivers of memory surge; the vibrant echoes of zongzi resound, familiar hometown voices returns—tapping into ancient rhythms while savoring new melodies. Leaves whisper their secrets, scent caresses the ear, feelings resonate in melody—hear the call of reunion.</div>
+  <div class="runbar"><span data-content="catalog.left"></span><span data-content="catalog.right"></span></div>
+  <div class="collage" style="height:calc(var(--u) * 7250);" data-scene>
+    <div class="ab" style="left:calc(var(--u)*52);  top:calc(var(--u)*59);"><span class="tag-box" data-content="works.0.blocks.showcase.items.0"></span></div>
+    <div class="ab poem-en" style="left:calc(var(--u)*25); top:calc(var(--u)*183);" data-content="works.0.blocks.epilogue.body"></div>
     <div class="ab" style="left:calc(var(--u)*399); top:calc(var(--u)*180);  width:calc(var(--u)*1500);height:calc(var(--u)*902);" data-slot="brand-03-board-01"><img src="images/v2/p04_board1.webp" alt="信纸 / 信封 / 名片板" /></div>
     <div class="ab" style="left:calc(var(--u)*24);  top:calc(var(--u)*1189); width:calc(var(--u)*767); height:calc(var(--u)*791);" data-slot="brand-03-poster-torn"><img src="images/v2/p04_torn.webp" alt="撕角海报" /></div>
     <div class="ab" style="left:calc(var(--u)*960); top:calc(var(--u)*1189); width:calc(var(--u)*936); height:calc(var(--u)*744);" data-slot="brand-03-bag"><img src="images/v2/p04_bag.webp" alt="手提袋" /></div>
-    <div class="ab" style="left:calc(var(--u)*1582);top:calc(var(--u)*2097);"><span class="tag-box">物料设计展示</span></div>
+    <div class="ab" style="left:calc(var(--u)*1582);top:calc(var(--u)*2097);"><span class="tag-box" data-content="works.0.blocks.showcase.items.1"></span></div>
     <div class="ab" style="left:calc(var(--u)*24);  top:calc(var(--u)*2225); width:calc(var(--u)*1497);height:calc(var(--u)*903);" data-slot="brand-03-board-02"><img src="images/v2/p04_board2.webp" alt="信封信纸板" /></div>
-    <div class="ab" style="left:calc(var(--u)*1211);top:calc(var(--u)*3244);"><span class="tag-box">物料设计展示</span></div>
-    <div class="ab poem-en" style="left:calc(var(--u)*1184);top:calc(var(--u)*3369);">Listen as the wind swathes the leaves in lush green, beneath which rivers of memory surge; the vibrant echoes of zongzi resound, familiar hometown voices returns—tapping into ancient rhythms while savoring new melodies. Leaves whisper their secrets, scent caresses the ear, feelings resonate in melody—hear the call of reunion.</div>
+    <div class="ab" style="left:calc(var(--u)*1211);top:calc(var(--u)*3244);"><span class="tag-box" data-content="works.0.blocks.showcase.items.2"></span></div>
+    <div class="ab poem-en" style="left:calc(var(--u)*1184);top:calc(var(--u)*3369);" data-content="works.0.blocks.epilogue.body"></div>
     <div class="ab" style="left:calc(var(--u)*24);  top:calc(var(--u)*3374); width:calc(var(--u)*616); height:calc(var(--u)*688);" data-slot="brand-03-jars"><img src="images/v2/p04_jars.webp" alt="罐体渲染" /></div>
-    <div class="ab" style="left:calc(var(--u)*1582);top:calc(var(--u)*4356);"><span class="tag-box">物料设计展示</span></div>
+    <div class="ab" style="left:calc(var(--u)*1582);top:calc(var(--u)*4356);"><span class="tag-box" data-content="works.0.blocks.showcase.items.3"></span></div>
     <div class="ab" style="left:calc(var(--u)*24);  top:calc(var(--u)*4483); width:calc(var(--u)*1257);height:calc(var(--u)*698);" data-slot="brand-03-longbox-01"><img src="images/v2/p04_longbox1.webp" alt="长条礼盒渲染" /></div>
     <div class="ab" style="left:calc(var(--u)*24);  top:calc(var(--u)*5181); width:calc(var(--u)*1256);height:calc(var(--u)*673);" data-slot="brand-03-longbox-02"><img src="images/v2/p04_longbox2.webp" alt="盒组渲染" /></div>
-    <div class="ab" style="left:calc(var(--u)*52);  top:calc(var(--u)*5926);"><span class="tag-box">物料设计展示</span></div>
+    <div class="ab" style="left:calc(var(--u)*52);  top:calc(var(--u)*5926);"><span class="tag-box" data-content="works.0.blocks.showcase.items.4"></span></div>
     <div class="ab" style="left:calc(var(--u)*638); top:calc(var(--u)*5917); width:calc(var(--u)*1257);height:calc(var(--u)*1314);" data-slot="brand-03-giftbox"><img src="images/v2/p04_giftbox.webp" alt="礼盒渲染组" /></div>
-    <div class="ab poem-en" style="left:calc(var(--u)*25); top:calc(var(--u)*7129);">Listen as the wind swathes the leaves in lush green, beneath which rivers of memory surge; the vibrant echoes of zongzi resound, familiar hometown voices returns—tapping into ancient rhythms while savoring new melodies. Leaves whisper their secrets, scent caresses the ear, feelings resonate in melody—hear the call of reunion.</div>
+    <div class="ab poem-en" style="left:calc(var(--u)*25); top:calc(var(--u)*7129);" data-content="works.0.blocks.epilogue.body"></div>
     <div class="ab" style="right:calc(var(--u)*14); top:calc(var(--u)*3923); display:flex; flex-direction:column; align-items:center; gap:calc(var(--u)*14); font-family:var(--font-num); font-weight:500; font-size:calc(var(--u)*59.5); line-height:1; color:rgba(255,255,255,.12);">
       <span>2</span><span>0</span><span>2</span><span>5</span><span>2</span><span>0</span><span>2</span><span>5</span><span>2</span><span>0</span><span>2</span><span>5</span>
     </div>

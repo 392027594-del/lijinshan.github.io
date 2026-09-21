@@ -66,6 +66,7 @@ ul { list-style:none; }
 .topbar .brand { font-weight:600; letter-spacing:.14em; margin-right:8px; }
 .topbar a { color:var(--text-soft); transition:color .2s; }
 .topbar a:hover { color:#fff; }
+.topbar .menu a.active { color:#fff; }
 .topbar .sp { flex:1; }
 .topbar .top { color:var(--text-faint); }
 .topbar .burger { display:none; background:none; border:0; color:#fff; font-size:16px; line-height:1; cursor:pointer; padding:4px 6px; }
