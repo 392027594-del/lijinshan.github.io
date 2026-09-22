@@ -428,7 +428,9 @@
        避免缩放轴落在屏幕外造成可见内容偏移
      - 纯 transform/opacity，不改文档流；URL 加 ?nocamera=1 可关闭 */
   try {
-    if (!/[?&]nocamera=1/.test(location.search)) {
+    var reducedMotion = window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!/[?&]nocamera=1/.test(location.search) && !reducedMotion) {
       document.documentElement.classList.add("camera-on");
       var CAM_TEXT = ".para, .lbl, .desc";
       var isNarrow = Math.min(window.innerWidth, document.documentElement.clientWidth) < 768;
