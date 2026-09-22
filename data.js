@@ -53,6 +53,7 @@
   /* ---------- 本地兜底文案（与 PDF 逐字一致） ---------- */
   var LOCAL = {
     navigation: {
+      pageTitle: "李金山 · 视觉设计作品集",
       brand: "LI JINSHAN",
       menu: ["目录", "01 品牌设计", "02 主视觉KV", "03 视觉&版式", "04 字体设计"],
       top: "TOP ↑",
@@ -315,6 +316,8 @@
 
   function imageUrl(ref) {
     if (!ref) return null;
+    /* 槽位查询取的是 asset.path（形如 images/<项目>/<数据集>/xxx.png）→ 直接拼 CDN 根 */
+    if (/^images\//.test(ref)) return "https://cdn.sanity.io/" + ref;
     var m = /^image-(.+)-(\d+x\d+)-(\w+)$/.exec(ref);
     if (m) return IMG + m[1] + "-" + m[2] + "." + (m[3] === "png" ? "png" : "webp");
     return IMG + ref.replace(/^image-/, "").replace(/-(png|jpg|jpeg|webp)$/, ".webp");
@@ -325,14 +328,14 @@
 
   var QUERY = encodeURIComponent(
     '*[_type=="siteSettings"][0]{' +
-    'navigation{brand,top,menu,dir[]{cn,en,num}},' +
+    'navigation{brand,pageTitle,top,menu,dir[]{cn,en,num}},' +
     'catalog{left,right},' +
     'hero{title,subtitle,description,roleCn,roleEn,decoInitial,decoLine1,decoLine2,please},' +
     'contact{phone,wechat,email,labels},' +
     'about{jobs[]{co,role,date,desc,ptnum,pt}},' +
     'works[]{_key,number,title,subtitle,description,year,yearring,hide,' +
     'mininav[]{cn,en},blocks[]{_key,key,title,subtitle,body,items},' +
-    'slots[]{_key,name,asset->{path},alt,focus}}}'
+    'slots[]{_key,name,image{asset->{path}},alt,focus}}}'
   );
 
   fetch(CDN + "?query=" + QUERY)
@@ -367,7 +370,8 @@
       slotEls.forEach(function (el) {
         var sl = byName[el.getAttribute("data-slot")] || ordered.shift();
         if (!sl) return;
-        var url = imageUrl(sl.asset && sl.asset.path);
+        var assetRef = sl.image && sl.image.asset;
+        var url = imageUrl(assetRef && assetRef.path);
         if (!url) return;
         var img = el.tagName === "IMG" ? el : el.querySelector("img");
         if (img) {
@@ -385,96 +389,33 @@
       /* 静默失败：本地兜底已渲染 */
     });
 
-  /* ---------- Zoom v2 滚动动画 ---------- */
-  /* 段落级：data-zoom 进出场（保留 v1 手感，中段 scale=1 保证 PDF 像素还原）
-     场景级：data-scene 每个场景独立进出场；data-imgzoom 场景内图片
-             额外缓慢缩小制造镜头纵深，文字不参与自身缩放（中文始终清晰）。
-     降级条件：GSAP 未加载 / 减少动态 / URL 带 ?nozoom                        */
+  /* ---------- 顶部导航当前章节高亮（无动画，纯状态切换） ---------- */
   try {
-    var noZoom = /[?&]nozoom/.test(location.search);
-    var reduced = window.matchMedia &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (window.gsap && window.ScrollTrigger && !noZoom && !reduced) {
-      gsap.registerPlugin(ScrollTrigger);
-
-      /* 顶部导航当前章节高亮 */
-      var menuLinks = {};
-      Array.prototype.forEach.call(document.querySelectorAll(".topbar .menu a"), function (a) {
-        var h = a.getAttribute("href");
-        if (h && h.charAt(0) === "#") menuLinks[h] = a;
-      });
-      function setActive(id) {
-        Object.keys(menuLinks).forEach(function (k) {
-          if (k === id) menuLinks[k].classList.add("active");
-          else menuLinks[k].classList.remove("active");
-        });
-      }
-      Array.prototype.forEach.call(document.querySelectorAll("[data-zoom]"), function (sec) {
-        if (!sec.id || !menuLinks["#" + sec.id]) return;
-        ScrollTrigger.create({
-          trigger: sec, start: "top center", end: "bottom center",
-          onToggle: function (self) { if (self.isActive) setActive("#" + sec.id); }
-        });
-      });
-
-      var mm = gsap.matchMedia();
-
-      /* 桌面 ≥768：强动效 */
-      mm.add("(min-width: 768px)", function () {
-        /* 段落级进出场（v1 参数） */
-        Array.prototype.forEach.call(document.querySelectorAll("[data-zoom]"), function (sec) {
-          gsap.fromTo(sec,
-            { scale: 0.94, opacity: 0.5, transformOrigin: "50% 50%" },
-            {
-              scale: 1, opacity: 1, ease: "none", immediateRender: false,
-              scrollTrigger: { trigger: sec, start: "top bottom", end: "top 15%", scrub: true }
-            });
-          gsap.fromTo(sec,
-            { scale: 1, opacity: 1 },
-            {
-              scale: 0.94, opacity: 0.5, ease: "none", immediateRender: false,
-              scrollTrigger: { trigger: sec, start: "bottom bottom", end: "bottom top", scrub: true }
-            });
-        });
-        /* 场景级：根节点轻位移+淡入；图片场景额外纵深缩放（仅 transform/opacity） */
-        Array.prototype.forEach.call(document.querySelectorAll("[data-scene]"), function (sc) {
-          gsap.fromTo(sc,
-            { scale: 0.92, opacity: 0.55, yPercent: 2, transformOrigin: "50% 50%" },
-            {
-              scale: 1, opacity: 1, yPercent: 0, ease: "none", immediateRender: false,
-              scrollTrigger: { trigger: sc, start: "top bottom", end: "top 30%", scrub: true }
-            });
-          gsap.fromTo(sc,
-            { scale: 1, opacity: 1, yPercent: 0 },
-            {
-              scale: 0.92, opacity: 0.55, yPercent: -2, ease: "none", immediateRender: false,
-              scrollTrigger: { trigger: sc, start: "bottom bottom", end: "bottom top", scrub: true }
-            });
-          if (sc.hasAttribute("data-imgzoom")) {
-            var imgs = sc.querySelectorAll("img");
-            if (imgs.length) {
-              gsap.fromTo(imgs,
-                { scale: 1, transformOrigin: "50% 50%" },
-                {
-                  scale: 0.85, ease: "none", immediateRender: false,
-                  scrollTrigger: { trigger: sc, start: "top bottom", end: "bottom top", scrub: true }
-                });
-            }
-          }
-        });
-      });
-
-      /* 移动端 <768：弱动效（仅淡入 + 轻缩放，不做图片纵深） */
-      mm.add("(max-width: 767px)", function () {
-        Array.prototype.forEach.call(document.querySelectorAll("[data-scene]"), function (sc) {
-          gsap.fromTo(sc,
-            { opacity: 0.7, scale: 0.97, transformOrigin: "50% 50%" },
-            {
-              opacity: 1, scale: 1, ease: "none", immediateRender: false,
-              scrollTrigger: { trigger: sc, start: "top bottom", end: "top 40%", scrub: true }
-            });
-        });
+    var menuLinks = {};
+    Array.prototype.forEach.call(document.querySelectorAll(".topbar .menu a"), function (a) {
+      var h = a.getAttribute("href");
+      if (h && h.charAt(0) === "#") menuLinks[h] = a;
+    });
+    var watched = [];
+    Object.keys(menuLinks).forEach(function (k) {
+      var sec = document.querySelector(k);
+      if (sec) watched.push(sec);
+    });
+    function setActive(id) {
+      Object.keys(menuLinks).forEach(function (k) {
+        if (k === id) menuLinks[k].classList.add("active");
+        else menuLinks[k].classList.remove("active");
       });
     }
-  } catch (e) { /* 动画失败不影响页面 */ }
+    if ("IntersectionObserver" in window && watched.length) {
+      var current = null;
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) current = "#" + en.target.id;
+        });
+        if (current) setActive(current);
+      }, { rootMargin: "-45% 0px -45% 0px" });
+      watched.forEach(function (sec) { io.observe(sec); });
+    }
+  } catch (e) { /* 高亮失败不影响页面 */ }
 })();
