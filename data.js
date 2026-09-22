@@ -418,4 +418,63 @@
       watched.forEach(function (sec) { io.observe(sec); });
     }
   } catch (e) { /* 高亮失败不影响页面 */ }
+
+  /* ---------- Camera 观看模式 ----------
+     纯黑舞台 + 作品 Scene 居中 + 摄像机以屏幕中心为轴前后移动。
+     - Scene 居中时 scale=1；离开视口中心连续缩到 0.75（移动端 0.88），下一景从中心靠近
+     - 缩放轴 = Scene 自身中心（center center）
+     - 文字可读性单独控制：正文元素做轻微反向补偿
+     - 超高 Scene（高度 > 1.6 屏，如长卷/拼贴墙）只做淡入，不缩放——
+       避免缩放轴落在屏幕外造成可见内容偏移
+     - 纯 transform/opacity，不改文档流；URL 加 ?nocamera=1 可关闭 */
+  try {
+    if (!/[?&]nocamera=1/.test(location.search)) {
+      document.documentElement.classList.add("camera-on");
+      var CAM_TEXT = ".para, .lbl, .desc";
+      var isNarrow = Math.min(window.innerWidth, document.documentElement.clientWidth) < 768;
+      var MAX_SHRINK = isNarrow ? 0.12 : 0.25;
+      var scenes = [];
+      Array.prototype.forEach.call(document.querySelectorAll("[data-scene]"), function (el) {
+        var texts = Array.prototype.slice.call(el.querySelectorAll(CAM_TEXT));
+        scenes.push({ el: el, texts: texts, zoom: null });
+      });
+      var camTick = function () {
+        var vh = window.innerHeight || 1;
+        scenes.forEach(function (s) {
+          var r = s.el.getBoundingClientRect();
+          if (r.bottom < -vh || r.top > vh * 2) return;
+          if (s.zoom === null) s.zoom = r.height <= vh * 1.6;   /* 首次测量后缓存 */
+          var center = r.top + r.height / 2;
+          if (s.zoom) {
+            var denom = vh / 2 + r.height / 2;
+            var t = Math.max(-1, Math.min(1, (vh / 2 - center) / denom));
+            var a = t < 0 ? -t : t;
+            a = a * a * (3 - 2 * a);                 /* smoothstep，中段平滑 */
+            var scale = 1 - MAX_SHRINK * a;
+            s.el.style.transformOrigin = "center center";
+            s.el.style.transform = "scale(" + scale.toFixed(4) + ")";
+            s.el.style.opacity = (1 - 0.25 * a).toFixed(4);
+            var comp = (1 + (1 - scale) * 0.35).toFixed(4);
+            s.texts.forEach(function (tx) {
+              tx.style.transformOrigin = "center center";
+              tx.style.transform = "scale(" + comp + ")";
+            });
+          } else {
+            /* 超高场景：只轻淡入 */
+            var prog = Math.max(0, Math.min(1, (vh - r.top) / (vh * 0.8)));
+            s.el.style.transform = "";
+            s.el.style.opacity = (0.7 + 0.3 * prog).toFixed(4);
+          }
+        });
+      };
+      var camRaf = null;
+      var camScroll = function () {
+        if (camRaf) return;
+        camRaf = window.requestAnimationFrame(function () { camRaf = null; camTick(); });
+      };
+      window.addEventListener("scroll", camScroll, { passive: true });
+      window.addEventListener("resize", camScroll);
+      camTick();
+    }
+  } catch (e) { /* Camera 失败不影响页面 */ }
 })();

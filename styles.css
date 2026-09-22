@@ -393,3 +393,9 @@ ul { list-style:none; }
   .collage .tag-box { font-size:16px; padding:6px 14px; }
   .collage .poem-en { font-size:11px; max-width:100%; }
 }
+
+
+/* ---------- Camera Demo（?camera=1 才生效） ---------- */
+html.camera-on, html.camera-on body { background:#000; }
+html.camera-on body { max-width:1920px; margin:0 auto; }
+html.camera-on [data-scene] { will-change:transform,opacity; }
