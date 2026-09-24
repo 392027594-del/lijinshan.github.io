@@ -34,6 +34,60 @@
  *            slots[]{ name, asset, alt, focus } }
  * ============================================================ */
 (function () {
+  /* ---------- 文字缩放上限（浏览器 Ctrl +/- 钳制） ----------
+     背景：几何/图片走 --u = 100vw/1920，浏览器缩放时几何反向变化 → 图片视觉尺寸恒定；
+           文字走 px token → 浏览器缩放会真实放大/缩小文字（物理尺寸跟随）。
+     问题：放大到 125%/150% 时，文字相对版式（几何恒定）显得越来越大，侵占领空、
+           压叠首页密集版块。
+     判据：devicePixelRatio 相对基线 —— 窗口 resize 不改 dpr，只有浏览器缩放才改，
+           因此能用它把「浏览器放大」与「窗口变小/屏幕窄」严格区分开。
+     方案：放大档让文字物理尺寸封顶 = 基准物理字号 × CAP。
+           推导：物理字号 = 设计px × typeZoom × zoom ≤ 设计px × CAP
+                 →  typeZoom ≤ CAP / zoom
+     效果：zoom ≤ 1（缩小档 / 正常窗口）typeZoom = 1，行为与之前完全一致；
+           zoom > 1（放大档）typeZoom = CAP/zoom，文字物理尺寸封顶在 1.2 倍，
+           相对版式的侵占不再随缩放继续恶化。                                  */
+  var TYPE_CAP = 1.2;   /* 放大档文字物理尺寸的最大倍数（1.2 = 最多比 100% 档大 20%） */
+  (function () {
+    var docEl = document.documentElement;
+    var KEY = "lj_type_base_dpr";
+
+    /* 硬件档位：把 dpr 归整到最接近的常见值，避免把系统缩放（如 125%）误当浏览器放大 */
+    var LADDER = [1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 3, 3.5, 4];
+    var snap = function (d) {
+      var best = LADDER[0], bd = Infinity;
+      for (var i = 0; i < LADDER.length; i++) {
+        var diff = Math.abs(LADDER[i] - d);
+        if (diff < bd) { bd = diff; best = LADDER[i]; }
+      }
+      return best;
+    };
+
+    var cur = window.devicePixelRatio || 1;
+    var stored = 0;
+    try { stored = parseFloat(sessionStorage.getItem(KEY)) || 0; } catch (e) {}
+    /* 会话内沿用更小的基线（若用户在放大档刷新，基线仍保持首次建立的值） */
+    var BASE_DPR = (stored > 0 && stored <= cur) ? stored : snap(cur);
+    try { sessionStorage.setItem(KEY, String(BASE_DPR)); } catch (e) {}
+
+    var last = -1;
+    var applyZoom = function () {
+      var zoom = (window.devicePixelRatio || 1) / BASE_DPR;
+      /* zoom ≤ 1：不介入；zoom > 1：把文字物理字号压回 CAP 倍封顶 */
+      var eff = zoom > 1.001 ? (TYPE_CAP / zoom) : 1;
+      if (eff > 1) eff = 1;
+      if (Math.abs(eff - 1) < 0.004) eff = 1;
+      if (eff === last) return;
+      last = eff;
+      docEl.style.setProperty("--type-zoom", eff.toFixed(4));
+    };
+    applyZoom();
+    window.addEventListener("resize", applyZoom);
+    /* 浏览器 Ctrl+缩放不一定触发 resize（Chrome 有时只改 dpr），
+       用低频定时器兜底轮询；applyZoom 内部有 last 值缓存，不变则零开销。 */
+    window.setInterval(applyZoom, 400);
+  })();
+
   /* ---------- 移动端导航折叠 ---------- */
   var burger = document.getElementById("burger");
   var topbar = document.getElementById("topbar");

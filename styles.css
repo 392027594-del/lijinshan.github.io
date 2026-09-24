@@ -13,38 +13,39 @@
 :root {
   --u: calc(100vw / 1920);   /* 不封顶：视口变宽（含浏览器缩小页面）时内容等比放大，视觉大小恒定 */
 
+  --type-zoom: 1;   /* JS 写入：浏览器缩放带来的文字系数（受 --type-cap 钳制） */
   /* ---------- Typography tokens（px 固定，不随 --u） ----------
      文字必须真实响应浏览器 Ctrl +/- 缩放，因此不绑定 --u（视口单位）。
      几何/图片继续用 --u 保持 1920 基准版式 → 图片视觉尺寸对缩放稳定。 */
-  --type-giant: calc(474px * var(--type-scale, 1));
-  --type-watermark: calc(221.4px * var(--type-scale, 1));
-  --type-script: calc(150px * var(--type-scale, 1));
-  --type-hero: calc(122px * var(--type-scale, 1));
-  --type-logotype: calc(82.7px * var(--type-scale, 1));
-  --type-logotype-en: calc(63.7px * var(--type-scale, 1));
-  --type-hero-sub: calc(72.9px * var(--type-scale, 1));
-  --type-display: calc(71.9px * var(--type-scale, 1));
-  --type-title-lg: calc(59.5px * var(--type-scale, 1));
-  --type-title: calc(50.8px * var(--type-scale, 1));
-  --type-title-md: calc(42.3px * var(--type-scale, 1));
-  --type-title-sm: calc(38px * var(--type-scale, 1));
-  --type-title-xs: calc(34px * var(--type-scale, 1));
-  --type-lead: calc(31.1px * var(--type-scale, 1));
-  --type-subhead: calc(30.8px * var(--type-scale, 1));
-  --type-nav: calc(27.2px * var(--type-scale, 1));
-  --type-nav-sm: calc(27px * var(--type-scale, 1));
-  --type-dir: calc(26px * var(--type-scale, 1));
-  --type-italic: calc(25.1px * var(--type-scale, 1));
-  --type-list: calc(20.9px * var(--type-scale, 1));
-  --type-body: calc(20px * var(--type-scale, 1));
-  --type-dir-en: calc(19px * var(--type-scale, 1));
-  --type-mini: calc(18.6px * var(--type-scale, 1));
-  --type-spec: calc(16.6px * var(--type-scale, 1));
-  --type-date: calc(16.1px * var(--type-scale, 1));
-  --type-poem: calc(14px * var(--type-scale, 1));
-  --type-meta: calc(11.4px * var(--type-scale, 1));
-  --type-micro: calc(10px * var(--type-scale, 1));
-  --type-unit: calc(1px * var(--type-scale, 1));
+  --type-giant: calc(474px * var(--type-scale, 1) * var(--type-zoom, 1));
+  --type-watermark: calc(221.4px * var(--type-scale, 1) * var(--type-zoom, 1));
+  --type-script: calc(150px * var(--type-scale, 1) * var(--type-zoom, 1));
+  --type-hero: calc(122px * var(--type-scale, 1) * var(--type-zoom, 1));
+  --type-logotype: calc(82.7px * var(--type-scale, 1) * var(--type-zoom, 1));
+  --type-logotype-en: calc(63.7px * var(--type-scale, 1) * var(--type-zoom, 1));
+  --type-hero-sub: calc(72.9px * var(--type-scale, 1) * var(--type-zoom, 1));
+  --type-display: calc(71.9px * var(--type-scale, 1) * var(--type-zoom, 1));
+  --type-title-lg: calc(59.5px * var(--type-scale, 1) * var(--type-zoom, 1));
+  --type-title: calc(50.8px * var(--type-scale, 1) * var(--type-zoom, 1));
+  --type-title-md: calc(42.3px * var(--type-scale, 1) * var(--type-zoom, 1));
+  --type-title-sm: calc(38px * var(--type-scale, 1) * var(--type-zoom, 1));
+  --type-title-xs: calc(34px * var(--type-scale, 1) * var(--type-zoom, 1));
+  --type-lead: calc(31.1px * var(--type-scale, 1) * var(--type-zoom, 1));
+  --type-subhead: calc(30.8px * var(--type-scale, 1) * var(--type-zoom, 1));
+  --type-nav: calc(27.2px * var(--type-scale, 1) * var(--type-zoom, 1));
+  --type-nav-sm: calc(27px * var(--type-scale, 1) * var(--type-zoom, 1));
+  --type-dir: calc(26px * var(--type-scale, 1) * var(--type-zoom, 1));
+  --type-italic: calc(25.1px * var(--type-scale, 1) * var(--type-zoom, 1));
+  --type-list: calc(20.9px * var(--type-scale, 1) * var(--type-zoom, 1));
+  --type-body: calc(20px * var(--type-scale, 1) * var(--type-zoom, 1));
+  --type-dir-en: calc(19px * var(--type-scale, 1) * var(--type-zoom, 1));
+  --type-mini: calc(18.6px * var(--type-scale, 1) * var(--type-zoom, 1));
+  --type-spec: calc(16.6px * var(--type-scale, 1) * var(--type-zoom, 1));
+  --type-date: calc(16.1px * var(--type-scale, 1) * var(--type-zoom, 1));
+  --type-poem: calc(14px * var(--type-scale, 1) * var(--type-zoom, 1));
+  --type-meta: calc(11.4px * var(--type-scale, 1) * var(--type-zoom, 1));
+  --type-micro: calc(10px * var(--type-scale, 1) * var(--type-zoom, 1));
+  --type-unit: calc(1px * var(--type-scale, 1) * var(--type-zoom, 1));
 
   --bg-page: #262626;
   --bg-head: #2d2d2d;
