@@ -446,9 +446,7 @@
       var CAM_IMG = "[data-slot], .wm25-stair, .wm25-col, .wm25-left, .ring, " +
         ".deco-c, .sw .blk, .bigsw";
       var isNarrow = Math.min(window.innerWidth, document.documentElement.clientWidth) < 768;
-      var SCENE_SHRINK = isNarrow ? 0.06 : 0.10;    /* Camera 推拉：Scene 1 → 0.94 / 0.90 */
-      var IMG_RESIDUAL = isNarrow ? 0.015 : 0.03;   /* 图片反向补偿后的残余变化 ≤3% */
-      var TEXT_GROW    = isNarrow ? 0.12 : 0.18;    /* 文字自身 1 → 1.12 / 1.18 */
+      var TEXT_GROW = isNarrow ? 0.14 : 0.22;    /* 文字呼吸幅度：1 → 1.22 / 1.14 */
       var anchorTexts = function (list) {
         return Array.prototype.map.call(list, function (tx) {
           return { el: tx, left: tx.getBoundingClientRect().left < 64 };
@@ -472,14 +470,11 @@
             var t = Math.max(-1, Math.min(1, (vh / 2 - center) / denom));
             var a = t < 0 ? -t : t;
             a = a * a * (3 - 2 * a);                 /* smoothstep，中段平滑 */
-            var sceneScale = 1 - SCENE_SHRINK * a;   /* Camera 推拉层 */
-            var imgComp = (1 / sceneScale) * (1 - IMG_RESIDUAL * a);  /* 图片反向补偿，视觉钉稳 */
-            var txtScale = 1 + TEXT_GROW * (1 - a);  /* 文字呼吸：复合后 0.90→1.18 */
-            s.el.style.transformOrigin = "center center";
-            s.el.style.transform = "scale(" + sceneScale.toFixed(4) + ")";
+            var txtScale = 1 + TEXT_GROW * (1 - a);  /* 文字呼吸：承担全部视觉缩放 */
+            /* 场景容器不做 transform：图片天然零位移零缩放，绝对钉稳。
+               Camera 推拉感改由文字呼吸 + 极轻淡暗承载，避免整体缩放把图片推向场景中心。 */
             s.imgs.forEach(function (im) {
-              im.style.transformOrigin = "center center";
-              im.style.transform = "scale(" + imgComp.toFixed(4) + ")";
+              im.style.transform = "";
             });
             s.texts.forEach(function (o) {
               o.el.style.transformOrigin = o.left ? "left center" : "center center";
