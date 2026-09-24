@@ -419,12 +419,12 @@
     }
   } catch (e) { /* 高亮失败不影响页面 */ }
 
-  /* ---------- Camera 观看模式 v2：分层呼吸 ----------
-     摄影机保持相对稳定，排版随观看焦点呼吸（The Brand Identity 式浏览感）：
-     - Scene 容器本身不做整体缩放——避免图片继承文字变化、文字继承图片变化
-     - Image Layer（图片槽位/色块/装饰水印）：imageScale 1 → 0.97，几乎稳定
-     - Text Layer（标题/正文/标签）：textScale 0.94 → 1.16，明显呼吸
-     - 两层参数相互独立，不叠加任何补偿公式
+  /* ---------- Camera 观看模式 v3：摄影机推拉 + 图片钉稳 + 文字呼吸 ----------
+     - Scene 恢复整体 Camera Scale：1 → 0.90（移动 0.94），推拉感克制不过强
+     - Image Layer 在 Scene 内部反向补偿（≈1/sceneScale），视觉尺寸钉在原位，
+       残余变化 ≤3%（1 → 0.97 / 移动 0.985）——补偿后视觉 ≤ 原布局尺寸，不会溢出容器
+     - Text Layer 不做补偿：与 Scene 复合后 0.90 → 1.18（移动 0.94 → 1.12）明显呼吸
+     - 文字锚点动态判定保留：贴左缘用 left center，防放大左溢
      - 超高 Scene（高度 > 1.6 屏，如长卷/拼贴墙）只做淡入，不缩放——
        避免缩放轴落在屏幕外造成可见内容偏移
      - 纯 transform/opacity，不改文档流；URL 加 ?nocamera=1 可关闭 */
@@ -446,9 +446,9 @@
       var CAM_IMG = "[data-slot], .wm25-stair, .wm25-col, .wm25-left, .ring, " +
         ".deco-c, .sw .blk, .bigsw";
       var isNarrow = Math.min(window.innerWidth, document.documentElement.clientWidth) < 768;
-      var IMG_SHRINK = isNarrow ? 0.015 : 0.03;   /* 图片 1 → 0.985 / 0.97 */
-      var TXT_BOTTOM = isNarrow ? 0.97 : 0.94;    /* 文字最远端 */
-      var TXT_AMP    = isNarrow ? 0.13 : 0.22;    /* 呼吸幅度 → 1.10 / 1.16 */
+      var SCENE_SHRINK = isNarrow ? 0.06 : 0.10;    /* Camera 推拉：Scene 1 → 0.94 / 0.90 */
+      var IMG_RESIDUAL = isNarrow ? 0.015 : 0.03;   /* 图片反向补偿后的残余变化 ≤3% */
+      var TEXT_GROW    = isNarrow ? 0.12 : 0.18;    /* 文字自身 1 → 1.12 / 1.18 */
       var anchorTexts = function (list) {
         return Array.prototype.map.call(list, function (tx) {
           return { el: tx, left: tx.getBoundingClientRect().left < 64 };
@@ -472,17 +472,20 @@
             var t = Math.max(-1, Math.min(1, (vh / 2 - center) / denom));
             var a = t < 0 ? -t : t;
             a = a * a * (3 - 2 * a);                 /* smoothstep，中段平滑 */
-            var imgScale = (1 - IMG_SHRINK * a).toFixed(4);
-            var txtScale = (TXT_BOTTOM + TXT_AMP * (1 - a)).toFixed(4);
+            var sceneScale = 1 - SCENE_SHRINK * a;   /* Camera 推拉层 */
+            var imgComp = (1 / sceneScale) * (1 - IMG_RESIDUAL * a);  /* 图片反向补偿，视觉钉稳 */
+            var txtScale = 1 + TEXT_GROW * (1 - a);  /* 文字呼吸：复合后 0.90→1.18 */
+            s.el.style.transformOrigin = "center center";
+            s.el.style.transform = "scale(" + sceneScale.toFixed(4) + ")";
             s.imgs.forEach(function (im) {
               im.style.transformOrigin = "center center";
-              im.style.transform = "scale(" + imgScale + ")";
+              im.style.transform = "scale(" + imgComp.toFixed(4) + ")";
             });
             s.texts.forEach(function (o) {
               o.el.style.transformOrigin = o.left ? "left center" : "center center";
-              o.el.style.transform = "scale(" + txtScale + ")";
+              o.el.style.transform = "scale(" + txtScale.toFixed(4) + ")";
             });
-            s.el.style.opacity = (1 - 0.15 * a).toFixed(4);
+            s.el.style.opacity = (1 - 0.12 * a).toFixed(4);
           } else {
             /* 超高场景：只轻淡入 */
             var prog = Math.max(0, Math.min(1, (vh - r.top) / (vh * 0.8)));
