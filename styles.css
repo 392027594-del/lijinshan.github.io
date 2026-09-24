@@ -395,7 +395,7 @@ ul { list-style:none; }
 }
 
 
-/* ---------- Camera Demo（?camera=1 才生效） ---------- */
+/* ---------- Camera 观看模式 ---------- */
 html.camera-on, html.camera-on body { background:#000; }
 html.camera-on body { max-width:1920px; margin:0 auto; }
-html.camera-on [data-scene] { will-change:transform,opacity; }
+html.camera-on [data-scene] { will-change:opacity; }

@@ -419,11 +419,12 @@
     }
   } catch (e) { /* 高亮失败不影响页面 */ }
 
-  /* ---------- Camera 观看模式 ----------
-     纯黑舞台 + 作品 Scene 居中 + 摄像机以屏幕中心为轴前后移动。
-     - Scene 居中时 scale=1；离开视口中心连续缩到 0.75（移动端 0.88），下一景从中心靠近
-     - 缩放轴 = Scene 自身中心（center center）
-     - 文字可读性单独控制：正文元素做轻微反向补偿
+  /* ---------- Camera 观看模式 v2：分层呼吸 ----------
+     摄影机保持相对稳定，排版随观看焦点呼吸（The Brand Identity 式浏览感）：
+     - Scene 容器本身不做整体缩放——避免图片继承文字变化、文字继承图片变化
+     - Image Layer（图片槽位/色块/装饰水印）：imageScale 1 → 0.97，几乎稳定
+     - Text Layer（标题/正文/标签）：textScale 0.94 → 1.16，明显呼吸
+     - 两层参数相互独立，不叠加任何补偿公式
      - 超高 Scene（高度 > 1.6 屏，如长卷/拼贴墙）只做淡入，不缩放——
        避免缩放轴落在屏幕外造成可见内容偏移
      - 纯 transform/opacity，不改文档流；URL 加 ?nocamera=1 可关闭 */
@@ -432,13 +433,32 @@
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (!/[?&]nocamera=1/.test(location.search) && !reducedMotion) {
       document.documentElement.classList.add("camera-on");
-      var CAM_TEXT = ".para, .lbl, .desc";
+      /* 文字层：信息文字（标题/正文/标签/元信息），紧耦合组以组为单位呼吸。
+         锚点动态判定：贴左缘（x0 < 64px）的文字用 left center 锚（字号感放大、
+         左缘不动、向右扩展）；其余用 center center。避免放大时块级文字左溢出屏。
+         首帧未缩放时测量一次并缓存；resize 时清空 transform 重测。 */
+      var CAM_TEXT = ".hero-t, .hero-s, .hero-b, .contact .grp, .home-top .role, " +
+        ".please, .dir .it, .job .co, .job .meta, .job .desc, .job .pt, " +
+        ".giant, .cn-t, .en-t, .mini-nav .it, .bio, " +
+        ".tt2, .tt3, .big-t, .big-e, .h, .para, .labels > div, .cc, " +
+        ".spec, .poems .main, .poems .it, .tag-box, .poem-en";
+      /* 图片层：图片槽位 + 色块 + 装饰水印，只做轻微缩放（幅度小，统一 center 锚） */
+      var CAM_IMG = "[data-slot], .wm25-stair, .wm25-col, .wm25-left, .ring, " +
+        ".deco-c, .sw .blk, .bigsw";
       var isNarrow = Math.min(window.innerWidth, document.documentElement.clientWidth) < 768;
-      var MAX_SHRINK = isNarrow ? 0.12 : 0.25;
+      var IMG_SHRINK = isNarrow ? 0.015 : 0.03;   /* 图片 1 → 0.985 / 0.97 */
+      var TXT_BOTTOM = isNarrow ? 0.97 : 0.94;    /* 文字最远端 */
+      var TXT_AMP    = isNarrow ? 0.13 : 0.22;    /* 呼吸幅度 → 1.10 / 1.16 */
+      var anchorTexts = function (list) {
+        return Array.prototype.map.call(list, function (tx) {
+          return { el: tx, left: tx.getBoundingClientRect().left < 64 };
+        });
+      };
       var scenes = [];
       Array.prototype.forEach.call(document.querySelectorAll("[data-scene]"), function (el) {
-        var texts = Array.prototype.slice.call(el.querySelectorAll(CAM_TEXT));
-        scenes.push({ el: el, texts: texts, zoom: null });
+        var texts = anchorTexts(el.querySelectorAll(CAM_TEXT));
+        var imgs = Array.prototype.slice.call(el.querySelectorAll(CAM_IMG));
+        scenes.push({ el: el, texts: texts, imgs: imgs, zoom: null });
       });
       var camTick = function () {
         var vh = window.innerHeight || 1;
@@ -452,19 +472,20 @@
             var t = Math.max(-1, Math.min(1, (vh / 2 - center) / denom));
             var a = t < 0 ? -t : t;
             a = a * a * (3 - 2 * a);                 /* smoothstep，中段平滑 */
-            var scale = 1 - MAX_SHRINK * a;
-            s.el.style.transformOrigin = "center center";
-            s.el.style.transform = "scale(" + scale.toFixed(4) + ")";
-            s.el.style.opacity = (1 - 0.25 * a).toFixed(4);
-            var comp = (1 + (1 - scale) * 0.35).toFixed(4);
-            s.texts.forEach(function (tx) {
-              tx.style.transformOrigin = "center center";
-              tx.style.transform = "scale(" + comp + ")";
+            var imgScale = (1 - IMG_SHRINK * a).toFixed(4);
+            var txtScale = (TXT_BOTTOM + TXT_AMP * (1 - a)).toFixed(4);
+            s.imgs.forEach(function (im) {
+              im.style.transformOrigin = "center center";
+              im.style.transform = "scale(" + imgScale + ")";
             });
+            s.texts.forEach(function (o) {
+              o.el.style.transformOrigin = o.left ? "left center" : "center center";
+              o.el.style.transform = "scale(" + txtScale + ")";
+            });
+            s.el.style.opacity = (1 - 0.15 * a).toFixed(4);
           } else {
             /* 超高场景：只轻淡入 */
             var prog = Math.max(0, Math.min(1, (vh - r.top) / (vh * 0.8)));
-            s.el.style.transform = "";
             s.el.style.opacity = (0.7 + 0.3 * prog).toFixed(4);
           }
         });
@@ -475,7 +496,15 @@
         camRaf = window.requestAnimationFrame(function () { camRaf = null; camTick(); });
       };
       window.addEventListener("scroll", camScroll, { passive: true });
-      window.addEventListener("resize", camScroll);
+      window.addEventListener("resize", function () {
+        /* 断点切换后布局左缘会变：清空 transform 重测锚点，下一帧重新应用 */
+        scenes.forEach(function (s) {
+          s.imgs.forEach(function (im) { im.style.transform = ""; });
+          s.texts.forEach(function (o) { o.el.style.transform = ""; });
+          s.texts = anchorTexts(s.texts.map(function (o) { return o.el; }));
+        });
+        camScroll();
+      });
       camTick();
     }
   } catch (e) { /* Camera 失败不影响页面 */ }
